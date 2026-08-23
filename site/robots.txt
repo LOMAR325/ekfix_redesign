@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Host: ekfix.us
+Sitemap: https://ekfix.us/sitemap.xml
