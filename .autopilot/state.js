@@ -11,7 +11,7 @@ window.STATE =
   "memoryFile": "CLAUDE.md",
   "skillDir": "/Users/User/.claude/skills/autopilot",
   "startedAt": "2026-09-01T00:51:53-04:00",
-  "updatedAt": "2026-09-01T19:38:30-04:00",
+  "updatedAt": "2026-09-01T19:44:16-04:00",
   "finishedAt": null,
   "stages": [
     { "id": "preflight", "status": "done", "startedAt": "2026-09-01T00:51:53-04:00", "finishedAt": "2026-09-01T00:52:55-04:00" },
@@ -24,7 +24,7 @@ window.STATE =
     { "id": "final",     "status": "pending" }
   ],
   "requirements": {
-    "total": 53, "done": 4, "inTicket": 43, "inSpec": 0,
+    "total": 53, "done": 8, "inTicket": 39, "inSpec": 0,
     "placeholder": 0, "deferred": 6, "dropped": 0
   },
   "tickets": [
