@@ -186,3 +186,84 @@ Favicon — файл `app/icon.svg` (авто-`<link rel="icon">`).
 `/towns`, `/appliance-repair/*` нет, их `href` в `Header`/`Footer` кастятся
 `as Route` (helper `r()` в `Footer.tsx`). Когда страницы появятся — касты можно
 снять, но это не обязательно.
+
+### Таск 02 — слой данных (services, towns, reviews, brands, b2b-segments, business)
+
+Весь контент услуг/городов/отзывов/брендов извлечён **дословно** из старых `*.html`.
+Команды прежние; `npx tsc --noEmit` и `npm run build` — зелёные.
+
+**Изменения в `data/types.ts`** (расширения, не ломающие):
+- `Service` — добавлено `image: string` (thumbnail для home `#repair`, напр. `/images/Refrigerator.webp`).
+- `Town` — добавлено `nearby?: string[]` (чипы «Also serving», не-charlotte) и
+  `nearbyProse?: string` (charlotte — свободный абзац «also serving nearby»).
+- `Brand` — добавлено `home?: boolean` (входит в переупорядоченную сетку главной `#brands`).
+
+**`data/services.ts`**
+- `export const services: Service[]` — ровно 12, порядок меню (refrigerator, washer, dryer,
+  dishwasher, stove, range, cooktop, microwave, freezer, ice-maker, wine-cooler, garbage-disposal).
+  У каждой: 6 `problems`, 5 `faqs`, `image`, `hero.h1` (с `<br><span>`), `whereWeWork`, `brands`,
+  `alsoRepair` (`[]` у refrigerator; core-услуги — пул из 9 минус себя; ice-maker/wine-cooler/
+  garbage-disposal — первые 8 пула). FAQ-тексты собираются `repairFaqs()` — вывод дословно совпадает
+  с `.faq-item` страниц (refrigerator имеет override q1: en-dash + «happens»).
+- `export const commercialCategories: CommercialCategory[]` — 4 (`label`, `formLabel`, `image`, `href`
+  на `/for-business#horeca|#laundry`). `image` — существующие webp-заглушки + `// TODO`.
+- `export const serviceSlugs: string[]`, `getService(slug)`, `applianceFormOptions: string[]`
+  (11 услуг с дедупом «Stove / Range» + 4 коммерческих + «Commercial kitchen» + «Other» = 17).
+
+**`data/towns.ts`**
+- `export const towns: Town[]` — 26 записей: 5 `isFullPage` (charlotte, rock-hill, fort-mill,
+  matthews, indian-trail; весь уникальный контент — `hero.lede`, `prose[]` с `<strong>`, `districts[]`,
+  `reviewAuthors[]`, `nearby[]`/`nearbyProse`, `hasMap` только charlotte) + 21 не-полных (только
+  `name`/`state`/`slug`, `isFullPage:false`). **Тикет просил «6 записей»** — держим все 26 в одном
+  массиве, чтобы не плодить второй источник правды (spec §Слой данных: «Не-полные — только name/state»);
+  `fullPageTowns` = 5, что и требует sitemap-шов.
+- `export const fullPageTowns: Town[]` (5), `townSlugs: string[]`, `getTown(slug)` (только среди full).
+- `export const alsoServedNC: string[]` (14), `alsoServedSC: string[]` (7) — **производные** от
+  не-полных `towns` (не отдельные литералы).
+- `export const townsIndex` — hero/section-копия `towns/index.html` (title, metaDescription, heroH1,
+  heroLede, activeHead, лейблы списков).
+
+**`data/reviews.ts`**
+- `export const reviews: Review[]` — 6 (author/detail/text + `appliance?`), дословно из `#reviews`.
+- `export const aggregate = { ratingValue: 5.0, reviewCount: reviews.length }` (=6). `// TODO` о проверке.
+- `export function reviewsByAuthors(authors: string[]): Review[]` — для town-страниц.
+
+**`data/brands.ts`**
+- `export const brands: Brand[]` — 33, в порядке `brands.html` (сначала residential/premium-секция 22,
+  затем commercial-секция 11). Поля `name`, `logo` (`/images/…`), `alt` (текст `brands.html`), `tier`
+  (`commercial`|`premium`|`mass`), `wide?`, `home?`. Amana → `mass` (снят «?» тикета).
+- `export const homeBrands: Brand[]` — 16 (`home:true`), отсортировано `commercial → premium → mass`
+  (порядок внутри tier = порядок `brands.html`).
+- `export const residentialBrands` (tier≠commercial, 22), `commercialBrands` (tier=commercial, 11) —
+  для двух секций `/brands` (порядок = `brands`).
+- `export const brandNote` (`{ home, brandsPage }` — `{tag,text,cta}`) — строка `.brand-note` под обеими сетками.
+- `export const homeBrandsLede: string` — lede главной `#brands` (commercial-first, story 24).
+- `export const brandsPage` — вся копия `/brands` дословно из `brands.html` (как `townsIndex` для `/towns`):
+  `title`, `metaDescription`, `breadcrumb`, `hero {h1,lede}`, `residentialSection {eyebrow,h2}`,
+  `commercialSection {eyebrow,h2,lede}`, `dontSeeYourBrand {h2,body}`, `ctaBand {h2,body}`.
+
+**`data/b2b-segments.ts`** (типы `WhoWeServeCard`, `ForBusinessSegment`, `NumberedCard` — там же):
+- `whoWeServeHead` (`{eyebrow:"01a / Who we serve", h2:"Homes, kitchens, and everything you manage."}`).
+- `whoWeServe: WhoWeServeCard[]` (4; `{title,eyebrow,text,href,linkLabel}`; тексты 30–45 слов, написаны заново).
+- `forBusinessSegments: ForBusinessSegment[]` (4; `{id,title,eyebrow,heading,text,href,linkLabel,bullets,placeholder?}`;
+  `id`: `property-management`/`horeca`/`hotels`/`hoa`; `hoa.placeholder=true` + `// TODO`).
+  Тексты НЕ совпадают дословно с `whoWeServe`. Два раздельных типа — страница не прочитает
+  всегда-undefined поле не из того списка.
+- `processSteps: NumberedCard[]` (4), `serviceFormats: string[]` (4), `trustHeading: string`,
+  `trustChips: string[]` (5), `businessFaqs: {q,a}[]` (6), `whyCallUs: NumberedCard[]` (5 = 3 текущих + 2 новых),
+  `commercialServices: string[]` (4 — для JSON-LD `knowsAbout`), `businessCta` (`{heading,text,primary:{label,href}}`),
+  `laundryObjectTypes` (`{paragraph, types[4], brandChips[8]}` — абзац/типы не утверждают сверх
+  `for-business.html`: hotels/laundromats/healthcare/multi-housing, без «stock parts»),
+  `contactAsOptions: string[]` (5 — для формы «I'm contacting you as a…»).
+- Санкционированная новая микрокопия (чтобы страницы её не хардкодили): `homeHero`
+  (`{lede, metaSmall, businessLink}`), `familyBusinessSentence: string`, `forBusinessHeroLedeExtra: string`.
+
+**`data/business.ts`** — финализировано:
+- `areaServed: string[]` — 20 записей («City, ST»), срез 26→20 из старого JSON-LD по приоритету
+  (5 full-town + близость к Ballantyne). Отброшенные 6: Allen NC, Unionville NC, Mineral Springs NC,
+  Indian Hook SC, Lesslie SC, Spring Valley SC (остаются в `alsoServed*`).
+- `rating: { value: 5, count: 6 }` — из `reviews.aggregate` (импорт `data/reviews`).
+
+**`lib/nav.ts`** — больше не хардкодит списки: `repairServices` = `services.map` (12,
+label `${s.name} Repair`), `serviceArea` = `fullPageTowns.map` (label `${t.name}, ${t.state}`) +
+`{label:"All Service Towns →", href:"/towns"}`. Публичные типы/`mainNav` без изменений формы.

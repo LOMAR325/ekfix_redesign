@@ -31,6 +31,8 @@ export type Service = {
   formLabel: string;
   title: string;
   metaDescription: string;
+  /** thumbnail used in the home #repair grid, e.g. "/images/Refrigerator.webp" */
+  image: string;
   hero: { h1: string; lede: string }; // h1 may contain <br><span>
   problems: { title: string; body: string }[]; // exactly 6
   brands: string[];
@@ -55,8 +57,9 @@ export type Town = {
   hero?: { lede: string };
   prose?: string[]; // paragraphs, may contain <strong>
   districts?: string[];
-  reviewAuthors?: string[]; // which of data/reviews to show
-  nearby?: string[];
+  reviewAuthors?: string[]; // which of data/reviews to show (matched by author)
+  nearby?: string[]; // "Also serving" chip towns (non-charlotte)
+  nearbyProse?: string; // charlotte only — free-text "also serving nearby" paragraph
   hasMap?: boolean; // true only for charlotte
 };
 
@@ -74,6 +77,8 @@ export type Brand = {
   alt: string;
   tier: "commercial" | "premium" | "mass";
   wide?: boolean;
+  /** appears in the reordered home #brands grid (subset of the full /brands list) */
+  home?: boolean;
 };
 
 export type LeadInput = {

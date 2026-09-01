@@ -1,4 +1,5 @@
 import type { Business } from "./types";
+import { aggregate } from "./reviews";
 
 // Single source of truth for NAP and business-wide constants.
 // Do NOT hardcode any of these values in app/ or components/.
@@ -38,8 +39,31 @@ export const business: Business = {
   gaId: "G-LFM6MSKBQ7",
   // TODO: имя утверждает владелец
   maintenancePlanName: "EK Maintenance Plan",
-  // TODO: финализирует таск 02 — полный список зон (<= 20), синхронно с sitemap
-  areaServed: [],
-  // TODO: финализирует таск 02 — считается из data/reviews.ts
-  rating: null,
+  // GBP allows <= 20 service zones. Trimmed from the 26 cities in the old index.html JSON-LD,
+  // ordered by priority (5 full-page towns first, then proximity to Ballantyne / call volume).
+  // The full list — including the 6 dropped here — stays on /towns as alsoServedNC/alsoServedSC.
+  areaServed: [
+    "Charlotte, NC",
+    "Matthews, NC",
+    "Mint Hill, NC",
+    "Pineville, NC",
+    "Indian Trail, NC",
+    "Stallings, NC",
+    "Waxhaw, NC",
+    "Weddington, NC",
+    "Marvin, NC",
+    "Wesley Chapel, NC",
+    "Monroe, NC",
+    "Harrisburg, NC",
+    "Fort Mill, SC",
+    "Rock Hill, SC",
+    "Tega Cay, SC",
+    "Indian Land, SC",
+    "Lake Wylie, SC",
+    "Belmont, NC",
+    "Newell, NC",
+    "Catawba, SC",
+  ],
+  // Derived from data/reviews.ts aggregate (real reviews), not the "5.0 on Google" badge.
+  rating: { value: aggregate.ratingValue, count: aggregate.reviewCount },
 };
