@@ -111,4 +111,78 @@ interface LeadSink { name: string; enabled: boolean; send(lead: LeadInput): Prom
 
 ## Что построил каждый таск (дописывается по мере сдачи)
 
-<!-- таск 01: … -->
+### Таск 01 — каркас, layout, globals.css, Header/Footer
+
+**Команды** (все неинтерактивны):
+- `npm run build` — прод-сборка (Turbopack, включает `tsc`); зелёная.
+- `npx tsc --noEmit` — строгая типопроверка; зелёная.
+- `npm test` — vitest run (`passWithNoTests: true`, тестов пока нет).
+- `npm test -- <path>` — один файл, напр. `npm test -- lib/book/submit.test.ts`.
+- `npm run dev` / `npm start` — локально (порт 3000).
+
+**Стек факт:** next 16.3.4, react 19.2.8, react-dom 19.2.8, typescript ^5, vitest ^3
+(точные версии из ticket встали без правок). Node 25.9. `tsconfig.json` — Next при
+первом билде выставил `jsx: "react-jsx"` и добавил `.next/dev/types/**` в include
+(это норма, не откатывать). `next.config.ts`: `images.formats: ["image/webp"]`,
+`typedRoutes: true`.
+
+**`data/types.ts`** — только типы, без рантайма:
+`BusinessRating`, `Business`, `Service`, `CommercialCategory`, `Town`, `Review`
+(+ optional `appliance?`, `town?`), `Brand`, `LeadInput`,
+`LeadResult = {ok:true} | {ok:false, errors:Record<string,string>}`,
+`interface LeadSink { name; enabled; send(lead: LeadInput): Promise<void> }`.
+(Шов `lib/book` в spec зовёт тип `Result` — это `LeadResult` здесь.)
+
+**`data/business.ts`** — `export const business: Business`:
+`name："EK Global"`, `legalName："EK Global"`, `phone："(980) 371-4319"`,
+`phoneHref："tel:+19803714319"`, `phoneE164："+1-980-371-4319"`,
+`hours："8AM – 8PM daily"`, `hoursNote："Weekends included"`,
+`openingHours：{ days:[Mon..Sun], opens:"08:00", closes:"20:00" }`,
+`address：{ locality:"Charlotte", region:"NC", country:"US" }`,
+`siteUrl："https://ekfix.us"` (+ TODO-домен),
+`social：{ instagram, facebook, tiktok }`, `gaId："G-LFM6MSKBQ7"`,
+`maintenancePlanName："EK Maintenance Plan"` (+ TODO).
+**Заглушки для таска 02:** `areaServed: string[] = []`,
+`rating: BusinessRating | null = null` (пометки `// TODO: финализирует таск 02`).
+
+**`lib/seo.ts`** — `export const metadataBase = new URL(business.siteUrl)`;
+`export function pageMetadata({ title, description, path }): Metadata`
+(возвращает `{ metadataBase, title, description, alternates:{ canonical: path } }`).
+
+**`lib/nav.ts`** — типы `NavLink {label,href}`, `NavGroup {label,wide?,children}`,
+`NavEntry = NavLink | NavGroup`; `export const mainNav: NavEntry[]`
+(We Repair → 12 услуг `/appliance-repair/<slug>`; Service Area → 5 городов +
+`/towns`; About Us `/about`; Brands `/brands`; For Business `/for-business`;
+Reviews `/#reviews`). **TODO таск 02:** заменить захардкоженные `repairServices`
+и `serviceArea` на производные от `data/services` / `data/towns`.
+
+**`components/`** (все — именованные экспорты, не default):
+- `Header.tsx` (`'use client'`) — `<Header/>`, без пропсов. Рендерит `mainNav`,
+  моб. toggle (`body.nav-locked`/`header.nav-open`/`.main-nav.open`), дропдауны по
+  клику (`.nav-item.open`, закрытие по клику вне), закрытие меню по клику на ссылку,
+  активный пункт по `usePathname()`.
+- `Footer.tsx` (server) — `<Footer/>`, без пропсов. NAP из `data/business`.
+- `Analytics.tsx` (server) — `<Analytics/>`, `next/script` `afterInteractive`,
+  gtag из `business.gaId`.
+
+**`app/layout.tsx`** — `<html lang="en">`, `<head>` со шрифтами (preconnect ×2 +
+Google Fonts stylesheet, НЕ `next/font`), импорт `./globals.css`,
+`<Header/>{children}<Footer/><Analytics/>`. `export const metadata` — дефолты из
+`index.html` + `metadataBase`; страницы переопределяют через `pageMetadata`.
+Favicon — файл `app/icon.svg` (авто-`<link rel="icon">`).
+
+**`app/globals.css`** — дословная копия `css/style.css` + 2 строки `.card-grid-4`
+(строки 481 и 573; `grep -v card-grid-4` даёт точный `css/style.css`).
+**Заморожена** — правку CSS в тасках страниц возвращать как `BLOCKED`.
+
+**`app/page.tsx`** — временная заглушка «Migrating…» (настоящую делает таск 06).
+
+**`public/images/`** — все 52 файла скопированы из `assets/images/` (имена
+сохранены; оригинал не тронут — удалит таск 11).
+
+**`.env.example`** — пустые `RESEND_API_KEY`, `BOOK_NOTIFY_EMAIL`, `BOOK_WEBHOOK_URL`.
+
+**Оговорка (typedRoutes):** пока страниц `/about`, `/brands`, `/for-business`,
+`/towns`, `/appliance-repair/*` нет, их `href` в `Header`/`Footer` кастятся
+`as Route` (helper `r()` в `Footer.tsx`). Когда страницы появятся — касты можно
+снять, но это не обязательно.
