@@ -431,3 +431,168 @@ DOM 1:1 из `#book .book-card`/`form#book-form` + НОВЫЙ `<select id="conta
   `.photo-pair`, `next/image fill`, `objectPosition` прокидывается в `img`.
 - `<LocalPhoto src? alt? imgStyle? style? children? />` — `.local-photo`; `children`
   (iframe карты) вместо `next/image`, если задан.
+
+### Таск 06 — главная страница `/`
+
+`npx tsc --noEmit` и `npm run build` — зелёные; `/` = `○ (Static)` (SSG). Тестов нет
+(страница из компонентов). `app/page.tsx` заменил заглушку.
+
+**`app/page.tsx`** — server component. `export const metadata = pageMetadata({title,description,path:"/"})`
+(title/description дословно из `index.html`; og наследуется от layout). Рендерит
+`<JsonLd data={[businessJsonLd()]}/>` + `<SideRail/>` + `<BookingProvider>` вокруг 9 секций
+в порядке тикета: `#home` → `#who-we-serve` → `#repair` → `#family` → `#reviews` →
+`#trust-b2b` → `#brands` → `#business-cta` → `#book`.
+
+**`components/home/*`** (все — именованные экспорты; server, кроме двух помеченных):
+- `Hero` — `<Hero/>`, `#home` 1:1 из `index.html`. `hero-technician.webp` через
+  `next/image fill priority sizes="100vw"` (класс `hero-photo`). `.lede` =
+  `b2bSegments.homeHero.lede`, `.hero-meta small` = `homeHero.metaSmall`, текст-ссылка на
+  `/for-business` (`homeHero.businessLink`) после `.hero-ctas` инлайн-стилем accent-underline
+  (без нового класса). `<h1>` не тронут.
+- `SideRail` (**`'use client'`**) — `<SideRail/>`. `.side-rail` с 6 фикс. пунктами
+  (`#home…#book`); `IntersectionObserver` (`rootMargin:"-45% 0px -45% 0px"`) трекает только
+  эти 6 секций (список зашит в `RAIL`), `#who-we-serve` исключён. Дефолтный active — `home`.
+- `WhoWeServeGrid` — `<WhoWeServeGrid/>`, `#who-we-serve` (`.section .section-light`).
+  `<SectionHead tone="light">` из `whoWeServeHead` + `<AudienceGrid layout="card-grid-4"
+  items={whoWeServe}>`.
+- `RepairSection` (**`'use client'`**) — `<RepairSection/>`, `#repair`. `<SectionHead>` (eyebrow
+  `02 / What we repair`, h2 `We get to<br>the core problem.`), `<RepairGrid>` c 12 `<RepairCard>`
+  из `services` (`href="#book"`, `onSelect={() => setAppliance(service.formLabel)}` через
+  `useBooking()`) + 4 `<RepairCard>` из `commercialCategories` (`href` на `/for-business#…`,
+  tag `Commercial · See services`, без `onSelect`). `.not-listed` 1:1.
+- `FamilySection` — `<FamilySection/>`, `#family` 1:1 + доп. `<p>{familyBusinessSentence}</p>`
+  в `.family-copy`. `.quote-card` + `<PhotoPair>` (kostia_reast / kostia-laundry, у второй
+  `objectPosition:"30% 75%"`).
+- `ReviewsSection` — `<ReviewsSection/>`, `#reviews`. `<SectionHead ratingBadge>` +
+  `<ReviewsGrid reviews={reviews}>` (Tony Z. первым).
+- `TrustBand` — `<TrustBand/>`, `#trust-b2b` (`.section .section-dark-2`). `.section-head.on-dark`
+  с одним `<h2>{trustHeading}</h2>` (без eyebrow — нумерация 02…06 не тронута) +
+  `<ChipRow tone="dark" items={trustChips}>`.
+- `BrandsSection` — `<BrandsSection/>`, `#brands` (`.section .section-dark-2`). `.section-head`
+  инлайн 1:1 (`marginBottom:50`, h2 `clamp(30px,3.2vw,44px)/-1.8px`, `.lede` `maxWidth:300` =
+  `homeBrandsLede`), `<BrandGrid brands={homeBrands} note={brandNote.home}>`, ссылка
+  «See all brands we service →» на `/brands`.
+- `BusinessCtaBand` — `<BusinessCtaBand/>`, `<section id="business-cta">` вокруг
+  `<CtaBand>` из `businessCta` (кнопки: `.btn.btn-accent`→`/for-business`,
+  `.btn.btn-ghost-dark`→`tel:`).
+- `BookSection` — `<BookSection/>`, `#book`. `.book-grid` c `.book-copy` 1:1 из `index.html`
+  + `<BookForm/>` (таск 04).
+
+**Оговорки:** (1) `#who-we-serve` = `.section-light`, но `.audience-card` в globals имеет
+тёмный фон (`--bg-dark-3`) — тёмные карточки на светлой секции; это прямо предписано
+spec story 23 + тикетом, CSS заморожен. (2) alt брендов на главной теперь из
+`data/brands` («Hobart repair»), а не из `index.html` («Hobart appliance repair») —
+следствие единого источника (таск 02), не регрессия этого таска.
+
+### Таск 07 — страницы `/about` и `/brands`
+
+Команды прежние; `npx tsc --noEmit` и `npm run build` — зелёные. Обе страницы —
+`○ (Static)` / SSG. Тестов нет (вёрстка страниц не тестируется).
+
+**`app/about/page.tsx`** — server-компонент, `export const metadata` через
+`pageMetadata` (`title`/`description` дословно из `about.html <head>`,
+`path:"/about"` → canonical `https://ekfix.us/about`). `<JsonLd data={breadcrumbJsonLd([
+{name:"Home",url:"/"},{name:"Our Story",url:"/about"}])} />`. Разметка 1:1 с
+`about.html`: `PageHero` (кастомные `ctas` — «Book a Repair» + «Call …», не дефолтная
+пара) → `<section class="section section-light">` c `.two-col` (`Prose` heading
+«Meet Konstantin» + 3 абзаца + `StatRow` детьми / `LocalPhoto`
+`konstantin_thermador.webp`) → `<section class="section section-dark">` (`SectionHead`
+tone="dark" + `ProblemCardGrid` variant="dark" 3 карточки) → `<section class="section
+section-light">` (`SectionHead` tone="light" `style={{marginBottom:30}}` + `PhotoPair`
+`style={{marginTop:0}}`, обе `figure` `height:280`) → `CtaBand` (дефолтные ctas).
+**Редакторская копия страницы (3 абзаца + карточки + заголовки) захардкожена в
+файле** — модуля `data/about` нет, зона таска запрещает `data/`, тикет прямо
+предписывает передавать эти тексты пропсами. NAP по-прежнему только из
+`data/business` (через компоненты).
+
+**`app/brands/page.tsx`** — server-компонент, `export const metadata` через
+`pageMetadata` из `data/brands.brandsPage.title`/`.metaDescription`, `path:"/brands"`.
+`<JsonLd data={breadcrumbJsonLd([{name:"Home",url:"/"},{name:"Brands",url:"/brands"}])} />`.
+Вся копия — из `data/brands`: `brandsPage` (hero/секции/dontSeeYourBrand/ctaBand),
+`residentialBrands` (22) и `commercialBrands` (11) — **в порядке `brands.html`**
+(фильтр по tier сохраняет исходный порядок массива `brands`, НЕ commercial-first),
+`brandNote.brandsPage` — строка `.brand-note` под коммерческой сеткой. Структура 1:1:
+`PageHero` (дефолтные ctas) → `<section class="section section-light">` (`SectionHead`
+tone="light" + `BrandGrid residentialBrands`) → `<section class="section
+section-dark-2">` (`SectionHead` tone="dark" c `lede` и `h2Style={{fontSize:"clamp(30px,
+3.2vw, 44px)",letterSpacing:"-1.8px"}}` + `BrandGrid commercialBrands note={brandNote.brandsPage}`)
+→ `<section class="section section-light">` (`Prose` dontSeeYourBrand) → `CtaBand`.
+
+Обе страницы — фрагмент секций без `<main>` (layout вставляет `{children}` прямо в
+`<body>`, как в исходном HTML). Обёртки `<section class="section section-*">` рендерит
+страница; `PageHero`/`CtaBand` несут свои обёртки сами.
+
+**Расхождение (минор):** `brands.html` даёт коммерческому `.lede` инлайн
+`style="max-width:320px"`; `SectionHead` (таск 05) не принимает `ledeStyle`, поэтому
+lede берёт дефолт globals.css `.section-head .lede { max-width: 330px }` — разница
+10px. Правка невозможна в зоне таска (`components/` заморожен). Чинится добавлением
+`ledeStyle?: CSSProperties` в `SectionHead`.
+
+### Таск 08 — страница `/for-business` (расширение B2B-хаба)
+
+Команды прежние; `npx tsc --noEmit` и `npm run build` — зелёные. `/for-business` —
+`○ (Static)`, SSG. Тестов в таске нет.
+
+**`app/for-business/page.tsx`** — server-компонент. `export const metadata` через
+`pageMetadata` (`lib/seo`): `title` расширен «…for Property Managers, Restaurants &
+Hotels» (b2b §9), `description` — с упоминанием отелей и standing contracts, `path:
+"/for-business"` → canonical `https://ekfix.us/for-business`. Один `<JsonLd
+data={[breadcrumbJsonLd([Home→For Business]), faqJsonLd(businessFaqs)]} />` в начале
+фрагмента (НЕ дублируется рядом с FAQ — иначе два `FAQPage` блока). Структура —
+фрагмент секций без `<main>`:
+`PageHero` (breadcrumb Home/For Business, h1 «Commercial appliance<br>repair,
+<span>done right.</span>», lede = ДОСЛОВНЫЙ первый абзац `for-business.html` +
+`forBusinessHeroLedeExtra`, `ctas` переопределены на «Request a Quote» / «Call …»
+как в `for-business.html`) →
+`<section class="section section-dark">` (`AudienceGrid layout="card-grid-4"` из
+`forBusinessSegments`; якоря `#property-management`/`#horeca`/`#hotels`/`#hoa`
+рендерит `AudienceCard` на самих `.audience-card`) →
+`<section class="section section-light" id="laundry">` (`.two-col` + `Prose`
+[ДОСЛОВНЫЙ абзац `for-business.html` + `laundryObjectTypes.paragraph`] + `ChipRow`
+`laundryObjectTypes.brandChips` `style={{marginTop:20}}` + `LocalPhoto`
+`kostia-laundry.webp`) →
+`<ProcessSteps items={processSteps} />` →
+`<section class="section section-dark-2">` (`SectionHead` tone="dark"
+`style={{marginBottom:30}}` `h2Style={{fontSize:"clamp(30px, 3.2vw, 44px)",
+letterSpacing:"-1.8px"}}` + `ProblemCardGrid items={whyCallUs}` variant="dark"
+columns={3} — 5 карточек) →
+`<ServiceFormats items={serviceFormats} />` →
+`<section class="section section-light" id="faq-business">` (`SectionHead`
+tone="light" eyebrow «FAQ» + `FaqAccordion items={businessFaqs}
+style={{maxWidth:760}}`) →
+`<CtaBand>` (h2 «Let's talk about<br>your properties.» ДОСЛОВНО, body усилен
+упоминанием форматов без цифр, `ctas` = «Request a Quote» / «Call …»).
+
+**`components/for-business/ProcessSteps.tsx`** — `export function ProcessSteps({
+items }: { items: ProblemItem[] })`. `<section class="section section-light"
+id="process">` + `SectionHead` tone="light" (eyebrow «How we work», h2 «From the
+first call<br>to a photo report.») + `ProblemCardGrid variant="light" columns={4}`.
+
+**`components/for-business/ServiceFormats.tsx`** — `export function ServiceFormats({
+items }: { items: string[] })`. `<section class="section section-dark" id="formats">`
++ `SectionHead` tone="dark" (eyebrow «Service formats», h2 «Ways to work<br>with
+us.») + `ChipRow tone="dark"`.
+
+**Решения:**
+1. **Внутрикарточные ссылки сегментов сняты** (`linkLabel: ""` при маппинге перед
+   `AudienceGrid`). b2b §8 их не требует; `for-business.html` ссылок в
+   `.audience-card` не имеет; `href` в данных (`/for-business#horeca` и т.п.) —
+   само-ссылка на текущую страницу, клик прокручивал бы к себе же. `data/` не тронут.
+2. **Якорь сегмента = id на `.audience-card`** (ставит `AudienceCard`), а не на
+   `<section>`: `card-grid-4` кладёт 4 карточки в одну секцию, 4 id на секцию
+   невозможны. Все 5 якорей с главной резолвятся (`#laundry` — на секции).
+3. **HOA-оговорка**: `data` несёт только `placeholder: true` без видимого текста —
+   страница дописывает `[TODO: подтвердить у владельца — реально ли обслуживается
+   вертикаль HOA / кондо-ассоциаций.]` в конец `text` карточки (по `segment.placeholder`).
+4. **База hero-lede и первый абзац прачечной** захардкожены в `page.tsx` (ДОСЛОВНО
+   из `for-business.html`) — в `data/b2b-segments` их нет (таск 02 вынес только
+   `forBusinessHeroLedeExtra` и `laundryObjectTypes`), зона таска запрещает `data/`.
+5. Заголовки/eyebrow новых секций `#process`/`#formats` и body финального `CtaBand` —
+   редакторская микрокопия по месту (spec §Метаданные «craft, по месту»); без
+   числовых характеристик; не совпадает с `/`.
+
+**Минор:** два абзаца в `#laundry` начинаются одинаково («For hotels, laundromats,
+healthcare facilities, and multi-housing properties…») — ДОСЛОВНЫЙ абзац
+`for-business.html` и `laundryObjectTypes.paragraph` из `data` (таск 02) сильно
+пересекаются. Тикет требует «дополнение, не замена», поэтому оба на месте. Чинится
+переформулировкой `laundryObjectTypes.paragraph` в `data/b2b-segments` (вне зоны 08).
