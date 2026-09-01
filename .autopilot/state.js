@@ -11,7 +11,7 @@ window.STATE =
   "memoryFile": "CLAUDE.md",
   "skillDir": "/Users/User/.claude/skills/autopilot",
   "startedAt": "2026-09-01T00:51:53-04:00",
-  "updatedAt": "2026-09-01T15:49:26-04:00",
+  "updatedAt": "2026-09-01T19:38:30-04:00",
   "finishedAt": null,
   "stages": [
     { "id": "preflight", "status": "done", "startedAt": "2026-09-01T00:51:53-04:00", "finishedAt": "2026-09-01T00:52:55-04:00" },
@@ -19,20 +19,20 @@ window.STATE =
     { "id": "briefing",  "status": "done", "startedAt": "2026-09-01T00:55:58-04:00", "finishedAt": "2026-09-01T01:00:31-04:00" },
     { "id": "spec",      "status": "done", "startedAt": "2026-09-01T01:00:31-04:00", "finishedAt": "2026-09-01T01:54:19-04:00" },
     { "id": "plan",      "status": "done", "startedAt": "2026-09-01T01:54:19-04:00", "finishedAt": "2026-09-01T12:56:05-04:00", "note": "11 тасков, ярус T3" },
-    { "id": "build",     "status": "active", "startedAt": "2026-09-01T12:56:05-04:00", "note": "1 из 11 тасков готов" },
-    { "id": "review",    "status": "active", "startedAt": "2026-09-01T15:09:09-04:00", "note": "таск 02 — дозапрос (5 находок в data)" },
+    { "id": "build",     "status": "active", "startedAt": "2026-09-01T12:56:05-04:00", "note": "2 из 11; волна 3: 03/04 дозапросы, 05 пишется" },
+    { "id": "review",    "status": "active", "startedAt": "2026-09-01T15:09:09-04:00", "note": "03: pass/pass+craft-дозапрос; 04: pass/pass+craft-дозапрос" },
     { "id": "final",     "status": "pending" }
   ],
   "requirements": {
-    "total": 53, "done": 3, "inTicket": 44, "inSpec": 0,
+    "total": 53, "done": 4, "inTicket": 43, "inSpec": 0,
     "placeholder": 0, "deferred": 6, "dropped": 0
   },
   "tickets": [
     { "id": "01", "title": "Каркас проекта, layout, globals.css, Header/Footer", "requirements": ["R01","R02","R05","R34","R38i","R39i","R40i","R41"], "blockedBy": [], "wave": 1, "zone": ["корень","app/layout.tsx","app/globals.css","components/Header,Footer","lib/seo.ts","lib/nav.ts","data/business.ts","public/"], "status": "done", "startedAt": "2026-09-01T13:34:06-04:00", "finishedAt": "2026-09-01T15:15:54-04:00", "retries": 1, "retryReason": "первый запуск завис на интерактивном create-next-app; перезапуск с ручным scaffold", "repairs": 0, "handoffs": 0, "files": ["package.json","tsconfig.json","next.config.ts","vitest.config.ts",".env.example","app/layout.tsx","app/page.tsx","app/globals.css","app/icon.svg","components/Header.tsx","components/Footer.tsx","components/Analytics.tsx","lib/seo.ts","lib/nav.ts","data/types.ts","data/business.ts","public/images/"], "tests": { "passed": 0, "failed": 0, "note": "швов нет в этом таске; build+tsc зелёные" }, "commit": "63d0fcd", "concerns": 6 },
-    { "id": "02", "title": "Слой данных: services, towns, reviews, brands, b2b-segments", "requirements": ["R09","R08","R11i","R14","R19","R20","R33","R37i","R47i","R28"], "blockedBy": ["01"], "wave": 2, "zone": ["data/"], "status": "repair", "startedAt": "2026-09-01T15:15:54-04:00", "retries": 0, "repairs": 1, "repairFindings": ["COI-ответ обещал срок — убрать", "laundry-абзац превышает исходную копию", "sectionHead мёртвый алиас", "AudienceCard: разбить на 2 типа", "копия /brands не в data — добавить"], "handoffs": 0, "files": ["data/services.ts","data/towns.ts","data/reviews.ts","data/brands.ts","data/b2b-segments.ts","data/business.ts","data/types.ts","lib/nav.ts"] },
-    { "id": "03", "title": "SEO-инфра: JSON-LD, sitemap, robots", "requirements": ["R07","R08","R30","R32","R32a","R33","R43","R17i","R31i"], "blockedBy": ["02"], "wave": 3, "zone": ["lib/jsonld.ts","components/JsonLd.tsx","app/sitemap.ts","app/robots.ts"], "status": "pending", "retries": 0, "repairs": 0, "handoffs": 0 },
-    { "id": "04", "title": "Заявка: lib/book + /api/book + BookForm (прототип)", "requirements": ["R06","R06.1","R06.2","R06.3","R06a","R42","R23"], "blockedBy": ["02"], "wave": 3, "zone": ["lib/book/","app/api/book/","components/BookForm.tsx","components/BookingProvider.tsx"], "status": "pending", "retries": 0, "repairs": 0, "handoffs": 0 },
-    { "id": "05", "title": "Общие presentational-компоненты", "requirements": ["R24","R02","R34"], "blockedBy": ["02"], "wave": 3, "zone": ["components/ui/"], "status": "pending", "retries": 0, "repairs": 0, "handoffs": 0 },
+    { "id": "02", "title": "Слой данных: services, towns, reviews, brands, b2b-segments", "requirements": ["R09","R08","R11i","R14","R19","R20","R33","R37i","R47i","R28"], "blockedBy": ["01"], "wave": 2, "zone": ["data/"], "status": "done", "startedAt": "2026-09-01T15:15:54-04:00", "finishedAt": "2026-09-01T15:52:01-04:00", "retries": 0, "repairs": 1, "repairFindings": ["COI-ответ обещал срок — убрать", "laundry-абзац превышает исходную копию", "sectionHead мёртвый алиас", "AudienceCard: разбить на 2 типа", "копия /brands не в data — добавить"], "handoffs": 0, "files": ["data/services.ts","data/towns.ts","data/reviews.ts","data/brands.ts","data/b2b-segments.ts","data/business.ts","data/types.ts","lib/nav.ts"], "tests": { "passed": 0, "failed": 0, "note": "data не тестируем; tsc+build зелёные" }, "commit": "03ef5c6", "concerns": 3 },
+    { "id": "03", "title": "SEO-инфра: JSON-LD, sitemap, robots", "requirements": ["R07","R08","R30","R32","R32a","R33","R43","R17i","R31i"], "blockedBy": ["02"], "wave": 3, "zone": ["lib/jsonld.ts","components/JsonLd.tsx","app/sitemap.ts","app/robots.ts"], "status": "review", "startedAt": "2026-09-01T15:52:01-04:00", "retries": 0, "repairs": 1, "handoffs": 0, "files": ["lib/jsonld.ts","lib/jsonld.test.ts","components/JsonLd.tsx","app/sitemap.ts","app/sitemap.test.ts","app/robots.ts","lib/seo.ts"], "tests": { "passed": 14, "failed": 0, "note": "швы 2 (6) + 3 (8); +absoluteUrl в lib/seo" }, "repairFindings": ["самоподтверждающиеся тесты jsonld — литералы", "дублирование absoluteUrl ×3 — helper", "JsonLd.tsx: экранировать < в JSON-LD"] },
+    { "id": "04", "title": "Заявка: lib/book + /api/book + BookForm (прототип)", "requirements": ["R06","R06.1","R06.2","R06.3","R06a","R42","R23"], "blockedBy": ["02"], "wave": 3, "zone": ["lib/book/","app/api/book/","components/BookForm.tsx","components/BookingProvider.tsx"], "status": "review", "startedAt": "2026-09-01T15:52:01-04:00", "retries": 0, "repairs": 1, "handoffs": 0, "files": ["lib/book/options.ts","lib/book/schema.ts","lib/book/sinks.ts","lib/book/submit.ts","lib/book/submit.test.ts","app/api/book/route.ts","app/api/book/route.test.ts","components/BookForm.tsx","components/BookingProvider.tsx"], "tests": { "passed": 7, "failed": 0, "note": "шов 1 (submit 5 + route 2)" }, "status_note": "агент оборвался сном машины после записи файлов; работа на диске", "repairFindings": ["форма-левел ошибка не показывается — рендер", "route.test: покрыть битый JSON", "WebhookLeadSink: немой catch — console.warn"] },
+    { "id": "05", "title": "Общие presentational-компоненты", "requirements": ["R24","R02","R34"], "blockedBy": ["02"], "wave": 3, "zone": ["components/ui/"], "status": "review", "startedAt": "2026-09-01T19:26:00-04:00", "retries": 1, "retryReason": "агент дважды оборван сном машины; перезапуск с caffeinate", "repairs": 0, "handoffs": 0, "files": ["components/ui/*.tsx (17)","components/ui/image-dimensions.ts","components/ui/rich-text.ts","components/ui/anchor.tsx","components/ui/ctas.tsx"], "tests": { "passed": 0, "failed": 0, "note": "presentational; tsc+build зелёные" } },
     { "id": "06", "title": "Главная страница /", "requirements": ["R12","R18","R19","R21","R25","R26","R27","R28","R30","R32a","R38i"], "blockedBy": ["03","04","05"], "wave": 4, "zone": ["app/page.tsx","components/home/"], "status": "pending", "retries": 0, "repairs": 0, "handoffs": 0 },
     { "id": "07", "title": "Страницы /about и /brands", "requirements": ["R12","R20","R30","R31i"], "blockedBy": ["03","05"], "wave": 4, "zone": ["app/about/","app/brands/"], "status": "pending", "retries": 0, "repairs": 0, "handoffs": 0 },
     { "id": "08", "title": "Страница /for-business (расширение B2B)", "requirements": ["R12","R22","R26","R27","R29","R30","R31i","R36","R37i"], "blockedBy": ["03","05"], "wave": 4, "zone": ["app/for-business/","components/for-business/"], "status": "pending", "retries": 0, "repairs": 0, "handoffs": 0 },
@@ -62,8 +62,18 @@ window.STATE =
     "T01 craft · Header/Footer — разный идиом каста as Route (helper r() vs инлайн); свести к одному до уборки typedRoutes-кастов",
     "T01 craft · layout.tsx:10 — root metadata дублирует pageMetadata(); layout должен звать pageMetadata() + добавлять только openGraph",
     "T01 craft · data/business.ts:40 — maintenancePlanName за код-комментарием, не видимый [TODO]-плейсхолдер; таск 06/08 обязан пометить имя неподтверждённым при рендере",
-    "T01 spec · Footer.tsx:20 — вводный <p> футера захардкожен в компоненте (маркет. проза 1:1 из HTML, не NAP-поле); вынести в data позже"
+    "T01 spec · Footer.tsx:20 — вводный <p> футера захардкожен в компоненте (маркет. проза 1:1 из HTML, не NAP-поле); вынести в data позже",
+    "T02 craft · data/brands.ts — brandsPage vs brandNote.brandsPage: копия /brands размазана по двум похоже названным местам; свести к одному входу (таск 07 читает оба)",
+    "T02 spec · data/brands alt = «Sub-Zero repair» (из brands.html), а index.html #brands = «Sub-Zero appliance repair»; alt невидим, но SEO-текст на главной сместится — решить в таске 06/07",
+    "T02 · data/business.areaServed срезан 26→20 по близости к Ballantyne (самост. решение); 6 отброшенных городов в alsoServed* — подтвердить у владельца список 20 зон GBP",
+    "T03 spec · serviceJsonLd.areaServed = одиночный City «Charlotte, NC» (1:1 с HTML), не 20-list — строгая буква R32 между типами блоков не выполнена; шов 3 сверяет только businessJsonLd",
+    "T03 · businessJsonLd теперь несёт aggregateRating 5.0/6 (не было в старом index.html) — санкц. Историей 32, висит на TODO владельцу (реальны ли 6 отзывов / значение 5.0)",
+    "T03 craft · lib/jsonld.ts: билдер не режет areaServed до 20 (осознанно — лимит держит data-слой + тест); если добавят 21-й город в data — тест покраснеет, это by design",
+    "T04 craft · BookForm.tsx:87 — латентно: {ok:false} с пустым errors:{} → немой idle; сейчас недостижимо (zod даёт ≥1 issue), но добавить fallback в netError",
+    "T04 craft · BookForm.tsx: form-level ошибка (inline span) и netError (box div) — два визуальных трактования «запрос не прошёл»; свести к одному; doc-коммент Status устарел",
+    "T05 spec · RepairCard безусловно 'use client' — тонкие текст-карточки /towns через RepairGrid тоже уедут клиентом (копеечный JS, DOM/классы не затронуты)",
+    "T05 · richProps → dangerouslySetInnerHTML для repo-авторского HTML (h1 <br><span>, проза <strong>) — источник доверенный, задокументировано"
   ],
-  "reviewers": { "manifestSpec": "a2f72ace2a54ef8fc", "craft": "a432188c99320cba5" },
+  "reviewers": { "manifestSpec": "a654c37bd2eca517f", "craft": "ad68bcae8c82e8f00", "note": "пере-спавн после лимита сессии; ревьюят 03+04" },
   "blind": null
 }

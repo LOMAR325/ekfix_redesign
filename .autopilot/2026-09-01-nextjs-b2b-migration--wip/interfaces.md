@@ -148,6 +148,9 @@ interface LeadSink { name: string; enabled: boolean; send(lead: LeadInput): Prom
 **`lib/seo.ts`** — `export const metadataBase = new URL(business.siteUrl)`;
 `export function pageMetadata({ title, description, path }): Metadata`
 (возвращает `{ metadataBase, title, description, alternates:{ canonical: path } }`).
+**Дополнено таском 03:** `export function absoluteUrl(path: string): string` —
+`new URL(path, business.siteUrl).toString()`, единственная точка этой конструкции
+(зовут `lib/jsonld`, `app/sitemap`, `app/robots`).
 
 **`lib/nav.ts`** — типы `NavLink {label,href}`, `NavGroup {label,wide?,children}`,
 `NavEntry = NavLink | NavGroup`; `export const mainNav: NavEntry[]`
@@ -267,3 +270,164 @@ Favicon — файл `app/icon.svg` (авто-`<link rel="icon">`).
 **`lib/nav.ts`** — больше не хардкодит списки: `repairServices` = `services.map` (12,
 label `${s.name} Repair`), `serviceArea` = `fullPageTowns.map` (label `${t.name}, ${t.state}`) +
 `{label:"All Service Towns →", href:"/towns"}`. Публичные типы/`mainNav` без изменений формы.
+
+### Таск 03 — SEO-инфра: JSON-LD, sitemap, robots
+
+Команды прежние; `npx tsc --noEmit`, `npm run build`, `npm test` — зелёные
+(21 passed после таска 04; вклад таска 03 — швы 2 и 3, 14 тестов).
+
+Абсолютизация URL вынесена в `lib/seo.absoluteUrl(path)` (см. «### Таск 01» → `lib/seo`) —
+`lib/jsonld`, `app/sitemap`, `app/robots` импортируют её, локальных `new URL(path, siteUrl)` нет.
+
+**`lib/jsonld.ts`** — чистые билдеры, все NAP из `data/business`; имя бизнеса всегда
+`business.name` (= `"EK Global"`, БЕЗ суффикса города). Возвращают plain-объекты
+schema.org (тип выводится, не аннотирован):
+- `businessJsonLd()` → `HomeAndConstructionBusiness`. Поля: `@context`, `@type`, `name`,
+  `image` (абс. `/images/hero-technician.webp`), `telephone` (`business.phoneE164`),
+  `priceRange:"$$"`, `url` (абс. `/`), `address` (`PostalAddress`),
+  `openingHoursSpecification`, `areaServed: {"@type":"City",name}[]` (из
+  `business.areaServed`, ≤20 — срез держит слой данных, билдер НЕ обрезает), `sameAs`
+  (3 соц-ссылки), `knowsAbout` (= `b2bSegments.commercialServices`, 4),
+  `aggregateRating` (= `aggregateRatingJsonLd()`).
+- `serviceJsonLd(service: Service)` → `Service`. `serviceType: ` `${service.name} Repair`,
+  `provider: {"@type":"HomeAndConstructionBusiness", name: "EK Global", telephone}`,
+  `areaServed: {"@type":"City", name:"Charlotte, NC"}`.
+- `faqJsonLd(items: readonly {q,a}[])` → `FAQPage` c `mainEntity: Question[]`.
+- `breadcrumbJsonLd(trail: readonly {name,url}[])` → `BreadcrumbList`; `url` может быть
+  относительным или абсолютным — билдер абсолютизирует от `business.siteUrl`.
+- `aggregateRatingJsonLd()` → `{"@type":"AggregateRating", ratingValue, reviewCount}`
+  строго из `data/reviews.aggregate` (reviewCount = 6).
+
+**`components/JsonLd.tsx`** — server-компонент, именованный экспорт `JsonLd`.
+Проп `data: Record<string,unknown> | Record<string,unknown>[]`. Рендерит по одному
+`<script type="application/ld+json">` на каждый объект; `__html` — `JSON.stringify(block)`
+через `serialize()`, который заменяет `<` `>` `&` на их JSON unicode-эскейпы
+(u003c / u003e / u0026 с ведущим бэкслешем). Данные не могут выйти из `<script>`;
+`</script>` в контенте безопасен.
+Импорт: `import { JsonLd } from "@/components/JsonLd"`.
+Использование: `<JsonLd data={businessJsonLd()} />` или `data={[serviceJsonLd(s), faqJsonLd(s.faqs)]}`.
+
+**`app/sitemap.ts`** — default export `sitemap(): MetadataRoute.Sitemap`. 22 записи:
+5 статических (`/`, `/about`, `/brands`, `/for-business`, `/towns`) + `services` →
+`/appliance-repair/<slug>` (12) + `fullPageTowns` → `/towns/<slug>` (5). URL абсолютные
+от `business.siteUrl`, чистые (без `.html`), без `/api`, без не-isFullPage городов.
+`priority`: главная 1.0, услуги/города 0.9, остальное 0.7.
+
+**`app/robots.ts`** — default export `robots(): MetadataRoute.Robots`.
+`rules: {userAgent:"*", allow:"/", disallow:"/api/"}`, `sitemap: <business.siteUrl>/sitemap.xml`.
+
+### Таск 04 — заявка: lib/book + /api/book + BookForm (прототип)
+
+`zod@4.5.4` добавлен в deps. Команды прежние; `npx tsc --noEmit`, `npm run build`,
+`npm test` — зелёные (**22 passed**, было 14; +7 на шов 1, +1 ревью: битый JSON → 400).
+
+**`lib/book/options.ts`** — единственная точка импорта списков опций формы, реэкспорт:
+`applianceFormOptions` (из `data/services`, 17) и `contactAsOptions` (из `data/b2b-segments`, 5).
+`schema.ts` и `BookForm.tsx` берут опции ТОЛЬКО отсюда — литералы не дублируются.
+
+**`lib/book/schema.ts`** — `export const leadSchema` (zod object) + `export type LeadParsed = z.infer<...>`.
+Поля: `name` trim+non-empty, `phone` trim+non-empty + нормализация пробелов (`\s+`→` `, без
+формата), `appliance` — один из `applianceFormOptions`, `contactAs` — один из `contactAsOptions`,
+`message` — `string` optional. Сообщения об ошибках — англ., дружелюбные.
+
+**`lib/book/sinks.ts`** — классы `ConsoleLeadSink` (`name:"console"`, `enabled:true`,
+`console.info("[book] new lead", {...})`), `EmailLeadSink` (`name:"email"`, `enabled` =
+`RESEND_API_KEY && BOOK_NOTIFY_EMAIL`, `send()` — no-op заглушка, `// TODO: подключить Resend`),
+`WebhookLeadSink` (`name:"webhook"`, `enabled` = `BOOK_WEBHOOK_URL`, `send()` — `fetch(POST)`
+в try/catch). `export const sinks: LeadSink[]` — по одному инстансу каждого (Email/Webhook по
+умолчанию `enabled:false`). `send` — метод прототипа (шпионится через `vi.spyOn(Sink.prototype,"send")`).
+
+**`lib/book/submit.ts`** — `export async function submitLead(input: unknown): Promise<LeadResult>`.
+zod-ошибка → `{ok:false, errors}` (map первого issue на поле → сообщение, sinks НЕ трогаются);
+успех → `Promise.allSettled` по `sinks.filter(s=>s.enabled)` → `{ok:true}` даже если sink бросил.
+
+**`app/api/book/route.ts`** — `export const runtime = "nodejs"`;
+`export async function POST(req: Request): Promise<NextResponse>` → `submitLead(await req.json())`
+→ `NextResponse.json(result, {status: result.ok ? 200 : 400})`. Битый JSON → 400
+`{ok:false, errors:{form}}`.
+
+**`components/BookingProvider.tsx`** (`'use client'`) — `export function BookingProvider({children})`
++ `export function useBooking(): { appliance: string|null; setAppliance(a: string|null): void }`.
+Контекст с дефолтным значением (не бросает вне провайдера). Таск 06 оборачивает секции главной;
+`RepairCard` зовёт `setAppliance(name)` при клике на карточку с `href="#book"`.
+
+**`components/BookForm.tsx`** (`'use client'`) — `export function BookForm()`, без пропсов.
+DOM 1:1 из `#book .book-card`/`form#book-form` + НОВЫЙ `<select id="contact-as" name="contactAs">`
+(«I'm contacting you as a…») ПЕРЕД `<textarea>` — ловится `.book-form select`, нового CSS нет.
+Состояния `idle → submitting (кнопка disabled, «Sending…», повторный submit игнор) → success
+(форма получает `.hidden`, показан `#book-thanks`) | fieldErrors (текст под полем, inline-стиль,
+значения сохранены — инпуты uncontrolled, `required` на месте) | netError (`role="alert"`,
+«Couldn't send your request — please call {business.phone}.»)`. Читает `appliance` из `useBooking()`,
+пресетит `<select id="appliance">` через ref+effect.
+Модель ошибок ответа: только ключи из `FIELD_ERROR_KEYS` (`name`/`phone`/`appliance`/`contactAs`)
+идут в `fieldErrors` и рендерятся под полем; всё прочее из ответного `errors` (ключ `form`,
+битый JSON, неожиданное поле) склеивается в строку `formError` и показывается тем же inline-стилем
+`<span role="alert">` рядом с кнопкой (иначе форма-левел 400 не виден — находка ревью).
+
+**Решения:** (1) netError-текст на английском (весь сайт англ.; в спеке рус. формулировка —
+описание намерения), телефон из `data/business.phone`. (2) `contactAs` — с disabled-плейсхолдером
+`<option value="">` + `required`, как у `appliance`; пустой → 400 `errors.contactAs`. (3) ошибки
+полей — inline-стиль на `<span>`/`<div>` (globals.css заморожен, класса под ошибку нет);
+мягкий красный `#ff9b9b`. (4) `useBooking` вне провайдера не бросает — дефолтный контекст.
+
+### Таск 05 — общие presentational-компоненты (`components/ui/*`)
+
+Все — именованные экспорты, server components, кроме `RepairCard` (`'use client'`).
+Данные пропсами, разметка 1:1 с текущими `*.html`, ни одного нового CSS-класса
+(кроме `.card-grid-4`, он уже в globals). `npx tsc --noEmit` и `npm run build` — зелёные.
+`next/image` везде вместо `<img>`; размеры берутся из `image-dimensions.ts`
+(`imageDims(src)`), кроме `PhotoPair` — там `fill` + `sizes` (`figure` уже
+`position:relative` в globals).
+
+**Хелперы (внутренние, не «компоненты»):**
+- `rich-text.ts` — `richProps(value: ReactNode)` → `{dangerouslySetInnerHTML}` если
+  `value` строка (доверенный HTML из `data/*`, напр. `hero.h1` с `<br><span>`), иначе
+  `{children}`. Спредится на хост-элемент: `<h1 {...richProps(h1)} />`.
+- `anchor.tsx` — `<Anchor href={string} …>`: `href` c `/` → `next/link` (каст `as Route`),
+  иначе (`tel:`, `http`, `#hash`) → `<a>`. Прокидывает `className/style/onClick/…`.
+- `ctas.tsx` — `<BookCallCtas />`: пара кнопок «Book Online — Save 10%» (`/#book`) +
+  «Call {business.phone}» (`business.phoneHref`). Дефолт для `PageHero`/`CtaBand`.
+
+**Компоненты:**
+- `<PageHero breadcrumb={{label,href?}[]} h1={ReactNode} lede?={ReactNode}
+  ctas?={ReactNode} style?={CSSProperties} />` — `.page-hero`. `h1`/`lede` через
+  `richProps`. Дефолтные `ctas` = `<BookCallCtas/>`.
+- `<CtaBand h2={ReactNode} body?={ReactNode} ctas?={ReactNode} />` — `.cta-band`.
+- `<SectionHead tone="light"|"dark" eyebrow={ReactNode} h2={ReactNode} lede?={ReactNode}
+  ratingBadge?={boolean} style?={CSSProperties} h2Style?={CSSProperties} />` —
+  `.section-head.on-light|on-dark`. `ratingBadge` рендерит стандартный `.rating-badge`
+  (`business.rating.value.toFixed(1)` / ★★★★★ / «Google reviews»).
+- `<ChipRow items={(string | {label,href?})[]} tone?="light"|"dark" style?={CSSProperties} />`
+  — `.chip-row` + `.chip`/`.chip.on-dark`; элемент с `href` → ссылка.
+- `<BrandGrid brands={Brand[]} note?={{tag,text,cta}} />` — `.brand-grid` +
+  `.brand-cell`/`.wide`; опц. `.brand-note` (cta-ссылка на `business.phoneHref`).
+- `<RepairCard label href tag image? imageAlt? onSelect?={(label)=>void}
+  style? bodyStyle? />` (`'use client'`) — `.repair-card`. `onSelect` → `onClick`
+  до перехода по ссылке (пресет формы через `useBooking` на главной, таск 06); без
+  `onSelect` — обычная ссылка, ок из server-компонента. `image` опущен → без `.thumb`
+  (текстовые карточки `/towns`).
+- `<RepairGrid items?={Omit<RepairCardProps,"onSelect">[]} children? style? />` —
+  `.repair-grid`. Тонкий: либо список ссылок-карточек, либо свои карточки детьми.
+- `<ReviewCard review={Review} />`, `<ReviewsGrid reviews={Review[]} />` —
+  `.review-card` / `.reviews-grid`.
+- `<ProblemCardGrid items={{num?,title,body}[]} variant="light"|"dark" columns?={3|4}
+  style? />` — `.card-grid-3`/`-4` + `.problem-card`. `num` по умолчанию = индекс
+  (`"01"`…). `dark` воспроизводит инлайн-стили текущего HTML 1:1 (карточка
+  `background:var(--bg-dark-3);border-color:rgba(255,255,255,0.09)`, h3
+  `color:var(--text-light)`, p `color:var(--text-light-60)`).
+- `<AudienceCard item={WhoWeServeCard | ForBusinessSegment} children? />`,
+  `<AudienceGrid items={AudienceItem[]} layout?="two-col"|"card-grid-4" children? />` —
+  `.audience-card` (`.eyebrow`, h3, p, `ul` c `✓` только у сегмента) + сетка.
+  Сегмент: `id`-якорь + `bullets`. Ссылка `linkLabel` рендерится всегда, когда задана
+  (у обоих типов — задана), инлайн-стилем accent-подчёркивания, который уже есть в
+  текущем HTML («See all brands →»).
+- `<FaqAccordion items={{q,a}[]} style?={CSSProperties} />` — нативные
+  `<details class="faq-item">`, первый `open`. `style` → обёртка `<div>` (сервисные
+  страницы: `{maxWidth:760}`).
+- `<Prose heading?={ReactNode} paragraphs?={ReactNode[]} children? style? />` —
+  `.prose`; `paragraphs` через `richProps` (town-проза с `<strong>`).
+- `<StatRow stats={{k,v}[]} style?={CSSProperties} />` — `.stat-row`.
+- `<PhotoPair photos={{src,alt,caption,objectPosition?,figureStyle?}[]} style? />` —
+  `.photo-pair`, `next/image fill`, `objectPosition` прокидывается в `img`.
+- `<LocalPhoto src? alt? imgStyle? style? children? />` — `.local-photo`; `children`
+  (iframe карты) вместо `next/image`, если задан.
