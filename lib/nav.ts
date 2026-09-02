@@ -5,7 +5,13 @@ import { services } from "../data/services";
 import { fullPageTowns } from "../data/towns";
 
 export type NavLink = { label: string; href: string };
-export type NavGroup = { label: string; wide?: boolean; children: NavLink[] };
+export type NavGroup = {
+  label: string;
+  wide?: boolean;
+  // Route prefix this group owns — drives .nav-trigger.active in Header.
+  basePath: string;
+  children: NavLink[];
+};
 export type NavEntry = NavLink | NavGroup;
 
 const repairServices: NavLink[] = services.map((s) => ({
@@ -22,8 +28,13 @@ const serviceArea: NavLink[] = [
 ];
 
 export const mainNav: NavEntry[] = [
-  { label: "We Repair", wide: true, children: repairServices },
-  { label: "Service Area", children: serviceArea },
+  {
+    label: "We Repair",
+    wide: true,
+    basePath: "/appliance-repair",
+    children: repairServices,
+  },
+  { label: "Service Area", basePath: "/towns", children: serviceArea },
   { label: "About Us", href: "/about" },
   { label: "Brands", href: "/brands" },
   { label: "For Business", href: "/for-business" },

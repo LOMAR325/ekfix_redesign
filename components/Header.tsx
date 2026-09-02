@@ -48,6 +48,8 @@ export function Header() {
   }, []);
 
   const isActive = (href: string) => pathname === href;
+  const groupActive = (basePath: string) =>
+    pathname === basePath || pathname.startsWith(basePath + "/");
 
   return (
     <header className={navOpen ? "site-header nav-open" : "site-header"}>
@@ -76,7 +78,11 @@ export function Header() {
               }
             >
               <button
-                className="nav-trigger"
+                className={
+                  groupActive(entry.basePath)
+                    ? "nav-trigger active"
+                    : "nav-trigger"
+                }
                 aria-expanded={openGroup === entry.label}
                 onClick={(e) => toggleGroup(entry.label, e)}
               >
