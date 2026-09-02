@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/JsonLd";
-import { breadcrumbJsonLd } from "@/lib/jsonld";
 import { pageMetadata } from "@/lib/seo";
+import { breadcrumbTrail } from "@/lib/breadcrumb";
 import {
   townsIndex,
   fullPageTowns,
@@ -30,17 +30,17 @@ const LIST_H2_STYLE = {
 } as const;
 
 export default function TownsPage() {
+  const { crumbs, jsonLd } = breadcrumbTrail([
+    { name: "Home", path: "/" },
+    { name: "Service Area", path: "/towns" },
+  ]);
+
   return (
     <>
-      <JsonLd
-        data={breadcrumbJsonLd([
-          { name: "Home", url: "/" },
-          { name: "Service Area", url: "/towns" },
-        ])}
-      />
+      <JsonLd data={jsonLd} />
 
       <PageHero
-        breadcrumb={[{ label: "Home", href: "/" }, { label: "Service Area" }]}
+        breadcrumb={crumbs}
         h1={townsIndex.heroH1}
         lede={townsIndex.heroLede}
       />

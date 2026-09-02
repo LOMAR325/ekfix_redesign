@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
-import { breadcrumbJsonLd, faqJsonLd } from "@/lib/jsonld";
+import { faqJsonLd } from "@/lib/jsonld";
+import { breadcrumbTrail } from "@/lib/breadcrumb";
 import { JsonLd } from "@/components/JsonLd";
 import { PageHero } from "@/components/ui/page-hero";
+import { BookCallCtas } from "@/components/ui/ctas";
 import { AudienceGrid } from "@/components/ui/audience-card";
 import { Prose } from "@/components/ui/prose";
 import { ChipRow } from "@/components/ui/chip-row";
@@ -11,10 +13,8 @@ import { SectionHead } from "@/components/ui/section-head";
 import { ProblemCardGrid } from "@/components/ui/problem-card-grid";
 import { FaqAccordion } from "@/components/ui/faq-accordion";
 import { CtaBand } from "@/components/ui/cta-band";
-import { Anchor } from "@/components/ui/anchor";
 import { ProcessSteps } from "@/components/for-business/ProcessSteps";
 import { ServiceFormats } from "@/components/for-business/ServiceFormats";
-import { business } from "@/data/business";
 import {
   forBusinessSegments,
   forBusinessHeroLedeExtra,
@@ -39,29 +39,6 @@ export const metadata: Metadata = pageMetadata({
 // the third sentence (service formats) comes from data/b2b-segments.
 const HERO_LEDE = `Property managers, restaurants, cafés, and laundry operators across Charlotte trust EK Global to keep tenant and guest-facing equipment running — with the same technician on every call. ${forBusinessHeroLedeExtra}`;
 
-// "hotels, laundromats, healthcare facilities, and multi-housing properties" — the
-// object types from data/b2b-segments, lowercased and joined for the chip caption
-// (matches the sentence casing of the ported paragraph above it).
-const LAUNDRY_TYPES = laundryObjectTypes.types
-  .map((type) => type.toLowerCase())
-  .join(", ")
-  .replace(/, ([^,]+)$/, ", and $1");
-
-// for-business.html uses "Request a Quote" / "Call …" rather than the default
-// "Book Online — Save 10%" pair, so the hero and the closing band override `ctas`.
-function RequestQuoteCtas() {
-  return (
-    <>
-      <Anchor href="/#book" className="btn btn-accent">
-        Request a Quote
-      </Anchor>
-      <a href={business.phoneHref} className="btn btn-ghost-dark">
-        Call {business.phone}
-      </a>
-    </>
-  );
-}
-
 // The four `/for-business` segments. b2b-priority-brief §8 does not call for an
 // in-card link here (that requirement is for the home page's #who-we-serve cards,
 // and for-business.html has no links inside its audience cards), so `linkLabel` is
@@ -78,23 +55,20 @@ const segmentCards = forBusinessSegments.map((segment) =>
 );
 
 export default function ForBusinessPage() {
+  const { crumbs, jsonLd } = breadcrumbTrail([
+    { name: "Home", path: "/" },
+    { name: "For Business", path: "/for-business" },
+  ]);
+
   return (
     <>
-      <JsonLd
-        data={[
-          breadcrumbJsonLd([
-            { name: "Home", url: "/" },
-            { name: "For Business", url: "/for-business" },
-          ]),
-          faqJsonLd(businessFaqs),
-        ]}
-      />
+      <JsonLd data={[jsonLd, faqJsonLd(businessFaqs)]} />
 
       <PageHero
-        breadcrumb={[{ label: "Home", href: "/" }, { label: "For Business" }]}
+        breadcrumb={crumbs}
         h1="Commercial appliance<br>repair, <span>done right.</span>"
         lede={HERO_LEDE}
-        ctas={<RequestQuoteCtas />}
+        ctas={<BookCallCtas bookLabel="Request a Quote" />}
       />
 
       {/* Segments — anchor ids (#property-management, #horeca, #hotels, #hoa) are
@@ -115,7 +89,7 @@ export default function ForBusinessPage() {
             ]}
           >
             <p style={{ marginTop: 20 }}>
-              Across {LAUNDRY_TYPES}, these are the equipment brands we service:
+              These are the commercial laundry brands we service:
             </p>
             <ChipRow
               items={[...laundryObjectTypes.brandChips]}
@@ -160,7 +134,7 @@ export default function ForBusinessPage() {
       <CtaBand
         h2="Let's talk about<br>your properties."
         body="Tell us what you manage — a single emergency call, standing maintenance, or a whole portfolio — and we'll put together a straightforward quote."
-        ctas={<RequestQuoteCtas />}
+        ctas={<BookCallCtas bookLabel="Request a Quote" />}
       />
     </>
   );

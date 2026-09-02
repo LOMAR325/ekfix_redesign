@@ -217,10 +217,9 @@ export const businessCta = {
   primary: { label: "See Commercial Services", href: "/for-business" },
 } as const;
 
-// /for-business — commercial-laundry section (#laundry): object types + the existing brand chips.
+// /for-business — commercial-laundry section (#laundry). `types` names the object-type
+// verticals the ported paragraph already lists; `brandChips` feeds the chip row under it.
 export const laundryObjectTypes = {
-  paragraph:
-    "For hotels, laundromats, healthcare facilities, and multi-housing properties, this means the full on-premise laundry system — washers, dryers, ironers, and folding machines — not just the individual unit in a resident's apartment. The brands below are the ones we service.",
   types: ["Hotels", "Laundromats", "Healthcare facilities", "Multi-housing properties"],
   brandChips: [
     "Speed Queen",

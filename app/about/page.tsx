@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import { business } from "@/data/business";
 import { JsonLd } from "@/components/JsonLd";
-import { breadcrumbJsonLd } from "@/lib/jsonld";
 import { pageMetadata } from "@/lib/seo";
-import { Anchor } from "@/components/ui/anchor";
+import { breadcrumbTrail } from "@/lib/breadcrumb";
 import { PageHero } from "@/components/ui/page-hero";
+import { BookCallCtas } from "@/components/ui/ctas";
 import { SectionHead } from "@/components/ui/section-head";
 import { Prose } from "@/components/ui/prose";
 import { StatRow } from "@/components/ui/stat-row";
@@ -48,29 +47,20 @@ const whatThatMeans = [
 ];
 
 export default function AboutPage() {
+  const { crumbs, jsonLd } = breadcrumbTrail([
+    { name: "Home", path: "/" },
+    { name: "Our Story", path: "/about" },
+  ]);
+
   return (
     <>
-      <JsonLd
-        data={breadcrumbJsonLd([
-          { name: "Home", url: "/" },
-          { name: "Our Story", url: "/about" },
-        ])}
-      />
+      <JsonLd data={jsonLd} />
 
       <PageHero
-        breadcrumb={[{ label: "Home", href: "/" }, { label: "Our Story" }]}
+        breadcrumb={crumbs}
         h1="A family business,<br><span>not a franchise.</span>"
         lede="EK Global is run by Konstantin — the person who answers the phone, does the diagnostic, and comes back if something isn't right. No call center, no subcontractors, no ticket numbers."
-        ctas={
-          <>
-            <Anchor href="/#book" className="btn btn-accent">
-              Book a Repair
-            </Anchor>
-            <a href={business.phoneHref} className="btn btn-ghost-dark">
-              Call {business.phone}
-            </a>
-          </>
-        }
+        ctas={<BookCallCtas bookLabel="Book a Repair" />}
       />
 
       <section className="section section-light">

@@ -2,11 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getService, serviceSlugs } from "@/data/services";
 import { pageMetadata } from "@/lib/seo";
-import {
-  breadcrumbJsonLd,
-  faqJsonLd,
-  serviceJsonLd,
-} from "@/lib/jsonld";
+import { faqJsonLd, serviceJsonLd } from "@/lib/jsonld";
+import { breadcrumbTrail } from "@/lib/breadcrumb";
 import { JsonLd } from "@/components/JsonLd";
 import { Anchor } from "@/components/ui/anchor";
 import { PageHero } from "@/components/ui/page-hero";
@@ -113,30 +110,25 @@ export default async function ApplianceRepairPage({
   if (!service) notFound();
 
   const heads = SECTION_H2[slug];
+  if (!heads) notFound();
+
+  const { crumbs, jsonLd } = breadcrumbTrail([
+    { name: "Home", path: "/" },
+    { name: "We Repair", path: "/#repair" },
+    {
+      name: `${service.name} Repair`,
+      path: `/appliance-repair/${service.slug}`,
+    },
+  ]);
 
   return (
     <>
       <JsonLd
-        data={[
-          serviceJsonLd(service),
-          faqJsonLd(service.faqs),
-          breadcrumbJsonLd([
-            { name: "Home", url: "/" },
-            { name: "We Repair", url: "/#repair" },
-            {
-              name: `${service.name} Repair`,
-              url: `/appliance-repair/${service.slug}`,
-            },
-          ]),
-        ]}
+        data={[serviceJsonLd(service), faqJsonLd(service.faqs), jsonLd]}
       />
 
       <PageHero
-        breadcrumb={[
-          { label: "Home", href: "/" },
-          { label: "We Repair", href: "/#repair" },
-          { label: `${service.name} Repair` },
-        ]}
+        breadcrumb={crumbs}
         h1={service.hero.h1}
         lede={service.hero.lede}
       />

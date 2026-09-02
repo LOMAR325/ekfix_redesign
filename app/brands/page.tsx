@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/JsonLd";
-import { breadcrumbJsonLd } from "@/lib/jsonld";
 import { pageMetadata } from "@/lib/seo";
+import { breadcrumbTrail } from "@/lib/breadcrumb";
 import {
   brandsPage,
   brandNote,
@@ -24,17 +24,17 @@ export const metadata: Metadata = pageMetadata({
 });
 
 export default function BrandsPage() {
+  const { crumbs, jsonLd } = breadcrumbTrail([
+    { name: "Home", path: "/" },
+    { name: "Brands", path: "/brands" },
+  ]);
+
   return (
     <>
-      <JsonLd
-        data={breadcrumbJsonLd([
-          { name: "Home", url: "/" },
-          { name: "Brands", url: "/brands" },
-        ])}
-      />
+      <JsonLd data={jsonLd} />
 
       <PageHero
-        breadcrumb={[{ label: "Home", href: "/" }, { label: "Brands" }]}
+        breadcrumb={crumbs}
         h1={brandsPage.hero.h1}
         lede={brandsPage.hero.lede}
       />
@@ -54,6 +54,7 @@ export default function BrandsPage() {
           eyebrow={brandsPage.commercialSection.eyebrow}
           h2={brandsPage.commercialSection.h2}
           lede={brandsPage.commercialSection.lede}
+          ledeStyle={{ maxWidth: 320 }}
           h2Style={{
             fontSize: "clamp(30px, 3.2vw, 44px)",
             letterSpacing: "-1.8px",

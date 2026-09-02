@@ -719,3 +719,71 @@ you're<br>in range?" body="Just call — we'll tell you straight away."`.
    `charlotte.html`, сохранён (`isCharlotte`).
 4. `/towns` индекс получил `breadcrumbJsonLd` (в оригинале JSON-LD не было) — для
    консистентности с `/about` и `/brands`; невидимо, 1:1 визуала не нарушает.
+
+### Таск 11 — уборка волны 4, удаление старого сайта, CWV, верификация
+
+Команды прежние; `npx tsc --noEmit` (0), `npm run build` (24 роута), `npm test`
+(**22 passed**, без изменений — швы 1–3 не тронуты) — зелёные. Вёрстка страниц
+сверена с прежним билдом до удаления `*.html`: DOM затронутых секций совпадает
+байт-в-байт (`#brands`, `#trust-b2b`, `/brands` commercial `.lede`, `#laundry`).
+
+**Craft-уборка (вёрстка/классы не менялись):**
+- `components/ui/section-head.tsx` — `eyebrow` теперь опционален (при отсутствии
+  `.eyebrow` div НЕ рендерится — пустой добавил бы `margin-bottom:20px`); добавлен
+  проп `ledeStyle?: CSSProperties` (инлайн на `.lede`). Сигнатура:
+  `<SectionHead tone eyebrow? h2 lede? ledeStyle? ratingBadge? style? h2Style? />`.
+- `components/ui/ctas.tsx` — `<BookCallCtas bookLabel?: string />` (дефолт
+  «Book Online — Save 10%»). `about` → `bookLabel="Book a Repair"`, `for-business`
+  → `bookLabel="Request a Quote"` (кастомные `ctas`-фрагменты и локальный
+  `RequestQuoteCtas` удалены).
+- `lib/breadcrumb.ts` — **новый шов.** `breadcrumbTrail(steps: {name, path,
+  unlinked?}[])` → `{ crumbs: {label, href?}[], jsonLd: <breadcrumbJsonLd result> }`.
+  Трейл пишется один раз; `crumbs` для `PageHero`, `jsonLd` в `<JsonLd>`. `unlinked`
+  делает крошку текстом в видимом трейле, но оставляет её ссылкой в JSON-LD
+  (quirk charlotte «Service Area»). Применён в `about`, `brands`, `for-business`,
+  `appliance-repair/[slug]`, `towns`, `towns/[slug]` — `breadcrumbJsonLd` из этих
+  файлов больше напрямую не зовётся.
+- `app/appliance-repair/[slug]/page.tsx` — добавлен guard `if (!heads) notFound()`
+  после `getService` (`SECTION_H2[slug]` больше не разыменовывается вслепую).
+- `app/for-business/page.tsx` — caption в `#laundry` сокращён до «These are the
+  commercial laundry brands we service:» (4 типа объектов уже названы в абзаце
+  выше); `LAUNDRY_TYPES`-derivation удалена.
+- `data/b2b-segments.ts` — удалено неиспользуемое поле `laundryObjectTypes.paragraph`.
+  Осталось `{ types, brandChips }`. `types` сейчас не читается кодом (следствие
+  сокращения caption) — оставлено как санкционированные контент-данные (задача
+  разрешала удалять только `.paragraph`).
+
+**Удаление старого сайта (`public/images/` = 52 файла, полная копия `assets/images/`):**
+удалены `index.html`, `about.html`, `brands.html`, `for-business.html`,
+`appliance-repair/` (12 `*.html` + каталог), `towns/` (6 `*.html` + каталог),
+`css/`, `js/`, `sitemap.xml`, `assets/`. Нетронуто: `.autopilot/`, `CLAUDE.md`,
+4 `ek-global-*.md`, `.git/`, `.gitignore`, `app/`, `components/`, `data/`, `lib/`,
+`public/`, конфиги. `npm run build` после удаления — зелёный (ни одной ссылки на
+удалённое в рантайм-коде; упоминания в комментариях оставлены как история).
+
+**Core Web Vitals** (Lighthouse 12, mobile, simulated throttling, локальный
+`npm start`; чистый прогон — совмещённые прогоны давали шум ±20 pt):
+
+| Роут | Perf | LCP | CLS | TBT |
+|---|---|---|---|---|
+| `/` | 94 | 2.9 s | 0 | 30 ms |
+| `/for-business` | 98 | 2.2 s | 0 | 30 ms |
+| `/appliance-repair/refrigerator` | 98 | 2.1 s | 0 | 60 ms |
+| `/towns/charlotte` | 98 | 2.1 s | 0 | 20 ms |
+
+Performance ≥ 90 на всех 4 (spec story 39 — выполнено). CLS = 0 везде; TBT ≤ 60 ms
+(зелёная зона). Render-blocking resources: none. Hero (`hero-technician.webp`) —
+`priority`, `<link rel=preload as=image imageSrcSet>` в `<head>` подтверждён; scripts
+только `async`, сторонний gtag через `next/script afterInteractive`. LCP `/` = 2.9 s
+(картинка hero через on-the-fly оптимизатор `next start`; на CDN-деплое обычно < 2.5 s)
+— правок не вносил, порог Perf≥90 держится, вёрстку/`quality` не трогал.
+
+**Верификация:** `npm run build` → 24 статических роута (5 базовых + 12 услуг +
+5 городов + `/robots.txt` + `/sitemap.xml`) + `/api/book` (ƒ) + `/icon.svg` +
+`/_not-found`; совпадает с `app/sitemap.test.ts` (22 записи sitemap). Ручной обход
+(`curl` по `npm start`): 22 контент-роута + robots + sitemap → 200;
+`/towns/waxhaw`, `/towns/pineville`, `/appliance-repair/oven`, `/appliance-repair/toaster`
+→ 404; `GET /api/book` → 405. Grep `EK Globall` — 0. Название бизнеса в JSON-LD —
+всегда `business.name` (= «EK Global»); «EK Global Appliance Repair» встречается
+только в дословно перенесённых `<title>` (`/about`) и логотипе `Header` +
+в комментариях `lib/jsonld*` — не NAP-вектор (spec story 35).

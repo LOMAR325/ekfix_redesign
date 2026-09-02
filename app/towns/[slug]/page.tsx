@@ -4,7 +4,8 @@ import { getTown, townSlugs } from "@/data/towns";
 import { reviewsByAuthors } from "@/data/reviews";
 import { services } from "@/data/services";
 import { pageMetadata } from "@/lib/seo";
-import { businessJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
+import { businessJsonLd } from "@/lib/jsonld";
+import { breadcrumbTrail } from "@/lib/breadcrumb";
 import { JsonLd } from "@/components/JsonLd";
 import { PageHero } from "@/components/ui/page-hero";
 import { SectionHead } from "@/components/ui/section-head";
@@ -115,27 +116,20 @@ export default async function TownPage({
         href: `/appliance-repair/${s.slug}`,
       }));
 
+  // charlotte.html leaves "Service Area" unlinked in the visual trail; it stays
+  // linked in the JSON-LD either way.
+  const { crumbs, jsonLd } = breadcrumbTrail([
+    { name: "Home", path: "/" },
+    { name: "Service Area", path: "/towns", unlinked: isCharlotte },
+    { name: cityState, path: `/towns/${town.slug}` },
+  ]);
+
   return (
     <>
-      <JsonLd
-        data={[
-          businessJsonLd(),
-          breadcrumbJsonLd([
-            { name: "Home", url: "/" },
-            { name: "Service Area", url: "/towns" },
-            { name: cityState, url: `/towns/${town.slug}` },
-          ]),
-        ]}
-      />
+      <JsonLd data={[businessJsonLd(), jsonLd]} />
 
       <PageHero
-        breadcrumb={[
-          { label: "Home", href: "/" },
-          isCharlotte
-            ? { label: "Service Area" }
-            : { label: "Service Area", href: "/towns" },
-          { label: cityState },
-        ]}
+        breadcrumb={crumbs}
         h1={`Appliance repair<br><span>in ${cityState}.</span>`}
         lede={town.hero?.lede}
       />
