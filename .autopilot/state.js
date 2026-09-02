@@ -11,7 +11,7 @@ window.STATE =
   "memoryFile": "CLAUDE.md",
   "skillDir": "/Users/User/.claude/skills/autopilot",
   "startedAt": "2026-09-01T00:51:53-04:00",
-  "updatedAt": "2026-09-02T00:36:00-04:00",
+  "updatedAt": "2026-09-02T00:57:00-04:00",
   "finishedAt": null,
   "stages": [
     { "id": "preflight", "status": "done", "startedAt": "2026-09-01T00:51:53-04:00", "finishedAt": "2026-09-01T00:52:55-04:00" },
@@ -19,9 +19,9 @@ window.STATE =
     { "id": "briefing",  "status": "done", "startedAt": "2026-09-01T00:55:58-04:00", "finishedAt": "2026-09-01T01:00:31-04:00" },
     { "id": "spec",      "status": "done", "startedAt": "2026-09-01T01:00:31-04:00", "finishedAt": "2026-09-01T01:54:19-04:00" },
     { "id": "plan",      "status": "done", "startedAt": "2026-09-01T01:54:19-04:00", "finishedAt": "2026-09-01T12:56:05-04:00", "note": "11 тасков, ярус T3" },
-    { "id": "build",     "status": "active", "startedAt": "2026-09-01T12:56:05-04:00", "note": "10 из 11 закоммичено (06/09/10 pass/pass); таск 11 — уборка + верификация" },
-    { "id": "review",    "status": "active", "startedAt": "2026-09-01T15:09:09-04:00", "note": "волна 4 закрыта — все pass, блокеров не было" },
-    { "id": "final",     "status": "pending" }
+    { "id": "build",     "status": "done", "startedAt": "2026-09-01T12:56:05-04:00", "finishedAt": "2026-09-02T00:57:00-04:00", "note": "все 11 тасков закоммичены; 28 SSG-страниц + /api/book" },
+    { "id": "review",    "status": "done", "startedAt": "2026-09-01T15:09:09-04:00", "finishedAt": "2026-09-02T00:57:00-04:00", "note": "все 11 — pass по обеим осям; 5 дозапросов (все закрыты); 0 нерешённых блокеров" },
+    { "id": "final",     "status": "active", "startedAt": "2026-09-02T00:57:00-04:00", "note": "слепая приёмка + память + ADR" }
   ],
   "requirements": {
     "total": 53, "done": 38, "inTicket": 9, "inSpec": 0,
@@ -39,7 +39,7 @@ window.STATE =
     { "id": "08", "title": "Страница /for-business (расширение B2B)", "requirements": ["R12","R22","R26","R27","R29","R30","R31i","R36","R37i"], "blockedBy": ["03","05"], "wave": 4, "zone": ["app/for-business/","components/for-business/"], "status": "done", "startedAt": "2026-09-01T19:44:56-04:00", "finishedAt": "2026-09-01T20:05:00-04:00", "commit": "6d3806b", "concerns": 5, "retries": 0, "repairs": 1, "repairFindings": ["#laundry: два абзаца дублируют одну мысль — 2-й заменён коннектором к чипам"], "handoffs": 0, "files": ["app/for-business/page.tsx","components/for-business/ProcessSteps.tsx","components/for-business/ServiceFormats.tsx"], "tests": { "passed": 0, "failed": 0, "note": "страница; tsc+build зелёные, SSG" } },
     { "id": "09", "title": "/appliance-repair/[slug] — 12 страниц техники", "requirements": ["R13","R30","R31i","R02"], "blockedBy": ["03","05"], "wave": 4, "zone": ["app/appliance-repair/"], "status": "done", "startedAt": "2026-09-01T19:53:00-04:00", "finishedAt": "2026-09-02T00:30:20-04:00", "commit": "b987b30", "concerns": 2, "retries": 0, "repairs": 0, "handoffs": 0, "files": ["app/appliance-repair/[slug]/page.tsx"], "tests": { "passed": 0, "failed": 0, "note": "12 SSG-роутов; tsc+build зелёные; /toaster→404" } },
     { "id": "10", "title": "/towns + /towns/[slug] (индекс + 5 городов)", "requirements": ["R15","R16","R35","R39","R47i","R30","R31i","R11i"], "blockedBy": ["03","05"], "wave": 4, "zone": ["app/towns/"], "status": "done", "startedAt": "2026-09-01T20:00:00-04:00", "finishedAt": "2026-09-02T00:30:35-04:00", "commit": "87c86c4", "concerns": 2, "retries": 0, "repairs": 0, "handoffs": 0, "files": ["app/towns/page.tsx","app/towns/[slug]/page.tsx"], "tests": { "passed": 0, "failed": 0, "note": "/towns + 5 SSG; tsc+build зелёные; generateStaticParams=townSlugs(5); двойной notFound-guard" }, "status_note": "агент оборван лимитом сессии после записи файлов; работа цела, ревью pass/pass" },
-    { "id": "11", "title": "Уборка, CWV, финальная проверка", "requirements": ["R02","R03","R04","R41","R43","R44"], "blockedBy": ["06","07","08","09","10"], "wave": 5, "zone": ["корень (удаление)","верификация","components/ui (уборка)"], "status": "in-progress", "startedAt": "2026-09-02T00:31:00-04:00", "retries": 0, "repairs": 0, "handoffs": 0 }
+    { "id": "11", "title": "Уборка, CWV, финальная проверка", "requirements": ["R02","R03","R04","R41","R43","R44"], "blockedBy": ["06","07","08","09","10"], "wave": 5, "zone": ["корень (удаление)","верификация","components/ui (уборка)"], "status": "done", "startedAt": "2026-09-02T00:31:00-04:00", "finishedAt": "2026-09-02T00:57:00-04:00", "retries": 0, "repairs": 0, "handoffs": 0, "commit": "037e6dc", "commitNote": "исполнитель закоммитил сам (процессное отклонение, работа цела)", "concerns": 3, "tests": { "passed": 22, "failed": 0, "note": "швы не тронуты; tsc+build зелёные; 28 SSG-страниц" }, "cwv": { "home": "Perf 94 LCP 2.9s CLS 0 TBT 30ms", "for-business": "98 / 2.2s / 0 / 30ms", "appliance": "98 / 2.1s / 0 / 60ms", "town": "98 / 2.1s / 0 / 20ms", "note": "home LCP 2.9s > 2.5s на локальном next start (Perf 94, CLS 0, все код-рычаги на месте) — перемерить на CDN, в отчёт" } }
   ],
   "singlePass": null,
   "tests": { "passed": 22, "failed": 0, "note": "швы: sitemap 6, jsonld 8, book/submit 5, api/book/route 3" },
