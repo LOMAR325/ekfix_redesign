@@ -11,7 +11,7 @@ window.STATE =
   "memoryFile": "CLAUDE.md",
   "skillDir": "/Users/User/.claude/skills/autopilot",
   "startedAt": "2026-09-01T00:51:53-04:00",
-  "updatedAt": "2026-09-02T00:31:30-04:00",
+  "updatedAt": "2026-09-02T00:36:00-04:00",
   "finishedAt": null,
   "stages": [
     { "id": "preflight", "status": "done", "startedAt": "2026-09-01T00:51:53-04:00", "finishedAt": "2026-09-01T00:52:55-04:00" },
@@ -25,7 +25,8 @@ window.STATE =
   ],
   "requirements": {
     "total": 53, "done": 38, "inTicket": 9, "inSpec": 0,
-    "placeholder": 0, "deferred": 6, "dropped": 0
+    "placeholder": 0, "deferred": 6, "dropped": 0,
+    "inTicketRows": ["R02 попиксельно","R03 SSG","R04 CWV","R32 grep","R34 попиксельно","R41 финал build","R43 обход","R44 Lighthouse","R45 отчёт"]
   },
   "tickets": [
     { "id": "01", "title": "Каркас проекта, layout, globals.css, Header/Footer", "requirements": ["R01","R02","R05","R34","R38i","R39i","R40i","R41"], "blockedBy": [], "wave": 1, "zone": ["корень","app/layout.tsx","app/globals.css","components/Header,Footer","lib/seo.ts","lib/nav.ts","data/business.ts","public/"], "status": "done", "startedAt": "2026-09-01T13:34:06-04:00", "finishedAt": "2026-09-01T15:15:54-04:00", "retries": 1, "retryReason": "первый запуск завис на интерактивном create-next-app; перезапуск с ручным scaffold", "repairs": 0, "handoffs": 0, "files": ["package.json","tsconfig.json","next.config.ts","vitest.config.ts",".env.example","app/layout.tsx","app/page.tsx","app/globals.css","app/icon.svg","components/Header.tsx","components/Footer.tsx","components/Analytics.tsx","lib/seo.ts","lib/nav.ts","data/types.ts","data/business.ts","public/images/"], "tests": { "passed": 0, "failed": 0, "note": "швов нет в этом таске; build+tsc зелёные" }, "commit": "63d0fcd", "concerns": 6 },
