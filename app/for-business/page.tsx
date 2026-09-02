@@ -16,7 +16,7 @@ import { CtaBand } from "@/components/ui/cta-band";
 import { ProcessSteps } from "@/components/for-business/ProcessSteps";
 import { ServiceFormats } from "@/components/for-business/ServiceFormats";
 import {
-  forBusinessSegments,
+  publicForBusinessSegments,
   forBusinessHeroLedeExtra,
   laundryObjectTypes,
   processSteps,
@@ -25,8 +25,8 @@ import {
   businessFaqs,
 } from "@/data/b2b-segments";
 
-// <title>/<description> extended per b2b-priority-brief §9 (hotels + HOA added to
-// the page); canonical is the clean route path.
+// <title>/<description> extended per b2b-priority-brief §9 (hotels added to the
+// page); canonical is the clean route path.
 export const metadata: Metadata = pageMetadata({
   title:
     "Appliance Repair for Property Managers, Restaurants & Hotels | EK Global",
@@ -39,20 +39,16 @@ export const metadata: Metadata = pageMetadata({
 // the third sentence (service formats) comes from data/b2b-segments.
 const HERO_LEDE = `Property managers, restaurants, cafés, and laundry operators across Charlotte trust EK Global to keep tenant and guest-facing equipment running — with the same technician on every call. ${forBusinessHeroLedeExtra}`;
 
-// The four `/for-business` segments. b2b-priority-brief §8 does not call for an
+// The `/for-business` segment cards. b2b-priority-brief §8 does not call for an
 // in-card link here (that requirement is for the home page's #who-we-serve cards,
 // and for-business.html has no links inside its audience cards), so `linkLabel` is
-// cleared — the card's self-referential `href` would only scroll to itself. The
-// HOA vertical is not yet confirmed (data carries `placeholder: true`); a visible
-// owner-facing note is appended to its card text.
-const HOA_NOTE =
-  " [TODO: подтвердить у владельца — реально ли обслуживается вертикаль HOA / кондо-ассоциаций.]";
-
-const segmentCards = forBusinessSegments.map((segment) =>
-  segment.placeholder
-    ? { ...segment, linkLabel: "", text: `${segment.text}${HOA_NOTE}` }
-    : { ...segment, linkLabel: "" },
-);
+// cleared — the card's self-referential `href` would only scroll to itself.
+// `publicForBusinessSegments` already drops any unconfirmed vertical (HOA carries
+// `placeholder: true` in data/b2b-segments and is never rendered).
+const segmentCards = publicForBusinessSegments.map((s) => ({
+  ...s,
+  linkLabel: "",
+}));
 
 export default function ForBusinessPage() {
   const { crumbs, jsonLd } = breadcrumbTrail([
@@ -71,7 +67,7 @@ export default function ForBusinessPage() {
         ctas={<BookCallCtas bookLabel="Request a Quote" />}
       />
 
-      {/* Segments — anchor ids (#property-management, #horeca, #hotels, #hoa) are
+      {/* Segments — anchor ids (#property-management, #horeca, #hotels) are
           rendered on each .audience-card by AudienceCard. */}
       <section className="section section-dark">
         <AudienceGrid layout="card-grid-4" items={segmentCards} />

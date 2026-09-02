@@ -518,6 +518,7 @@ button { font-family: inherit; }
 .audience-card { background: var(--bg-dark-3); border: 1px solid rgba(255,255,255,0.09); border-radius: 24px; padding: clamp(28px, 3vw, 40px); }
 .audience-card .eyebrow { color: var(--accent); margin-bottom: 16px; }
 .audience-card h3 { margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.8px; }
+.audience-card h3 { color: var(--text-light); }
 .audience-card p { margin: 16px 0 0; font-size: 15px; line-height: 1.7; color: var(--text-light-60); }
 .audience-card ul { margin: 20px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; }
 .audience-card li { display: flex; gap: 10px; font-size: 14.5px; color: rgba(244,245,242,0.85); }

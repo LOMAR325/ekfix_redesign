@@ -132,9 +132,16 @@ export const forBusinessSegments: ForBusinessSegment[] = [
       "Coordination with board and property manager",
       "Documentation and invoicing for association records",
     ],
-    placeholder: true, // TODO: подтвердить, что вертикаль реально обслуживается
+    placeholder: true, // скрыт из рендера: владелец не подтвердил вертикаль HOA / кондо-ассоциаций; вернуть — снять флаг
   },
 ];
+
+// Segments safe to render publicly — any segment whose vertical the owner has not
+// confirmed (`placeholder: true`) is filtered out, so it can never reach production.
+// `/for-business` builds its cards from this, not from `forBusinessSegments`.
+export const publicForBusinessSegments = forBusinessSegments.filter(
+  (s) => !s.placeholder,
+);
 
 // ---------------------------------------------------------------------------
 // /for-business — "How we work" (#process), numbered .problem-card style.

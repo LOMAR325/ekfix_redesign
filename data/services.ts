@@ -113,7 +113,7 @@ export const services: Service[] = [
     title: "Washer Repair in Charlotte, NC | Same-Day | EK Global",
     metaDescription:
       "Same-day washer repair in Charlotte, NC and nearby towns. EPA 608 & OSHA certified technicians, original parts, warranty on every repair.",
-    image: "/images/dryer.webp",
+    image: "/images/dryer.webp", // TODO: нужно фото стиральной машины — в public/images его нет
     hero: {
       h1: "Washer repair,<br><span>done same day.</span>",
       lede: "Not spinning, leaking, or stuck mid-cycle? Diagnosed on the spot and fixed with manufacturer-approved parts — most jobs finished in one visit.",
@@ -213,7 +213,7 @@ export const services: Service[] = [
     title: "Range Repair in Charlotte, NC | Same-Day | EK Global",
     metaDescription:
       "Same-day range repair in Charlotte, NC and nearby towns. EPA 608 & OSHA certified technicians, original parts, warranty on every repair.",
-    image: "/images/cooktop.webp",
+    image: "/images/stove.webp", // range ≈ freestanding stove; идеально — отдельное фото плиты. stove и range теперь делят фото
     hero: {
       h1: "Range repair,<br><span>done same day.</span>",
       lede: "Burner won't stay lit, oven temperature is off, or the griddle zone quit heating? We work on freestanding and professional-grade ranges alike.",
@@ -387,10 +387,10 @@ export const services: Service[] = [
 // No routes of their own — each links to a section of /for-business. `image` is a placeholder.
 // TODO: реальные коммерческие фото (below are existing residential webp as stand-ins)
 export const commercialCategories: CommercialCategory[] = [
-  { label: "Commercial Refrigeration", formLabel: "Commercial Refrigeration", image: "/images/dishwasher.webp", href: "/for-business#horeca" },
-  { label: "Commercial Dishwasher/Warewasher", formLabel: "Commercial Dishwasher", image: "/images/garb_dispo.webp", href: "/for-business#horeca" },
-  { label: "Commercial Laundry Equipment", formLabel: "Commercial Laundry Equipment", image: "/images/kostia-laundry.webp", href: "/for-business#laundry" },
-  { label: "Ice Machine (high-volume)", formLabel: "Ice Machine", image: "/images/ice_maker_under.webp", href: "/for-business#horeca" },
+  { label: "Commercial Refrigeration", formLabel: "Commercial Refrigeration", image: "/images/Refrigerator.webp", href: "/for-business#horeca" }, // временная замена до реального коммерческого фото
+  { label: "Commercial Dishwasher/Warewasher", formLabel: "Commercial Dishwasher", image: "/images/dishwasher.webp", href: "/for-business#horeca" }, // временная замена до реального коммерческого фото
+  { label: "Commercial Laundry Equipment", formLabel: "Commercial Laundry Equipment", image: "/images/dryer_16.webp", href: "/for-business#laundry" }, // временная замена до реального коммерческого фото
+  { label: "Ice Machine (high-volume)", formLabel: "Ice Machine", image: "/images/ice_maker_under.webp", href: "/for-business#horeca" }, // временная замена до реального коммерческого фото
 ];
 
 export const serviceSlugs: string[] = services.map((s) => s.slug);
