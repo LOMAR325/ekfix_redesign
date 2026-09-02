@@ -11,7 +11,7 @@ window.STATE =
   "memoryFile": "CLAUDE.md",
   "skillDir": "/Users/User/.claude/skills/autopilot",
   "startedAt": "2026-09-01T00:51:53-04:00",
-  "updatedAt": "2026-09-02T00:57:00-04:00",
+  "updatedAt": "2026-09-02T01:00:00-04:00",
   "finishedAt": null,
   "stages": [
     { "id": "preflight", "status": "done", "startedAt": "2026-09-01T00:51:53-04:00", "finishedAt": "2026-09-01T00:52:55-04:00" },
@@ -98,6 +98,38 @@ window.STATE =
     "T09/10 craft · H2_CLAMP инлайн-стиль дублируется между файлами — size-вариант в SectionHead (уборка 11)",
     "T10 craft · isCharlotte (по slug) + town.hasMap — два предиката, оба истинны только для charlotte; лёгкая избыточность"
   ],
-  "reviewers": { "manifestSpec": "a6ce550a170739120", "craft": "a402ee1145d655d52", "note": "3-й пере-спавн после лимита; ревьюят 06+09+10" },
+  "concernsTriage": {
+    "pass": "Phase 8 §1a — один проход по всем ~39 concerns",
+    "fixNow": [],
+    "resolvedByT11": [
+      "breadcrumb-дубль на каждой странице → lib/breadcrumb.ts",
+      "SectionHead без ledeStyle (/brands 320 vs 330) → проп ledeStyle + eyebrow опционален",
+      "BookCallCtas без label → проп bookLabel (about/for-business)",
+      "TrustBand/BrandsSection инлайн .section-head → <SectionHead>",
+      "SECTION_H2[slug] без guard → if(!heads) notFound()",
+      "laundryObjectTypes.paragraph мёртвое → удалено; caption #laundry сокращён"
+    ],
+    "report": [
+      "R44: home LCP 2.9s > 2.5s на локальном next start (Perf 94, CLS 0) — перемерить на прод CDN; последний рычаг — pre-sized hero",
+      "alt логотипов на главной «Hobart repair» (из data) vs «Hobart appliance repair» (старый HTML) — невидимо, SEO-текст",
+      "businessJsonLd несёт AggregateRating 5.0/6, которого не было в старом index.html — держится на TODO «подтвердить, что 6 отзывов настоящие»",
+      "areaServed срезан 26→20 (лимит GBP) по близости к Ballantyne — самост. решение, сверить список с владельцем",
+      "#who-we-serve: тёмные .audience-card на .section-light — по букве b2b §6/§7, но владельцу глазами подтвердить контраст",
+      "/about <title> сохранил дословно «EK Global Appliance Repair» из старого HTML (не в JSON-LD/NAP — там везде «EK Global»)",
+      "единоразовая редакц. копия (заголовки секций техники, проза /about, hero-lede for-business) — литералы в page-компонентах, не в data (нет 7-го модуля; 2 ревьюера сочли допустимым; в памяти проекта отмечено)",
+      "image-dimensions.ts — ручная карта 53 размеров, риск рассинхрона с public/images",
+      "serviceJsonLd.areaServed — одиночный City, не 20-list (1:1 со старым HTML)",
+      "процессное: исполнитель таска 11 сам сделал коммит (обычно оркестратор); работа цела, коммит корректен"
+    ],
+    "drop": [
+      "все T01-craft мелочи (stopPropagation, hoursNote.toLowerCase, as Route идиом, layout metadata dup) — косметика, код 1:1 работает, не тронуто волной 4",
+      "T04 BookForm латентный {ok:false} с пустым errors — недостижимо (zod даёт ≥1 issue)",
+      "T10 isCharlotte + hasMap два предиката — читаемо, комментарий поясняет",
+      "T05 RepairCard 'use client' — копеечный JS, DOM/классы не затронуты",
+      "прочие единичные мелочи стиля"
+    ],
+    "note": "3+ правило (повтор в 3 тасках → fix-now) намеренно не применено к 'редакц. копия в page-компонентах': 'фикс' = 7-й data-модуль, это дизайн-решение а не уборка; 2 ревьюера сочли паттерн допустимым; задокументировано в памяти проекта. Осознанное отступление."
+  },
+  "reviewers": { "manifestSpec": "a6ce550a170739120", "craft": "a402ee1145d655d52", "note": "все 11 тасков — pass; ревью закрыто" },
   "blind": null
 }
