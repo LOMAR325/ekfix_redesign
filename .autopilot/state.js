@@ -11,7 +11,7 @@ window.STATE =
   "memoryFile": "CLAUDE.md",
   "skillDir": "/Users/User/.claude/skills/autopilot",
   "startedAt": "2026-09-01T00:51:53-04:00",
-  "updatedAt": "2026-09-01T19:53:30-04:00",
+  "updatedAt": "2026-09-02T00:25:00-04:00",
   "finishedAt": null,
   "stages": [
     { "id": "preflight", "status": "done", "startedAt": "2026-09-01T00:51:53-04:00", "finishedAt": "2026-09-01T00:52:55-04:00" },
@@ -19,8 +19,8 @@ window.STATE =
     { "id": "briefing",  "status": "done", "startedAt": "2026-09-01T00:55:58-04:00", "finishedAt": "2026-09-01T01:00:31-04:00" },
     { "id": "spec",      "status": "done", "startedAt": "2026-09-01T01:00:31-04:00", "finishedAt": "2026-09-01T01:54:19-04:00" },
     { "id": "plan",      "status": "done", "startedAt": "2026-09-01T01:54:19-04:00", "finishedAt": "2026-09-01T12:56:05-04:00", "note": "11 тасков, ярус T3" },
-    { "id": "build",     "status": "active", "startedAt": "2026-09-01T12:56:05-04:00", "note": "5 из 11 готовы; волна 4 (06/07/08 → потом 09/10) в работе" },
-    { "id": "review",    "status": "active", "startedAt": "2026-09-01T15:09:09-04:00", "note": "волна 3 закрыта (pass, дозапросы отработаны)" },
+    { "id": "build",     "status": "active", "startedAt": "2026-09-01T12:56:05-04:00", "note": "7 из 11 закоммичено; 06/09/10 собраны на диске, на ревью; 11 (уборка) впереди" },
+    { "id": "review",    "status": "active", "startedAt": "2026-09-01T15:09:09-04:00", "note": "ревьюеры пере-спавн: 06+09+10" },
     { "id": "final",     "status": "pending" }
   ],
   "requirements": {
@@ -33,11 +33,11 @@ window.STATE =
     { "id": "03", "title": "SEO-инфра: JSON-LD, sitemap, robots", "requirements": ["R07","R08","R30","R32","R32a","R33","R43","R17i","R31i"], "blockedBy": ["02"], "wave": 3, "zone": ["lib/jsonld.ts","components/JsonLd.tsx","app/sitemap.ts","app/robots.ts"], "status": "done", "startedAt": "2026-09-01T15:52:01-04:00", "finishedAt": "2026-09-01T19:44:56-04:00", "retries": 0, "repairs": 1, "handoffs": 0, "commit": "00ea757", "files": ["lib/jsonld.ts","lib/jsonld.test.ts","components/JsonLd.tsx","app/sitemap.ts","app/sitemap.test.ts","app/robots.ts","lib/seo.ts"], "tests": { "passed": 14, "failed": 0, "note": "швы 2 (6) + 3 (8); +absoluteUrl в lib/seo" }, "concerns": 3, "repairFindings": ["самоподтверждающиеся тесты jsonld — литералы", "дублирование absoluteUrl ×3 — helper", "JsonLd.tsx: экранировать < в JSON-LD"] },
     { "id": "04", "title": "Заявка: lib/book + /api/book + BookForm (прототип)", "requirements": ["R06","R06.1","R06.2","R06.3","R06a","R42","R23"], "blockedBy": ["02"], "wave": 3, "zone": ["lib/book/","app/api/book/","components/BookForm.tsx","components/BookingProvider.tsx"], "status": "done", "startedAt": "2026-09-01T15:52:01-04:00", "finishedAt": "2026-09-01T19:44:56-04:00", "commit": "b2ce6c7", "concerns": 2, "retries": 0, "repairs": 1, "handoffs": 0, "files": ["lib/book/options.ts","lib/book/schema.ts","lib/book/sinks.ts","lib/book/submit.ts","lib/book/submit.test.ts","app/api/book/route.ts","app/api/book/route.test.ts","components/BookForm.tsx","components/BookingProvider.tsx"], "tests": { "passed": 7, "failed": 0, "note": "шов 1 (submit 5 + route 2)" }, "status_note": "агент оборвался сном машины после записи файлов; работа на диске", "repairFindings": ["форма-левел ошибка не показывается — рендер", "route.test: покрыть битый JSON", "WebhookLeadSink: немой catch — console.warn"] },
     { "id": "05", "title": "Общие presentational-компоненты", "requirements": ["R24","R02","R34"], "blockedBy": ["02"], "wave": 3, "zone": ["components/ui/"], "status": "done", "startedAt": "2026-09-01T19:26:00-04:00", "finishedAt": "2026-09-01T19:44:56-04:00", "commit": "fa54ac8", "concerns": 6, "retries": 1, "retryReason": "агент дважды оборван сном машины; перезапуск с caffeinate", "repairs": 1, "handoffs": 0, "files": ["components/ui/*.tsx (17)","components/ui/image-dimensions.ts","components/ui/rich-text.ts","components/ui/anchor.tsx","components/ui/ctas.tsx"], "tests": { "passed": 0, "failed": 0, "note": "presentational; tsc+build зелёные" } },
-    { "id": "06", "title": "Главная страница /", "requirements": ["R12","R18","R19","R21","R25","R26","R27","R28","R30","R32a","R38i"], "blockedBy": ["03","04","05"], "wave": 4, "zone": ["app/page.tsx","components/home/"], "status": "in-progress", "startedAt": "2026-09-01T19:44:56-04:00", "retries": 0, "repairs": 0, "handoffs": 0 },
-    { "id": "07", "title": "Страницы /about и /brands", "requirements": ["R12","R20","R30","R31i"], "blockedBy": ["03","05"], "wave": 4, "zone": ["app/about/","app/brands/"], "status": "review", "startedAt": "2026-09-01T19:44:56-04:00", "finishedAt": null, "retries": 0, "repairs": 0, "handoffs": 0, "files": ["app/about/page.tsx","app/brands/page.tsx"], "tests": { "passed": 0, "failed": 0, "note": "страницы; tsc+build зелёные, обе SSG" } },
-    { "id": "08", "title": "Страница /for-business (расширение B2B)", "requirements": ["R12","R22","R26","R27","R29","R30","R31i","R36","R37i"], "blockedBy": ["03","05"], "wave": 4, "zone": ["app/for-business/","components/for-business/"], "status": "in-progress", "startedAt": "2026-09-01T19:44:56-04:00", "retries": 0, "repairs": 0, "handoffs": 0 },
-    { "id": "09", "title": "/appliance-repair/[slug] — 12 страниц техники", "requirements": ["R13","R30","R31i","R02"], "blockedBy": ["03","05"], "wave": 4, "zone": ["app/appliance-repair/"], "status": "in-progress", "startedAt": "2026-09-01T19:53:00-04:00", "retries": 0, "repairs": 0, "handoffs": 0 },
-    { "id": "10", "title": "/towns + /towns/[slug] (индекс + 5 городов)", "requirements": ["R15","R16","R35","R39","R47i","R30","R31i","R11i"], "blockedBy": ["03","05"], "wave": 4, "zone": ["app/towns/"], "status": "in-progress", "startedAt": "2026-09-01T20:00:00-04:00", "retries": 0, "repairs": 0, "handoffs": 0 },
+    { "id": "06", "title": "Главная страница /", "requirements": ["R12","R18","R19","R21","R25","R26","R27","R28","R30","R32a","R38i"], "blockedBy": ["03","04","05"], "wave": 4, "zone": ["app/page.tsx","components/home/"], "status": "review", "startedAt": "2026-09-01T19:44:56-04:00", "retries": 0, "repairs": 0, "handoffs": 0, "files": ["app/page.tsx","components/home/ (10)"], "tests": { "passed": 0, "failed": 0, "note": "страница; tsc+build зелёные, SSG, JSON-LD валиден" } },
+    { "id": "07", "title": "Страницы /about и /brands", "requirements": ["R12","R20","R30","R31i"], "blockedBy": ["03","05"], "wave": 4, "zone": ["app/about/","app/brands/"], "status": "done", "startedAt": "2026-09-01T19:44:56-04:00", "finishedAt": "2026-09-01T19:58:23-04:00", "commit": "45594a0", "concerns": 4, "retries": 0, "repairs": 0, "handoffs": 0, "files": ["app/about/page.tsx","app/brands/page.tsx"], "tests": { "passed": 0, "failed": 0, "note": "страницы; tsc+build зелёные, обе SSG" } },
+    { "id": "08", "title": "Страница /for-business (расширение B2B)", "requirements": ["R12","R22","R26","R27","R29","R30","R31i","R36","R37i"], "blockedBy": ["03","05"], "wave": 4, "zone": ["app/for-business/","components/for-business/"], "status": "done", "startedAt": "2026-09-01T19:44:56-04:00", "finishedAt": "2026-09-01T20:05:00-04:00", "commit": "6d3806b", "concerns": 5, "retries": 0, "repairs": 1, "repairFindings": ["#laundry: два абзаца дублируют одну мысль — 2-й заменён коннектором к чипам"], "handoffs": 0, "files": ["app/for-business/page.tsx","components/for-business/ProcessSteps.tsx","components/for-business/ServiceFormats.tsx"], "tests": { "passed": 0, "failed": 0, "note": "страница; tsc+build зелёные, SSG" } },
+    { "id": "09", "title": "/appliance-repair/[slug] — 12 страниц техники", "requirements": ["R13","R30","R31i","R02"], "blockedBy": ["03","05"], "wave": 4, "zone": ["app/appliance-repair/"], "status": "review", "startedAt": "2026-09-01T19:53:00-04:00", "retries": 0, "repairs": 0, "handoffs": 0, "files": ["app/appliance-repair/[slug]/page.tsx"], "tests": { "passed": 0, "failed": 0, "note": "12 SSG-роутов; tsc+build зелёные; /toaster→404" } },
+    { "id": "10", "title": "/towns + /towns/[slug] (индекс + 5 городов)", "requirements": ["R15","R16","R35","R39","R47i","R30","R31i","R11i"], "blockedBy": ["03","05"], "wave": 4, "zone": ["app/towns/"], "status": "review", "startedAt": "2026-09-01T20:00:00-04:00", "retries": 0, "repairs": 0, "handoffs": 0, "files": ["app/towns/page.tsx","app/towns/[slug]/page.tsx"], "tests": { "passed": 0, "failed": 0, "note": "/towns + 5 SSG; tsc+build зелёные; generateStaticParams=townSlugs(5); двойной notFound-guard" }, "status_note": "агент оборван лимитом сессии после записи обоих файлов + interfaces.md" },
     { "id": "11", "title": "Уборка, CWV, финальная проверка", "requirements": ["R03","R04","R41","R43","R44"], "blockedBy": ["06","07","08","09","10"], "wave": 5, "zone": ["корень (удаление)","верификация"], "status": "pending", "retries": 0, "repairs": 0, "handoffs": 0 }
   ],
   "singlePass": null,
@@ -82,8 +82,21 @@ window.STATE =
     "T07 craft · /about кастомный ctas дублирует call-кнопку BookCallCtas (отличие — лейбл); просится bookLabel? проп",
     "T08 · /for-business: базовый hero-lede + 1-й абзац #laundry захардкожены в page.tsx (дословно из HTML, не в data — таск 02 вынес только extra-части)",
     "T08 · #laundry: два абзаца (ported + laundryObjectTypes.paragraph) сильно пересекаются — тикет требует «дополнение, не замену»; чистится переформулировкой в data",
-    "T08 · якорь сегмента на .audience-card, не на <section> (card-grid-4 = 4 карточки в 1 секции) — все 5 якорей резолвятся"
+    "T08 · якорь сегмента на .audience-card, не на <section> (card-grid-4 = 4 карточки в 1 секции) — все 5 якорей резолвятся",
+    "T08 craft · eyebrow/h2 секций #process/#formats/#faq-business захардкожены в компонентах (прочий текст — из data); перенести в data — уборка 11",
+    "T08 craft · meta description шире тикета («and standing service contracts available» сверх «hotels») — подтверждено data, но за пределами §9",
+    "T06 · #who-we-serve = .section-light + тёмные .audience-card (--bg-dark-3) — по букве b2b §7 блок 2 + §6 («тот же фон карточки»); контраст намеренный, владельцу глазами подтвердить",
+    "T06 · alt логотипов брендов на главной из data/brands («Hobart repair») vs index.html («Hobart appliance repair») — alt невидим, SEO-текст",
+    "T09 · SECTION_H2 (2 h2 на прибор) захардкожены в page.tsx — нет в data/services; дословно из HTML (stove нерегулярный)",
+    "WAVE4 craft (в уборку 11): breadcrumb-трейл дублируется на каждой странице (jsonld + PageHero) → общий хелпер; BookCallCtas без label-пропа → 3 копии call-кнопки (about/for-business); SectionHead без ledeStyle → /brands коммерч. .lede 330 vs 320px",
+    "T08 · data/b2b-segments.laundryObjectTypes.paragraph больше нигде не используется (после дозапроса 08) — удалить поле (data-уборка)",
+    "T08 craft · caption #laundry повторяет список 4 типов, уже названный абзацем выше — можно сократить до «These are the commercial laundry brands we service:» (уборка 11)",
+    "T06 craft · TrustBand/BrandsSection инлайнят .section-head вместо <SectionHead> (SectionHead требует eyebrow, не берёт ledeStyle) — уборка 11 (eyebrow опциональным + ledeStyle)",
+    "T06/09 craft · инлайн accent-link {color:accent;fontSize:14;borderBottom…} повторён 3× — общий const (уборка 11)",
+    "T09 craft · page.tsx SECTION_H2[slug] без guard на undefined — 13-я услуга уронит билд; добавить fallback (уборка 11)",
+    "T09/10 craft · H2_CLAMP инлайн-стиль дублируется между файлами — size-вариант в SectionHead (уборка 11)",
+    "T10 craft · isCharlotte (по slug) + town.hasMap — два предиката, оба истинны только для charlotte; лёгкая избыточность"
   ],
-  "reviewers": { "manifestSpec": "a654c37bd2eca517f", "craft": "ad68bcae8c82e8f00", "note": "пере-спавн после лимита сессии; ревьюят 03+04" },
+  "reviewers": { "manifestSpec": "a6ce550a170739120", "craft": "a402ee1145d655d52", "note": "3-й пере-спавн после лимита; ревьюят 06+09+10" },
   "blind": null
 }

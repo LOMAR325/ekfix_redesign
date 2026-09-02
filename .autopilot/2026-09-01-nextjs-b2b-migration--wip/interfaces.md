@@ -548,8 +548,9 @@ data={[breadcrumbJsonLd([Home→For Business]), faqJsonLd(businessFaqs)]} />` в
 `forBusinessSegments`; якоря `#property-management`/`#horeca`/`#hotels`/`#hoa`
 рендерит `AudienceCard` на самих `.audience-card`) →
 `<section class="section section-light" id="laundry">` (`.two-col` + `Prose`
-[ДОСЛОВНЫЙ абзац `for-business.html` + `laundryObjectTypes.paragraph`] + `ChipRow`
-`laundryObjectTypes.brandChips` `style={{marginTop:20}}` + `LocalPhoto`
+[ДОСЛОВНЫЙ абзац `for-business.html`] + caption-`<p>` «Across {типы}, these are the
+equipment brands we service:» (типы = `laundryObjectTypes.types`, lowercased/joined)
++ `ChipRow` `laundryObjectTypes.brandChips` `style={{marginTop:12}}` + `LocalPhoto`
 `kostia-laundry.webp`) →
 `<ProcessSteps items={processSteps} />` →
 `<section class="section section-dark-2">` (`SectionHead` tone="dark"
@@ -591,8 +592,130 @@ us.») + `ChipRow tone="dark"`.
    редакторская микрокопия по месту (spec §Метаданные «craft, по месту»); без
    числовых характеристик; не совпадает с `/`.
 
-**Минор:** два абзаца в `#laundry` начинаются одинаково («For hotels, laundromats,
-healthcare facilities, and multi-housing properties…») — ДОСЛОВНЫЙ абзац
-`for-business.html` и `laundryObjectTypes.paragraph` из `data` (таск 02) сильно
-пересекаются. Тикет требует «дополнение, не замена», поэтому оба на месте. Чинится
-переформулировкой `laundryObjectTypes.paragraph` в `data/b2b-segments` (вне зоны 08).
+**`#laundry` (после ревью):** `laundryObjectTypes.paragraph` НЕ рендерится — он
+дублировал мысль перенесённого абзаца (та же фраза, тот же список, тот же контраст
+«on-premise vs individual unit»). Вместо него — короткий caption-`<p>` из
+`laundryObjectTypes.types`, который явно связывает типы объектов со списком
+брендов-чипов (b2b §8 блок 3). Поле `laundryObjectTypes.paragraph` в
+`data/b2b-segments.ts` теперь не используется нигде — можно удалить (вне зоны 08).
+
+### Таск 09 — `/appliance-repair/[slug]` (12 страниц техники)
+
+Команды прежние; `npx tsc --noEmit` и `npm run build` — зелёные. Все 12 роутов —
+`● (SSG)` (`generateStaticParams`). Тестов в таске нет.
+
+**`app/appliance-repair/[slug]/page.tsx`** — ОДИН динамический server-роут для всех 12.
+- `export const dynamicParams = false` — любой slug вне `serviceSlugs` → 404 (проверено
+  рантаймом: `/appliance-repair/toaster` и `/oven` → 404, `/refrigerator` → 200).
+- `export function generateStaticParams()` → `serviceSlugs.map((slug) => ({ slug }))` (ровно 12).
+- `export async function generateMetadata({ params })` — `params: Promise<{slug}>`;
+  `await params` → `getService(slug)` → `notFound()` если нет → `pageMetadata({ title:
+  service.title, description: service.metaDescription, path: "/appliance-repair/<slug>" })`.
+  Canonical теперь чистый (`…/appliance-repair/refrigerator`, без `.html`).
+- Компонент: `await params` → `const service = getService(slug); if (!service) notFound();`
+- Разметка 1:1 с `appliance-repair/*.html` (эталон — `refrigerator.html`; структура
+  `washer.html` для 11 с «Also repair»): `<JsonLd data={[serviceJsonLd(service),
+  faqJsonLd(service.faqs), breadcrumbJsonLd([Home→/, We Repair→/#repair,
+  «<name> Repair»→/appliance-repair/<slug>])]} />` (все 3 блока на каждой странице;
+  `Service.provider.name === "EK Global"`) → `PageHero` (breadcrumb те же 3 крошки,
+  `h1={service.hero.h1}`, `lede={service.hero.lede}`, дефолтные `BookCallCtas`) →
+  `section-light` «Common problems» (`SectionHead` eyebrow «Common problems we fix» +
+  h2 из `SECTION_H2[slug].problems` + `.lede` «Every diagnostic includes…» +
+  `ProblemCardGrid items={service.problems} variant="light" columns={3}` — `.num`
+  «01»…«06» авто) → `section-dark` «Brands» (`SectionHead` h2 «Standard to premium.»
+  `h2Style` clamp + `ChipRow tone="dark" items={service.brands}` + `<p style={{marginTop:24}}>`
+  с инлайн-`<Anchor href="/brands">` «See every brand we service →») → `section-light`
+  «FAQ» (`SectionHead` eyebrow «FAQ» + h2 `SECTION_H2[slug].faq` + `FaqAccordion
+  items={service.faqs} style={{maxWidth:760}}` — первый `open`) → `section-dark-2`
+  «Where we work» (`SectionHead` h2 «Charlotte &amp; nearby towns.» `style={{marginBottom:30}}`
+  + `ChipRow tone="dark"` из `service.whereWeWork` → `{label:name, href}`) → «Also repair»
+  **только `service.alsoRepair.length > 0`** (`section-light`, `SectionHead` h2 «Other
+  appliances.» + `ChipRow` (tone light) из `alsoRepair` → `href="/appliance-repair/<slug>"`)
+  → `CtaBand h2="Ready when you are." body="$75 diagnostic — waived completely once you
+  book the repair."` (дефолтные ctas). refrigerator рендерится БЕЗ «Also repair»
+  (`alsoRepair: []`), остальные 11 — с ней.
+
+**Решение:** два h2 («Six <X> faults<br>we see most often.» и «<Name> repair,<br>answered
+honestly.») меняются по прибору и в `data/services` отсутствуют (зона таска запрещает
+`data/`). Захардкожены в `page.tsx` как `SECTION_H2: Record<slug, {problems, faq}>` —
+дословная транскрипция из 12 `*.html`, keyed by slug для тривиального diff. `stove`
+единственный нерегулярный: «Six stove &amp; oven faults», не «Six stove faults».
+Остальные заголовки/eyebrow'ы идентичны во всех 12 файлах и заданы литералами по месту.
+
+### Таск 10 — страницы `/towns` и `/towns/[slug]` (индекс + 5 городов)
+
+Команды прежние; `npx tsc --noEmit` и `npm run build` — зелёные. `/towns` — `○ (Static)`,
+`/towns/[slug]` — 5 `● (SSG)` (charlotte, rock-hill, fort-mill, matthews, indian-trail).
+Тестов в таске нет.
+
+**`app/towns/page.tsx`** — server-компонент. `export const metadata` = `pageMetadata({
+title: townsIndex.title, description: townsIndex.metaDescription, path: "/towns" })`.
+`<JsonLd data={breadcrumbJsonLd([Home→/, Service Area→/towns])} />` (как на `/about`,
+`/brands`). Разметка 1:1 с `towns/index.html`:
+`PageHero` (breadcrumb `Home`(→/) / `Service Area` — БЕЗ ссылки; `h1={townsIndex.heroH1}`
+«Charlotte, NC<br><span>&amp; …</span>»; `lede={townsIndex.heroLede}`; дефолтные ctas) →
+`section-light` (`SectionHead` eyebrow «Full local pages» + `h2={townsIndex.activeHead.h2}`
++ `lede={townsIndex.activeHead.lede}` + `RepairGrid style={{gridTemplateColumns:"repeat(
+auto-fit, minmax(220px, 1fr))"}}` `items` из `fullPageTowns` → `{label:"<name>, <ST>",
+href:"/towns/<slug>", tag:"Full local page", style:{minHeight:"auto"}, bodyStyle:{padding:
+22, marginTop:0}}`) → `section-dark` (`SectionHead` eyebrow «Also serving — North Carolina»
++ h2 `townsIndex.alsoServingNCLabel` «We also cover:» + `h2Style` clamp(28px,3vw,40px)/-1.6px
++ `<p style={{maxWidth:820,fontSize:16,lineHeight:1.8,color:"var(--text-light-60)"}}>` =
+`${alsoServedNC.join(", ")}, and the towns between them.`) → `section-light` (то же для SC:
+eyebrow «Also serving — South Carolina», h2 `alsoServingSCLabel` «Just across the state
+line:», `<p>` `color:"var(--text-dark-60)"`, `alsoServedSC`) → `CtaBand h2="Not sure if
+you're<br>in range?" body="Just call — we'll tell you straight away."`.
+
+**`app/towns/[slug]/page.tsx`** — ОДИН динамический server-роут для 5 городов.
+- `export const dynamicParams = false` — любой slug вне `townSlugs` → 404 (проверено:
+  `/towns/waxhaw` не сгенерён, нет в `generateStaticParams`).
+- `export function generateStaticParams()` → `townSlugs.map((slug) => ({ slug }))` (ровно 5).
+- `generateMetadata` — `await params` → `getTown(slug)`; `if (!town || !town.isFullPage)
+  notFound()` → `pageMetadata({ title: TOWN_SEO[slug].title, description: …, path:
+  "/towns/<slug>" })`. Canonical чистый.
+- Компонент: `const town = getTown(slug); if (!town || !town.isFullPage) notFound();`
+  — двойная защита (R16); `getTown` ищет только среди `fullPageTowns`.
+- `<JsonLd data={[businessJsonLd(), breadcrumbJsonLd([Home→/, Service Area→/towns,
+  «<name>, <ST>»→/towns/<slug>])]} />`. `businessJsonLd()` даёт `name:"EK Global"` на
+  ВСЕХ 5 (унифицировано — в старом HTML был суффикс «— <город>»; проверено рантаймом).
+  `businessJsonLd()` не принимает аргументов → `areaServed` НЕ сужается до города
+  (интерфейс `lib/jsonld` заморожен; критично только единое `name`).
+- Разметка 1:1 из `towns/<slug>.html`. `charlotte` — особый (`isCharlotte = slug ===
+  "charlotte"`, `town.hasMap`): PageHero (breadcrumb `Service Area` БЕЗ ссылки у charlotte,
+  СО ссылкой `/towns` у остальных 4; `h1` всегда «Appliance repair<br><span>in <name>,
+  <ST>.</span>»; `lede={town.hero.lede}`) → `section-light` `.two-col` (`Prose`
+  heading «Local, not a dispatch center» + `paragraphs={town.prose}` (с `<strong>`) +
+  дочерний `ChipRow items={town.districts} style={{marginTop:24}}` (light) / `LocalPhoto`
+  src `charlotte.webp`+alt «Charlotte, NC skyline» у charlotte, `town.webp`+alt «<name>,
+  <ST>» у остальных) → `section-dark` (`SectionHead` tone dark eyebrow «What we repair in
+  <name>» + h2 «The full lineup.» + `h2Style` clamp(30px,3.2vw,44px)/-1.8px + `ChipRow
+  tone="dark"`: **charlotte** — 11 чипов, `CHARLOTTE_REPAIR_CHIPS` (только Refrigerator →
+  `/appliance-repair/refrigerator`, остальные → `/#repair`, «Stove / Range» одним чипом);
+  **остальные 4** — 12 чипов `services.map(s => ({label:s.name, href:"/appliance-repair/"
+  +s.slug}))`) → `section-light` (`SectionHead` tone light eyebrow «Charlotte customers»
+  (charlotte) / «Local customers» (остальные) + h2 «What they say.» + `ratingBadge` +
+  `ReviewsGrid reviews={reviewsByAuthors(town.reviewAuthors)}`) → **если `town.hasMap`**
+  (только charlotte): `section-dark-2` (`SectionHead` eyebrow «Find us» + h2 «Charlotte,
+  NC.» + `style={{marginBottom:24}}` + clamp + `LocalPhoto style={{borderColor:"rgba(255,
+  255,255,0.09)"}}` с `<iframe title="Charlotte, NC map" src="https://www.google.com/maps
+  ?q=Charlotte,NC&output=embed" width="100%" height="360" style={{border:0,display:"block"}}
+  loading="lazy" referrerPolicy="no-referrer-when-downgrade">`) + `section-light` (`Prose`
+  heading «Also serving nearby» + `paragraphs={[town.nearbyProse]}`) — **иначе** (4 города):
+  `section-dark-2` (`SectionHead` eyebrow «Nearby» + h2 «Also serving.» + `style={{
+  marginBottom:24}}` + clamp + `ChipRow tone="dark" items={town.nearby}`) → `CtaBand
+  h2="Same-day repair,<br>right here in <name>." body="$75 diagnostic, waived if you book
+  the repair."` (дефолтные ctas).
+
+**Решения:**
+1. `TOWN_SEO: Record<slug, {title, description}>` захардкожен в `page.tsx` — `data/towns`
+   не несёт per-town `title`/`metaDescription` (только `townsIndex` для индекса), зона
+   таска запрещает `data/`. Дословная транскрипция из 5 `*.html`; 4 не-charlotte делят
+   один шаблон описания, у charlotte — уникальное (районы Ballantyne/Dilworth/…).
+2. `CHARLOTTE_REPAIR_CHIPS` захардкожен: charlotte.html отличается от остальных 4
+   (11 чипов vs 12, `/#repair` vs `/appliance-repair/<slug>`, «Stove / Range» слитно) —
+   это реальное расхождение оригиналов, сохранено 1:1. h1 у всех 5 с состоянием
+   («in <name>, <ST>.») — как в HTML, хотя тикет писал «in <name>.».
+3. Breadcrumb «Service Area» без ссылки у charlotte, со ссылкой у 4 остальных — quirk
+   `charlotte.html`, сохранён (`isCharlotte`).
+4. `/towns` индекс получил `breadcrumbJsonLd` (в оригинале JSON-LD не было) — для
+   консистентности с `/about` и `/brands`; невидимо, 1:1 визуала не нарушает.

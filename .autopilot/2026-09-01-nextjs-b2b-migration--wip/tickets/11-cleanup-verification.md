@@ -41,6 +41,18 @@
 5. `npm test` (весь набор — швы 1–3) и `npx tsc --noEmit` — зелёные.
 6. Финальный grep: ни одного вхождения `EK Globall` (опечатка) и ни одного
    вхождения строки бизнеса, отличной от `"EK Global"`, в JSON-LD.
+7. **Уборка повторяющихся craft-находок волны 4** (не трогая вёрстку/классы):
+   - `components/ui/section-head.tsx` — добавить проп `ledeStyle?: CSSProperties`;
+     применить в `app/brands/page.tsx` коммерч. секции `max-width:320px` и в
+     `components/home/BrandsSection` `#brands` `max-width:300px` (сверить с
+     `brands.html:119` / `index.html:354`) — закрывает 1:1-гэп по `.lede`.
+   - `components/ui/ctas.tsx` — `BookCallCtas` проп `bookLabel?: string` (дефолт
+     «Book Online — Save 10%»); заменить кастомные `ctas` в `app/about/page.tsx`
+     («Book a Repair») и `app/for-business/page.tsx` («Request a Quote») на него.
+   - общий хелпер breadcrumb (напр. `lib/breadcrumb.ts` или проп `jsonLd` у
+     `PageHero`) — трейл пишется один раз, отдаёт и `{label,href}[]` для `PageHero`,
+     и вход для `breadcrumbJsonLd`. Применить в about/brands/for-business/appliance/towns.
+   - После правок — повторный `tsc`+`build`+`npm test`; страницы должны остаться 1:1.
 
 ## Критерии приёмки
 
