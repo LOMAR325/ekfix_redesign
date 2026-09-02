@@ -3,9 +3,10 @@
 
 Сайт ремонта бытовой техники **EK Global** (Charlotte, NC). Перенос статического
 HTML/CSS/JS-сайта на Next.js (App Router + TypeScript strict) с приоритетом контента
-на юрлиц (B2B). Визуально — **1:1 с прежним сайтом, это не редизайн**. Все 11 тасков
-сборки сданы; проект на стадии приёмки. Старый сайт (`*.html`, `css/`, `js/`,
-`assets/`, `sitemap.xml`) удалён — эталон визуала теперь только в истории git.
+на юрлиц (B2B). Визуально — **1:1 с прежним сайтом, это не редизайн**. Миграция сдана;
+заход 2026-09-02 закрыл дефекты аудита — актуальная карта состояния `ek-global-site-issues.md`
+в корне. Старый сайт (`*.html`, `css/`, `js/`, `assets/`, `sitemap.xml`) удалён — эталон
+визуала теперь только в истории git.
 
 ## Команды
 
@@ -18,8 +19,8 @@ HTML/CSS/JS-сайта на Next.js (App Router + TypeScript strict) с прио
 | `npm test` | Тесты (`vitest run`) · один файл: `npm test -- <path>` |
 | `npm run typecheck` / `npx tsc --noEmit` | Строгая типопроверка |
 
-Последний прогон оркестратора: `npm test` → 22 passed (4 файла) · `tsc --noEmit` → 0 ·
-`npm run build` → зелёный. Любой `npm`/`npx` в неинтерактивной среде — с `</dev/null`.
+Последний прогон оркестратора: `npm test` → 29 passed (5 файлов) · `tsc --noEmit` → 0 ·
+`npm run build` → зелёный (28 SSG + `/api/book`). Любой `npm`/`npx` в неинтерактивной среде — с `</dev/null`.
 
 Стек: Next.js 16.3.4 · React 19.2.8 · TypeScript strict · zod 4 · vitest 3 · Node 25.
 App Router, без `src/`, без Tailwind. `next.config.ts`: `images.formats:["image/webp"]`,
@@ -32,7 +33,7 @@ app/
   layout.tsx              единственный layout: <html lang=en>, Google Fonts (не next/font),
                           <Header/>{children}<Footer/><Analytics/>, дефолтная metadata
   page.tsx                главная / (SSG) — 9 секций из components/home/*
-  globals.css             дословная копия бывшего css/style.css + РОВНО один блок .card-grid-4 — ЗАМОРОЖЕН
+  globals.css             копия css/style.css + .card-grid-4 + .audience-card h3 (фикс контраста) — ЗАМОРОЖЕН
   icon.svg                favicon (авто <link rel=icon>)
   robots.ts               /robots.txt · sitemap.ts  /sitemap.xml (22 URL)
   about/ brands/ for-business/ towns/   page.tsx — по одной SSG-странице
@@ -51,7 +52,7 @@ data/          ЕДИНСТВЕННЫЙ источник контента, из�
   towns.ts          26 городов (5 isFullPage) + fullPageTowns/townSlugs/getTown + alsoServedNC/SC + townsIndex
   reviews.ts        6 отзывов + aggregate + reviewsByAuthors()
   brands.ts         33 бренда + homeBrands/residentialBrands/commercialBrands + brandNote + brandsPage
-  b2b-segments.ts   весь контент /for-business + санкц. микрокопия главной (homeHero, familyBusinessSentence, …)
+  b2b-segments.ts   контент /for-business (+ publicForBusinessSegments = без placeholder) + микрокопия главной (homeHero, …)
   types.ts          все типы слоя данных, без рантайма
 lib/
   seo.ts        metadataBase · absoluteUrl(path) · pageMetadata({title,description,path})
@@ -74,8 +75,13 @@ lib/
   (единственная точка `new URL(path, siteUrl)`), `metadataBase`.
 - **`lib/breadcrumb.ts`** — `breadcrumbTrail(steps)` → видимые крошки для `PageHero` + JSON-LD из одного трейла.
 - **`lib/nav.ts`** — `mainNav`, целиком выведен из `data/services` + `data/towns.fullPageTowns`.
+  `NavGroup` несёт обязательный `basePath` (`/appliance-repair`, `/towns`); `Header` красит
+  `.nav-trigger` активным при `pathname` под `basePath`.
 - **`lib/book/`** — `submitLead(input: unknown)` точка входа; `schema.ts` zod-валидация;
-  `sinks.ts` каналы доставки; `options.ts` реэкспорт опций формы из `data/`.
+  `sinks.ts` каналы доставки (общий `deliver(name, run)` — `try/catch` + `console.warn` для Email и
+  Webhook); `options.ts` реэкспорт опций формы из `data/`. `EmailLeadSink` — реальный `POST` на
+  Resend REST API через `fetch` (пакет `resend` не ставится), включается `RESEND_API_KEY` +
+  `BOOK_NOTIFY_EMAIL` в `.env`; `from` = `onboarding@resend.dev` (плейсхолдер + TODO-домен).
 - **`app/sitemap.ts`** — 22 URL, собирается из `data/services` (12) + `data/towns.fullPageTowns` (5) + 5 статических.
 - **`components/ui/*`** — презентационные server-компоненты (кроме `RepairCard` — `'use client'`),
   данные пропсами, разметка и классы 1:1 со старым HTML.
@@ -92,6 +98,8 @@ lib/
 - **Крошки:** `lib/breadcrumb.breadcrumbTrail(steps)` — один трейл даёт и `crumbs` (в `PageHero`),
   и `jsonLd` (в `<JsonLd>`); `unlinked`-флаг для quirk charlotte («Service Area» без ссылки).
 - **Метаданные:** `lib/seo.pageMetadata` на каждой странице; `metadataBase` из `business.siteUrl`.
+- **Редиректы:** `next.config.ts` `redirects()` — 7 правил `permanent: true` (308) со старых `*.html`
+  на чистые роуты (`docs/adr/0013`).
 - **Форма:** `BookForm` (`'use client'`, uncontrolled) → `POST /api/book` (Route Handler) →
   `submitLead(unknown)` → zod `leadSchema` → `Promise.allSettled` по `sinks.filter(s=>s.enabled)`.
   Ошибка валидации → `400 {ok:false,errors}`, sinks не трогаются; успех → `{ok:true}` даже если
@@ -102,9 +110,10 @@ lib/
 
 ## Соглашения кода
 
-- `app/globals.css` — дословная копия бывшего `css/style.css` + **ровно** `.card-grid-4`
-  (копия `.card-grid-3` на 4 колонки, тот же адаптив). **Заморожен** — весь визуал 1:1
-  держится на нём. Нужна правка CSS → верни `BLOCKED` с объяснением, не правь молча.
+- `app/globals.css` — дословная копия бывшего `css/style.css` + `.card-grid-4` (копия
+  `.card-grid-3` на 4 колонки, тот же адаптив) + `.audience-card h3 { color: var(--text-light) }`
+  (фикс контраста заголовков карточек на светлой секции; `docs/adr/0002` приписка). **Заморожен** —
+  весь визуал 1:1 держится на нём. Нужна правка CSS → верни `BLOCKED` с объяснением, не правь молча.
 - Никаких новых CSS-классов / Tailwind / CSS-in-JS / CSS-модулей — только те же классы,
   что были в старом HTML. Ошибки полей формы рисуются инлайн-стилем (класса под ошибку нет).
 - `next/image` для всех изображений (не `<img>`); размеры из
@@ -112,6 +121,9 @@ lib/
   сохранять текущие `object-fit`/`object-position`.
 - Контент только из `data/*`; хардкод NAP/списков в `app/`/`components/` запрещён. Имя бизнеса
   строго `"EK Global"` (НЕ `"EK Global Appliance Repair — Charlotte, NC"`).
+- `/for-business` рендерит `data/b2b-segments.publicForBusinessSegments`
+  (= `forBusinessSegments.filter(s => !s.placeholder)`), НЕ `forBusinessSegments`: сегменты с
+  `placeholder: true` не попадают в HTML. Сейчас так скрыт `hoa` — вернуть снятием флага.
 - SSG-only: ни одной страницы с `export const dynamic`/`revalidate`. Динамичен только `app/api/book`.
 - `typedRoutes: true` — `Anchor` кастует `href` как `Route`; все роуты созданы.
 - JSON-LD — только через `<JsonLd>` + билдеры `lib/jsonld`.
@@ -128,8 +140,8 @@ lib/
 `.env.example` (все значения пустые → доставка заявки выключена, форма работает как
 **прототип**: принимает + валидирует zod + логирует через `ConsoleLeadSink`):
 
-- `RESEND_API_KEY` — ключ Resend для email-уведомления о заявке (вместе с `BOOK_NOTIFY_EMAIL`
-  включает `EmailLeadSink`, который сейчас no-op заглушка).
+- `RESEND_API_KEY` — ключ Resend (вместе с `BOOK_NOTIFY_EMAIL` включает `EmailLeadSink` —
+  реальный `POST` на Resend REST API через `fetch`, без правок кода).
 - `BOOK_NOTIFY_EMAIL` — адрес получателя уведомлений о заявке.
 - `BOOK_WEBHOOK_URL` — URL, куда `WebhookLeadSink` шлёт `POST` с заявкой (реальный `fetch`; off без переменной).
 
@@ -137,10 +149,12 @@ lib/
 
 ## Тесты
 
-vitest. `npm test` (всё) · `npm test -- <path>` (один файл). 4 файла, 22 passed:
+vitest. `npm test` (всё) · `npm test -- <path>` (один файл). 5 файлов, 29 passed:
 
-- `lib/book/submit.test.ts` + `app/api/book/route.test.ts` — шов 1: валидный вход →
-  `{ok:true}` + активный sink вызван; невалидный / битый JSON → `400 {ok:false,errors}`, доставка не вызвана.
+- `lib/book/submit.test.ts` + `lib/book/sinks.test.ts` + `app/api/book/route.test.ts` — шов 1
+  (доставка `lib/book`): валидный вход → `{ok:true}` + каждый `enabled` sink получил лид; невалидный /
+  битый JSON → `400 {ok:false,errors}`, доставка не вызвана; sink бросил → всё равно `{ok:true}`;
+  `Email`/`Webhook` `.enabled` следуют за `process.env` (мок `fetch` + `vi.stubEnv`).
 - `app/sitemap.test.ts` — шов 2: default export = {5 статических} ∪ {12 услуг} ∪ {5 `isFullPage` городов}, ни больше ни меньше.
 - `lib/jsonld.test.ts` — шов 3: `businessJsonLd().name === "EK Global"`, `telephone`/`areaServed` = `data/business`,
   `areaServed.length <= 20`, `aggregateRatingJsonLd().reviewCount === reviews.length`.
@@ -160,10 +174,14 @@ vitest. `npm test` (всё) · `npm test -- <path>` (один файл). 4 фа�
 - `data/business.areaServed` = **20** (лимит GBP; срез с 26 по приоритету). Отброшенные 6
   остаются на `/towns` через `alsoServedNC`/`alsoServedSC`.
 - `data/business.maintenancePlanName` (`"EK Maintenance Plan"`) — **плейсхолдер** + TODO.
-- HOA-сегмент на `/for-business` несёт видимый `[TODO: подтвердить у владельца — …]`.
+- HOA-сегмент `/for-business` скрыт `placeholder: true` в `data/b2b-segments.ts` (владелец не
+  подтвердил вертикаль); видимого `[TODO: …]` на странице больше нет — вернуть снятием флага.
 - `data/b2b-segments.laundryObjectTypes.types` сейчас кодом не читается (оставлено как контент-данные).
 - `#who-we-serve` — светлая секция, но `.audience-card` в `globals.css` тёмная: тёмные карточки
-  на светлом фоне — так предписано spec, CSS заморожен.
+  на светлом фоне — так предписано spec, CSS заморожен (заголовки `h3` перекрашены в светлый —
+  фикс контраста, `docs/adr/0002` приписка).
+- `docs/adr/0013` отменяет `0012` (редиректы всё-таки добавлены); `0002` и `0010` получили
+  приписки от захода 2026-09-02.
 
 ## Как здесь работает Autopilot
 
@@ -176,8 +194,8 @@ vitest. `npm test` (всё) · `npm test -- <path>` (один файл). 4 фа�
 
 ## Источники правды по контенту
 
-- `ek-global-website-brief.md` — бизнес-контекст, ИА, анти-doorway правило, шаблоны страниц.
-- `ek-global-b2b-priority-brief.md` — блочный промт по главной и for-business (B2B-приоритет).
 - `ek-global-seo-strategy-2026.md` — local SEO 2026 (GBP, schema, CWV, 90-дневный план).
-- `ek-global-nextjs-master-brief.md` — как всё это реализуется в Next.js (главный тех-документ).
+- `ek-global-site-issues.md` — карта состояния после аудита (что закрыто, что унаследовано).
+
+Три брифа (`website`, `b2b-priority`, `nextjs-master`) удалены — их след в `.autopilot/` и `docs/adr/`.
 <!-- autopilot:end -->

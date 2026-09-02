@@ -135,3 +135,40 @@
 - **ADR:** `docs/adr/0010` требует приписки «EmailLeadSink реализован в прогоне
   2026-09-02 (Resend REST через `fetch`); ядро ADR — доставка за `LeadSink`,
   включение через `.env` — в силе». Делает оркестратор / таск 04.
+
+### Таск 04 — финальная проверка (верификация, без правок кода)
+
+Регрессий не найдено → фиксов не вносил. Код не менялся; изменены только
+`docs/adr/0002` и `docs/adr/0010` (приписки, часть A) и этот файл.
+
+- **Сборка:** `npm run build` → зелёный (28 SSG + `/api/book` ƒ) · `tsc --noEmit` → 0 ·
+  `npm test` → 29 passed (5 файлов). Прогон на прод-сборке (`next start`).
+- **Контраст задачи 1 (`#who-we-serve`):** `.audience-card h3` рендерится
+  `color: rgb(244,245,242)` (#f4f5f2 = `--text-light`) на карточке `rgb(19,21,19)`
+  (#131513 = `--bg-dark-3`) → WCAG **16.77:1** (было 1.07:1, порог 4.5:1). Правило
+  `.audience-card h3 { color: var(--text-light) }` глобальное — на `/for-business`
+  те же карточки дают тот же цвет. На `/` в `#who-we-serve` 4 `<h3>` в HTML.
+- **Скан 22 страниц** (curl прод-сборки, срез `<script>/<style>`/тегов):
+  0 кириллицы, 0 `TODO`/`FIXME`/`заглушк`, все 22 → HTTP 200.
+- **Редиректы:** 7/7 старых `.html` → `308` + корректный `location` на чистый роут
+  (`/index.html`→`/`, `/towns/index.html`→`/towns`, `/appliance-repair/refrigerator.html`
+  →`/appliance-repair/refrigerator`, и т.д.).
+- **Форма e2e** (мок-приёмник :4599, `BOOK_WEBHOOK_URL=http://localhost:4599`):
+  валидное тело → `200 {"ok":true}`, мок получил JSON лида построчно; `{}` →
+  `400 {"ok":false,"errors":{name,phone,appliance,contactAs}}`.
+- **next/image:** HTML `/` (35 img) и `/for-business` (1 img) — все через
+  `/_next/image?url=…`; выборка URL → `200 image/webp`.
+- **Браузерный прогон** (Playwright chromium, headless): 7 страниц × 1440×900 и
+  390×844 → `scrollWidth == clientWidth` везде (нет гориз. скролла), 0 `console.error`,
+  0 `pageerror`, 0 упавших запросов (кроме телеметрии GA — сторонний beacon,
+  не дефект), все `<img>` после прокрутки `naturalWidth > 0`.
+- **Не тронуто:** `git diff` по `data/business.ts` + `lib/jsonld.ts` за волну 1 — пусто;
+  `siteUrl: "https://ekfix.us"` на месте, `AggregateRating` не менялся.
+- **Вне периметра:** `grep -rn -iE 'gsap|scrolltrigger|scroll-anim|housecall|jobber|/blog'`
+  по `app/ components/ lib/` → пусто.
+- **3 брифа:** `ek-global-{website,b2b-priority,nextjs-master}-brief.md` уже удалены и
+  закоммичены в `78da689` (коммит планирования) — на верификации в рабочем дереве
+  pending-удалений НЕТ, критерий закрыт раньше.
+- **issues §2.11** (низкий контраст акцентной подписи бокового рейла на светлых
+  секциях) — унаследованный дефект дизайна, вне периметра этого захода, остаётся
+  строкой отчёта.
