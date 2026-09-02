@@ -1,7 +1,7 @@
 window.STATE =
 {
   "slug": "nextjs-b2b-migration",
-  "dir": "2026-09-01-nextjs-b2b-migration--wip",
+  "dir": "2026-09-01-nextjs-b2b-migration",
   "title": "Перенос сайта EK Global на Next.js + приоритет B2B",
   "mode": "semi",
   "depth": "normal",
@@ -11,8 +11,8 @@ window.STATE =
   "memoryFile": "CLAUDE.md",
   "skillDir": "/Users/User/.claude/skills/autopilot",
   "startedAt": "2026-09-01T00:51:53-04:00",
-  "updatedAt": "2026-09-02T01:00:00-04:00",
-  "finishedAt": null,
+  "updatedAt": "2026-09-02T01:06:00-04:00",
+  "finishedAt": "2026-09-02T01:06:00-04:00",
   "stages": [
     { "id": "preflight", "status": "done", "startedAt": "2026-09-01T00:51:53-04:00", "finishedAt": "2026-09-01T00:52:55-04:00" },
     { "id": "manifest",  "status": "done", "startedAt": "2026-09-01T00:52:55-04:00", "finishedAt": "2026-09-01T00:55:58-04:00" },
@@ -21,7 +21,7 @@ window.STATE =
     { "id": "plan",      "status": "done", "startedAt": "2026-09-01T01:54:19-04:00", "finishedAt": "2026-09-01T12:56:05-04:00", "note": "11 тасков, ярус T3" },
     { "id": "build",     "status": "done", "startedAt": "2026-09-01T12:56:05-04:00", "finishedAt": "2026-09-02T00:57:00-04:00", "note": "все 11 тасков закоммичены; 28 SSG-страниц + /api/book" },
     { "id": "review",    "status": "done", "startedAt": "2026-09-01T15:09:09-04:00", "finishedAt": "2026-09-02T00:57:00-04:00", "note": "все 11 — pass по обеим осям; 5 дозапросов (все закрыты); 0 нерешённых блокеров" },
-    { "id": "final",     "status": "active", "startedAt": "2026-09-02T00:57:00-04:00", "note": "слепая приёмка + память + ADR" }
+    { "id": "final",     "status": "done",   "startedAt": "2026-09-02T00:57:00-04:00", "finishedAt": "2026-09-02T01:06:00-04:00", "note": "G4 PASS (drift нет); CLAUDE.md + 12 ADR записаны" }
   ],
   "requirements": {
     "total": 53, "done": 38, "inTicket": 9, "inSpec": 0,
@@ -131,5 +131,17 @@ window.STATE =
     "note": "3+ правило (повтор в 3 тасках → fix-now) намеренно не применено к 'редакц. копия в page-компонентах': 'фикс' = 7-й data-модуль, это дизайн-решение а не уборка; 2 ревьюера сочли паттерн допустимым; задокументировано в памяти проекта. Осознанное отступление."
   },
   "reviewers": { "manifestSpec": "a6ce550a170739120", "craft": "a402ee1145d655d52", "note": "все 11 тасков — pass; ревью закрыто" },
-  "blind": null
+  "blind": {
+    "gate": "G4",
+    "verdict": "PASS — расхождений (drift) с манифестом нет",
+    "ran": "независимый агент собрал (`next build` exit 0), поднял (`npm start`), прошёл весь сценарий: главная, услуга, город, /for-business, /about, /brands, POST /api/book (200 valid / 400 invalid / 400 битый JSON), sitemap (22 url vs 6), robots. 22 теста. Обрывов нет.",
+    "everyRequirement": "РЕАЛИЗОВАНО по всем разделам брифа: Next.js/SSG/next-image/globals-1:1, три приоритета (форма-Route Handler прототип / sitemap авто / имя «EK Global» едино), 6 data-модулей, точный состав роутов, /towns/[slug] только 5 isFullPage (структурно: dynamicParams=false + двойной guard), анти-doorway (5 городов ~1000+ слов, свои районы/отзывы), B2B-блоки главной (who-we-serve / trust-b2b / business-cta / commercial-first бренды / новое поле формы), for-business расширен (4 сегмента+якоря / #process / #formats / #faq-business 6), JSON-LD общий, домен-заглушка, ноль выдуманных цифр (HOA/reviews/plan — видимые TODO), areaServed=20, robots.",
+    "notBuilt": "скролл-анимация hero, онлайн-запись со слотами, города сверх 5, офлайн-шаги (GBP) — подтверждено ОТСУТСТВУЮТ, как и требовалось",
+    "drift": [],
+    "notes": [
+      "R45 (отчёт с вопросами владельцу): приёмщик не видит — лежит в .autopilot/ (запрещено). Отчёт = финальное сообщение пользователю + TODO-комментарии в коде + manifest «Открытые вопросы». Не drift.",
+      "server log: `NoFallbackError` при запросе несуществующих dynamic-slug — внутренний шум Next.js при dynamicParams=false, 404 отдаётся корректно, на пользователя не влияет",
+      "«реализовано, не в промпте»: GA4/SideRail/BookingProvider (1:1 порт js/main.js — R38i/R39i), BreadcrumbList JSON-LD (website-brief §7.1 / spec §32), favicon, maintenancePlanName-заготовка — всё из 4 ТЗ-документов или идентичности, не бесхозный A##"
+    ]
+  }
 }
