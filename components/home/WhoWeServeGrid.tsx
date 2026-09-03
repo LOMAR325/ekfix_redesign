@@ -8,7 +8,7 @@ import { whoWeServe, whoWeServeHead } from "@/data/b2b-segments";
 // from data/b2b-segments (written fresh, not shared with /for-business).
 export function WhoWeServeGrid() {
   return (
-    <section id="who-we-serve" className="section section-light">
+    <section id="who-we-serve" className="section section-light-2">
       <SectionHead
         tone="light"
         eyebrow={whoWeServeHead.eyebrow}

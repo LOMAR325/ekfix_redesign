@@ -7,7 +7,7 @@ import { BookForm } from "@/components/BookForm";
 // picks up an appliance preset from a #repair card click.
 export function BookSection() {
   return (
-    <section id="book" className="section section-dark">
+    <section id="book" className="section section-dark-2">
       <div className="book-grid">
         <div className="book-copy">
           <div

@@ -68,8 +68,11 @@ export default function ForBusinessPage() {
       />
 
       {/* Segments — anchor ids (#property-management, #horeca, #hotels) are
-          rendered on each .audience-card by AudienceCard. */}
-      <section className="section section-dark">
+          rendered on each .audience-card by AudienceCard. `section-light-2` so the
+          dark cards step off both the dark PageHero above and the #f4f5f2 #laundry
+          section below (2026-09-03: section hairlines removed, adjacent sections
+          must differ in tone). */}
+      <section className="section section-light-2">
         <AudienceGrid layout="card-grid-4" items={segmentCards} />
       </section>
 
