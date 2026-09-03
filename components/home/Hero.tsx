@@ -10,13 +10,13 @@ import { Anchor } from "@/components/ui/anchor";
 // photo is the LCP image, so it goes through next/image with `priority`.
 const HERO_PHOTO = "/images/hero-technician.webp";
 
-// The accent-underline text-link treatment the current HTML already uses for
-// "See all brands we service →" (index.html #brands) — reused, no new class.
+// Accent text-link: lime colour + trailing arrow are the link signal (the
+// underline was dropped 2026-09-03 per owner feedback — see docs/adr/0002).
+// Hover lift / focus ring come from the `a[style*="--accent"]` rules in globals.css.
 const TEXT_LINK = {
   color: "var(--accent)",
   fontSize: 14,
   fontWeight: 600,
-  borderBottom: "1px solid rgba(198,242,78,0.5)",
 } as const;
 
 export function Hero() {

@@ -4,7 +4,6 @@ import { businessJsonLd } from "@/lib/jsonld";
 import { pageMetadata } from "@/lib/seo";
 import { BookingProvider } from "@/components/BookingProvider";
 import { Hero } from "@/components/home/Hero";
-import { SideRail } from "@/components/home/SideRail";
 import { WhoWeServeGrid } from "@/components/home/WhoWeServeGrid";
 import { RepairSection } from "@/components/home/RepairSection";
 import { FamilySection } from "@/components/home/FamilySection";
@@ -31,7 +30,6 @@ export default function HomePage() {
   return (
     <>
       <JsonLd data={[businessJsonLd()]} />
-      <SideRail />
       <BookingProvider>
         <Hero />
         <WhoWeServeGrid />

@@ -42,10 +42,24 @@ export function Header() {
     });
   }, []);
 
-  const toggleGroup = useCallback((label: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setOpenGroup((current) => (current === label ? null : label));
-  }, []);
+  const toggleGroup = useCallback(
+    (label: string, e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+      // Desktop (>=861px) opens dropdowns on hover / focus-within via CSS. A click
+      // toggle there fights the hover (click closes, hover instantly reopens) and
+      // leaves menus stuck open after a pointer click, so it is a no-op; a pointer
+      // click still drops focus so the menu isn't pinned by :focus-within.
+      const isDesktop =
+        typeof window !== "undefined" &&
+        window.matchMedia("(min-width: 861px)").matches;
+      if (isDesktop) {
+        if (e.detail > 0) e.currentTarget.blur();
+        return;
+      }
+      setOpenGroup((current) => (current === label ? null : label));
+    },
+    [],
+  );
 
   const isActive = (href: string) => pathname === href;
   const groupActive = (basePath: string) =>
@@ -115,7 +129,6 @@ export function Header() {
       </nav>
       <div className="header-actions">
         <a href={business.phoneHref} className="call-pill">
-          <span className="call-dot" />
           <span className="call-text">{business.phone}</span>
         </a>
         <Link href={"/#book" as Route} className="btn btn-accent btn-sm">

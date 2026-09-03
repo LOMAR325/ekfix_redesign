@@ -158,7 +158,6 @@ export default async function ApplianceRepairPage({
               color: "var(--accent)",
               fontSize: 14,
               fontWeight: 600,
-              borderBottom: "1px solid rgba(198,242,78,0.5)",
             }}
           >
             See every brand we service →

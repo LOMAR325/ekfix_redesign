@@ -10,14 +10,13 @@ export type AudienceItem = WhoWeServeCard | ForBusinessSegment;
 const isSegment = (item: AudienceItem): item is ForBusinessSegment =>
   "bullets" in item;
 
-// The "see more" link inside a card reuses the accent-underline inline style the
-// current HTML already applies to "See all brands →" links (index.html #brands,
-// the service pages) — no new class or style is introduced.
+// The "see more" link inside a card: lime colour + trailing arrow are the link
+// signal. The underline was dropped 2026-09-03 per owner feedback (docs/adr/0002);
+// hover / focus treatment is the shared `a[style*="--accent"]` rule in globals.css.
 const CARD_LINK: CSSProperties = {
   color: "var(--accent)",
   fontSize: 14,
   fontWeight: 600,
-  borderBottom: "1px solid rgba(198,242,78,0.5)",
 };
 
 // `.audience-card` — `.eyebrow`, h3, p, and (for `/for-business` segments) a `ul`

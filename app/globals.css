@@ -146,6 +146,13 @@ button { font-family: inherit; }
     transition: opacity .18s ease, transform .18s ease, visibility .18s ease;
     z-index: 70;
   }
+  /* Transparent bridge over the 16px margin gap between trigger and panel so the
+     pointer keeps :hover on .nav-item while travelling into the dropdown
+     (added 2026-09-03 — restores the old site's hover-open behaviour). */
+  .nav-dropdown::before {
+    content: ""; position: absolute;
+    left: 0; right: 0; top: -20px; height: 20px;
+  }
   .nav-item:hover .nav-dropdown, .nav-item:focus-within .nav-dropdown, .nav-item.open .nav-dropdown {
     opacity: 1; visibility: visible; pointer-events: auto; transform: translateX(-50%) translateY(0);
   }
@@ -158,14 +165,13 @@ button { font-family: inherit; }
 
 .header-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
 .call-pill {
-  display: flex; align-items: center; gap: 9px;
+  display: flex; align-items: center;
   padding: 12px 20px; border-radius: 999px;
   border: 1px solid rgba(255,255,255,0.18);
-  color: var(--text-light); font-size: 14px; font-weight: 600;
+  color: var(--text-light); font-size: 15px; font-weight: 600;
   transition: border-color .2s, color .2s;
 }
 .call-pill:hover { border-color: var(--accent); color: var(--accent); }
-.call-dot { width: 6px; height: 6px; border-radius: 999px; background: var(--accent); display: block; }
 
 .nav-toggle {
   display: none;
@@ -176,32 +182,6 @@ button { font-family: inherit; }
   color: var(--text-light);
   align-items: center; justify-content: center;
   cursor: pointer;
-}
-
-/* ---------------- Side rail ---------------- */
-.side-rail {
-  position: fixed;
-  left: clamp(16px, 2.5vw, 40px);
-  top: 50%; transform: translateY(-50%);
-  z-index: 50;
-  display: flex; flex-direction: column; gap: 0;
-}
-.side-rail a { display: flex; align-items: center; gap: 14px; padding: 9px 0; }
-.side-rail .dot {
-  width: 5px; height: 5px; border-radius: 999px;
-  background: rgba(244,245,242,0.28);
-  transition: all .25s;
-}
-.side-rail a.active .dot { width: 10px; height: 10px; background: var(--accent); }
-.side-rail .label {
-  font-family: var(--font-mono); font-size: 11px; letter-spacing: 1.4px;
-  color: transparent; transition: color .25s; white-space: nowrap; text-transform: uppercase;
-}
-.side-rail a.active .label { color: var(--accent); }
-.side-rail.on-light .dot { background: rgba(11,12,11,0.28); }
-
-@media (max-width: 1180px) {
-  .side-rail { display: none; }
 }
 
 /* ---------------- Hero (home) ---------------- */
@@ -239,7 +219,10 @@ button { font-family: inherit; }
 .hero-content {
   position: relative; z-index: 3; width: 100%;
   max-width: max(320px, min(600px, 54%));
-  padding: clamp(130px, 15vh, 168px) clamp(24px, 5vw, 60px) clamp(90px, 18vh, 150px) clamp(24px, 8vw, 150px);
+  /* Vertical padding tightened 2026-09-03 so the whole hero + .hero-trust band
+     fits in 100svh down to ~700px-tall windows, while staying vh-responsive so
+     tall monitors don't look sparse (docs/adr/0002). Horizontal values unchanged. */
+  padding: clamp(100px, 13vh, 150px) clamp(24px, 5vw, 60px) clamp(88px, 13vh, 132px) clamp(24px, 8vw, 150px);
 }
 .hero-content h1 {
   margin: 0; font-size: clamp(42px, 5.4vw, 78px);
@@ -250,8 +233,8 @@ button { font-family: inherit; }
   margin: 28px 0 0; max-width: 380px; font-size: 17px;
   line-height: 1.6; color: var(--text-light-60);
 }
-.hero-ctas { display: flex; gap: 12px; margin-top: 38px; flex-wrap: wrap; }
-.hero-meta { display: flex; align-items: center; gap: 22px; margin-top: 44px; flex-wrap: wrap; }
+.hero-ctas { display: flex; gap: 12px; margin-top: 30px; flex-wrap: wrap; }
+.hero-meta { display: flex; align-items: center; gap: 22px; margin-top: 32px; flex-wrap: wrap; }
 .hero-meta .stars { color: var(--accent); font-size: 15px; letter-spacing: 3px; }
 .hero-meta small { font-size: 13px; color: var(--text-light-60); display: block; margin-top: 6px; }
 .hero-divider { width: 1px; height: 38px; background: var(--line-dark); }
@@ -347,7 +330,21 @@ button { font-family: inherit; }
 
 .not-listed { margin-top: 40px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 15px; color: var(--text-dark-60); }
 .not-listed strong { color: var(--text-dark); }
-.not-listed a { color: var(--text-dark); border-bottom: 2px solid var(--accent); }
+.not-listed a { color: var(--text-dark); transition: color .2s; }
+
+/* Accent / inline text-links — the accent underline (border-bottom) was dropped
+   2026-09-03 per owner feedback (docs/adr/0002). Link signal is now the colour
+   (plus a trailing → where present); hover lifts the colour and focus shows a
+   ring so the links don't read as dead. `a[style*="--accent"]` targets the four
+   inline-styled accent links (Hero, audience-card, BrandsSection, appliance-repair)
+   without introducing a class. */
+.not-listed a:hover,
+.brand-note a:hover { color: var(--accent); }
+a[style*="--accent"] { transition: color .2s; }
+a[style*="--accent"]:hover { color: var(--accent-hover); }
+.not-listed a:focus-visible,
+.brand-note a:focus-visible,
+a[style*="--accent"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
 
 /* ---------------- Family / about ---------------- */
 .family-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); gap: clamp(40px, 5vw, 80px); align-items: center; }
@@ -407,7 +404,7 @@ button { font-family: inherit; }
 .brand-cell:hover img { filter: grayscale(0); opacity: 1; }
 .brand-note { margin-top: 34px; display: flex; align-items: center; gap: 14px; font-size: 14px; color: rgba(244,245,242,0.5); flex-wrap: wrap; }
 .brand-note .tag { font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); }
-.brand-note a { color: var(--text-light); border-bottom: 1px solid rgba(198,242,78,0.6); }
+.brand-note a { color: var(--text-light); transition: color .2s; }
 
 /* ---------------- Book / contact ---------------- */
 .book-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: clamp(48px, 6vw, 90px); align-items: start; }
@@ -550,8 +547,9 @@ button { font-family: inherit; }
 }
 
 @media (max-width: 480px) {
-  .call-pill { padding: 12px; }
-  .call-text { display: none; }
+  /* The green dot used to be the only thing in the pill here; with it gone
+     (2026-09-03) the number stays visible so the pill isn't an empty tap target. */
+  .call-pill { padding: 10px 14px; }
 }
 
 @media (max-width: 760px) {

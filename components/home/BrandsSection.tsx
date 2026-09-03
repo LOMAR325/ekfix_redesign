@@ -7,8 +7,8 @@ import { homeBrands, brandNote, homeBrandsLede } from "@/data/brands";
 // 24: the grid cells are reordered commercial → premium → mass (data/brands.homeBrands
 // already carries that order) and the `.lede` becomes the commercial-first
 // data/brands.homeBrandsLede. `SectionHead` carries the same inline overrides
-// index.html sets (margin-bottom, h2 clamp, `.lede` max-width:300); `.brand-note`
-// and the "See all brands" link match index.html exactly.
+// index.html sets (margin-bottom, h2 clamp, `.lede` max-width:300). The "See all
+// brands" accent link lost its underline 2026-09-03 per owner feedback (docs/adr/0002).
 export function BrandsSection() {
   return (
     <section id="brands" className="section section-dark-2">
@@ -34,7 +34,6 @@ export function BrandsSection() {
             color: "var(--accent)",
             fontSize: 14,
             fontWeight: 600,
-            borderBottom: "1px solid rgba(198,242,78,0.5)",
           }}
         >
           See all brands we service →
