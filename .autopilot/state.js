@@ -11,7 +11,7 @@ window.STATE =
   "memoryFile": "CLAUDE.md",
   "skillDir": "/Users/User/.claude/skills/autopilot",
   "startedAt": "2026-09-02T19:41:42-04:00",
-  "updatedAt": "2026-09-03T02:18:00-04:00",
+  "updatedAt": "2026-09-03T02:40:00-04:00",
   "finishedAt": null,
   "stages": [
     { "id": "preflight", "status": "done", "startedAt": "2026-09-02T19:41:42-04:00", "finishedAt": "2026-09-02T19:43:00-04:00" },
@@ -20,14 +20,20 @@ window.STATE =
     { "id": "spec",      "status": "done", "startedAt": "2026-09-02T19:51:37-04:00", "finishedAt": "2026-09-02T20:11:45-04:00" },
     { "id": "plan",      "status": "skipped", "startedAt": "2026-09-02T20:11:45-04:00", "note": "ярус T0 — без разбивки на таски" },
     { "id": "build",     "status": "done", "startedAt": "2026-09-02T20:18:00-04:00", "finishedAt": "2026-09-03T02:16:00-04:00", "note": "1 проход T0; 1-я попытка — session limit, перезапуск 2026-09-03" },
-    { "id": "review",    "status": "done", "startedAt": "2026-09-03T02:00:00-04:00", "finishedAt": "2026-09-03T02:18:00-04:00", "note": "инлайн, 3 оси; 0 блокеров, 3 concern" },
-    { "id": "final",     "status": "active", "startedAt": "2026-09-03T02:18:00-04:00" }
+    { "id": "review",    "status": "active", "startedAt": "2026-09-03T02:00:00-04:00", "note": "инлайн 3 оси + слепая приёмка: 2 дрейфа (R01 hero на 720px, R04 телефон) → fix-now таск 01" },
+    { "id": "final",     "status": "pending" }
   ],
   "requirements": {
-    "total": 11, "done": 9, "inTicket": 2, "inSpec": 0,
+    "total": 11, "done": 7, "inTicket": 4, "inSpec": 0,
     "placeholder": 0, "deferred": 0, "dropped": 0
   },
-  "tickets": [],
+  "tickets": [
+    { "id": "01", "title": "fix-now: hero на 720px, телефон 16px, сигнал у 2 прозаичных ссылок",
+      "requirements": ["R01", "R04", "R03"], "blockedBy": [], "wave": 1, "zone": ["app/globals.css"],
+      "status": "repair", "startedAt": "2026-09-03T02:42:00-04:00", "retries": 0, "repairs": 1, "handoffs": 0,
+      "repairFindings": ["лайм у .not-listed a/.brand-note a — прозаичные ссылки вне брифинг-карва + нечитаемо на светлой секции → откат к оригиналу"],
+      "origin": "слепая приёмка G4 — 2 дрейфа + 1 находка" }
+  ],
   "singlePass": {
     "startedAt": "2026-09-02T20:18:00-04:00",
     "finishedAt": "2026-09-03T02:16:00-04:00",
@@ -37,7 +43,7 @@ window.STATE =
       "components/ui/audience-card.tsx", "components/home/SideRail.tsx (удалён)"
     ],
     "tests": { "passed": 29, "failed": 0 },
-    "commit": null
+    "commit": "6f2ae17"
   },
   "tests": { "passed": 29, "failed": 0 },
   "debt": {
@@ -75,6 +81,18 @@ window.STATE =
     "R03 — hover/focus инлайн-ссылок через селектор a[style*=\"--accent\"] — работает, но чуть хрупкий (ловит любой <a> с --accent в style)"
   ],
   "reviewers": { "manifestSpec": "инлайн (T0)", "craft": "инлайн (T0)" },
-  "blind": null,
+  "blind": {
+    "ranAt": "2026-09-03T02:38:00-04:00",
+    "checker": "general-purpose, только brief + repo; Playwright 1.62.1 из npx-кэша",
+    "drift": [
+      "R01 hero: manifest done → blind частично. На 1440×900 hero+полоса доверия влезают; на 1280×720 .hero-trust за сгибом (top 737/bottom 792 при vpH 720), .hero-meta подрезана. Порог полной видимости ≳812px. Уплотнение реальное (~50px), но недостаточное для 720/768. → fix-now таск 01",
+      "R04 телефон: manifest done → blind частично. 14→15px (+1px) против жалобы «маловат» почти незаметно на десктопе. Мобайл ≤480 — там номер вернулся, весомо. → fix-now таск 01"
+    ],
+    "findings": [
+      "R03: .not-listed a / .brand-note a — тёмные прозаичные ссылки (не лаймовые, без →); сняли подчёркивание → без hover визуального сигнала ссылки не осталось. → fix-now таск 01: дать им color:var(--accent)",
+      "memory/ADR правки (CLAUDE.md, docs/adr/0002) на момент приёмки не закоммичены — уйдут в финальный коммит (ожидаемо, ждали G4)"
+    ],
+    "framChecks": "форма 200/400 · JSON-LD 2 скрипта · sitemap 22 loc · редиректы 7/7 308 · SSG 28 · тесты 29 · tsc 0 · нет гор.скролла · data/* / siteUrl / AggregateRating / next.config.ts не тронуты — всё OK"
+  },
   "priorRuns": "2026-09-01-nextjs-b2b-migration (миграция) · 2026-09-02-audit-fixes (дефекты аудита) — оба сданы"
 }
