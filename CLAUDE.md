@@ -3,10 +3,11 @@
 
 Сайт ремонта бытовой техники **EK Global** (Charlotte, NC). Перенос статического
 HTML/CSS/JS-сайта на Next.js (App Router + TypeScript strict) с приоритетом контента
-на юрлиц (B2B). Визуально — **1:1 с прежним сайтом, это не редизайн**. Миграция сдана;
-заход 2026-09-02 закрыл дефекты аудита — актуальная карта состояния `ek-global-site-issues.md`
-в корне. Старый сайт (`*.html`, `css/`, `js/`, `assets/`, `sitemap.xml`) удалён — эталон
-визуала теперь только в истории git.
+на юрлиц (B2B). Визуально — **1:1 с прежним сайтом, это не редизайн**; исключение — 6 точечных
+UX-правок захода `ux-polish` 2026-09-03 (коммит `6f2ae17`) по фидбеку владельца (`docs/adr/0002`).
+Миграция сдана; заход 2026-09-02 закрыл дефекты аудита — актуальная карта состояния
+`ek-global-site-issues.md` в корне. Старый сайт (`*.html`, `css/`, `js/`, `assets/`,
+`sitemap.xml`) удалён — эталон визуала теперь только в истории git.
 
 ## Команды
 
@@ -19,8 +20,9 @@ HTML/CSS/JS-сайта на Next.js (App Router + TypeScript strict) с прио
 | `npm test` | Тесты (`vitest run`) · один файл: `npm test -- <path>` |
 | `npm run typecheck` / `npx tsc --noEmit` | Строгая типопроверка |
 
-Последний прогон оркестратора: `npm test` → 29 passed (5 файлов) · `tsc --noEmit` → 0 ·
-`npm run build` → зелёный (28 SSG + `/api/book`). Любой `npm`/`npx` в неинтерактивной среде — с `</dev/null`.
+Последний прогон (заход `ux-polish`, 2026-09-03): `npm test` → 29 passed (5 файлов) ·
+`tsc --noEmit` → 0 · `npm run build` → зелёный (28 SSG + `/api/book`) · редиректы 7/7 → 308.
+Любой `npm`/`npx` в неинтерактивной среде — с `</dev/null`.
 
 Стек: Next.js 16.3.4 · React 19.2.8 · TypeScript strict · zod 4 · vitest 3 · Node 25.
 App Router, без `src/`, без Tailwind. `next.config.ts`: `images.formats:["image/webp"]`,
@@ -33,7 +35,8 @@ app/
   layout.tsx              единственный layout: <html lang=en>, Google Fonts (не next/font),
                           <Header/>{children}<Footer/><Analytics/>, дефолтная metadata
   page.tsx                главная / (SSG) — 9 секций из components/home/*
-  globals.css             копия css/style.css + .card-grid-4 + .audience-card h3 (фикс контраста) — ЗАМОРОЖЕН
+  globals.css             старый css/style.css + .card-grid-4 + .audience-card h3 + правки ux-polish
+                          (2026-09-03) — не заморожен, правится точечно с записью в ADR
   icon.svg                favicon (авто <link rel=icon>)
   robots.ts               /robots.txt · sitemap.ts  /sitemap.xml (22 URL)
   about/ brands/ for-business/ towns/   page.tsx — по одной SSG-странице
@@ -43,8 +46,9 @@ app/
 components/
   Header Footer Analytics JsonLd BookForm BookingProvider   корневые
   ui/*        17 презентационных + 2 хелпера (rich-text.ts, image-dimensions.ts) — 1:1 с классами старого CSS
-  home/*      10 секций главной (Hero, SideRail, WhoWeServeGrid, RepairSection, FamilySection,
-              ReviewsSection, TrustBand, BrandsSection, BusinessCtaBand, BookSection)
+  home/*      9 секций главной (Hero, WhoWeServeGrid, RepairSection, FamilySection, ReviewsSection,
+              TrustBand, BrandsSection, BusinessCtaBand, BookSection); SideRail удалён — рейла и
+              его scroll-spy (бывш. js/main.js) больше нет
   for-business/*   ProcessSteps, ServiceFormats
 data/          ЕДИНСТВЕННЫЙ источник контента, извлечён дословно из старых *.html
   business.ts       NAP + siteUrl-заглушка + areaServed (20) + rating
@@ -110,12 +114,21 @@ lib/
 
 ## Соглашения кода
 
-- `app/globals.css` — дословная копия бывшего `css/style.css` + `.card-grid-4` (копия
-  `.card-grid-3` на 4 колонки, тот же адаптив) + `.audience-card h3 { color: var(--text-light) }`
-  (фикс контраста заголовков карточек на светлой секции; `docs/adr/0002` приписка). **Заморожен** —
-  весь визуал 1:1 держится на нём. Нужна правка CSS → верни `BLOCKED` с объяснением, не правь молча.
+- `app/globals.css` — старый `css/style.css` + `.card-grid-4` (копия `.card-grid-3` на 4 колонки) +
+  `.audience-card h3 { color: var(--text-light) }` (фикс контраста) + правки захода `ux-polish`
+  (2026-09-03, коммит `6f2ae17`): уплотнение `.hero-content`/`.hero-ctas`/`.hero-meta`, удаление
+  блока `.side-rail*`, снятие `border-bottom` у акцентных ссылок (`.not-listed a`, `.brand-note a`,
+  `a[style*="--accent"]`) + их hover/`:focus-visible`, `.call-pill` 15px, удаление `.call-dot`,
+  мост `.nav-dropdown::before`. Все правки — приписками в `docs/adr/0002`. **Больше не заморожен**:
+  точечная UX-правка допустима, но каждая — записью в ADR. Спонтанный рефактор / чистка мёртвых
+  правил / утилиты / Tailwind — по-прежнему `BLOCKED`.
 - Никаких новых CSS-классов / Tailwind / CSS-in-JS / CSS-модулей — только те же классы,
-  что были в старом HTML. Ошибки полей формы рисуются инлайн-стилем (класса под ошибку нет).
+  что были в старом HTML (правка и удаление существующих правил допустимы). Ошибки полей формы
+  рисуются инлайн-стилем (класса под ошибку нет).
+- Акцентные текстовые ссылки — без подчёркивания (сигнал: цвет `--accent` + стрелка `→`); hover
+  осветляет цвет, `:focus-visible` даёт outline. Инлайн-ссылки ловит `a[style*="--accent"]`, класса нет.
+- `Header`: `.call-dot` удалён; на десктопе (≥861px) дропдауны раскрываются по hover/`focus-within`
+  (CSS + мост `.nav-dropdown::before`), `toggleGroup` там no-op; клик-тап работает только <861px.
 - `next/image` для всех изображений (не `<img>`); размеры из
   `components/ui/image-dimensions.ts` (`imageDims(src)`); `hero-technician.webp` — `priority`;
   сохранять текущие `object-fit`/`object-position`.
@@ -178,10 +191,10 @@ vitest. `npm test` (всё) · `npm test -- <path>` (один файл). 5 фа�
   подтвердил вертикаль); видимого `[TODO: …]` на странице больше нет — вернуть снятием флага.
 - `data/b2b-segments.laundryObjectTypes.types` сейчас кодом не читается (оставлено как контент-данные).
 - `#who-we-serve` — светлая секция, но `.audience-card` в `globals.css` тёмная: тёмные карточки
-  на светлом фоне — так предписано spec, CSS заморожен (заголовки `h3` перекрашены в светлый —
-  фикс контраста, `docs/adr/0002` приписка).
+  на светлом фоне — так предписано spec (заголовки `h3` перекрашены в светлый — фикс контраста,
+  `docs/adr/0002` приписка).
 - `docs/adr/0013` отменяет `0012` (редиректы всё-таки добавлены); `0002` и `0010` получили
-  приписки от захода 2026-09-02.
+  приписки от захода 2026-09-02; `0002` — ещё одну от `ux-polish` 2026-09-03 (разморозка `globals.css`).
 
 ## Как здесь работает Autopilot
 
