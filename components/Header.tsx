@@ -126,6 +126,24 @@ export function Header() {
             </Link>
           ),
         )}
+        {/* Shown only inside the open menu on ≤1024px (CSS `.nav-ctas`) — keeps
+            the phone + Book reachable without a two-row top bar. */}
+        <div className="nav-ctas">
+          <a
+            href={business.phoneHref}
+            className="call-pill"
+            onClick={closeMenu}
+          >
+            <span className="call-text">{business.phone}</span>
+          </a>
+          <Link
+            href={"/#book" as Route}
+            className="btn btn-accent btn-sm"
+            onClick={closeMenu}
+          >
+            Book a Repair
+          </Link>
+        </div>
       </nav>
       <div className="header-actions">
         <a href={business.phoneHref} className="call-pill">
