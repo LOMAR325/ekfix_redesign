@@ -1,2 +1,22 @@
 .DS_Store
 **/.DS_Store
+
+# secrets
+.env
+.env.*
+!.env.example
+
+# dependencies / build
+node_modules/
+.next/
+out/
+build/
+dist/
+next-env.d.ts
+*.tsbuildinfo
+
+# python / misc
+__pycache__/
+
+# autopilot local server (machine-specific, not part of the record)
+.autopilot/serve.*
