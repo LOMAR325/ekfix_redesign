@@ -116,11 +116,16 @@ export function FamilySection() {
         </div>
         <div>
           <div className="quote-card">
-            <div className="mark">&ldquo;</div>
             <p>
+              <span className="mark" aria-hidden="true">
+                &ldquo;
+              </span>
               I answer the phone, I do the diagnostic, and I&apos;m the one who
               comes back if something isn&apos;t right. That&apos;s the whole
               promise.
+              <span className="mark" aria-hidden="true">
+                &rdquo;
+              </span>
             </p>
             <div className="who">
               <div className="quote-avatar">K</div>

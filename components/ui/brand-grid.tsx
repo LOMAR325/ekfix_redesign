@@ -11,8 +11,8 @@ type BrandGridProps = {
   note?: BrandNote;
 };
 
-// `.brand-grid` + `.brand-cell` / `.brand-cell.wide`. Logos go through next/image at
-// their real pixel size (from image-dimensions.ts); `app/globals.css` caps them
+// `.brand-grid` (flex-wrap) + equal-size `.brand-cell`s. Logos go through next/image
+// at their real pixel size (from image-dimensions.ts); `app/globals.css` caps them
 // (`.brand-cell img { max-height: 42px; object-fit: contain; filter: grayscale(1) }`).
 export function BrandGrid({ brands, note }: BrandGridProps) {
   return (
@@ -21,10 +21,7 @@ export function BrandGrid({ brands, note }: BrandGridProps) {
         {brands.map((brand) => {
           const dims = imageDims(brand.logo);
           return (
-            <div
-              key={brand.name}
-              className={brand.wide ? "brand-cell wide" : "brand-cell"}
-            >
+            <div key={brand.name} className="brand-cell">
               <Image
                 src={brand.logo}
                 alt={brand.alt}

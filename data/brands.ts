@@ -9,14 +9,14 @@ import type { Brand } from "./types";
 export const brands: Brand[] = [
   // --- Residential & premium kitchen (brands.html section 1) ---
   { name: "Sub-Zero", logo: "/images/sub_zero_logo.webp", alt: "Sub-Zero repair", tier: "premium", home: true },
-  { name: "Thermador", logo: "/images/thermador.webp", alt: "Thermador repair", tier: "premium", wide: true, home: true },
+  { name: "Thermador", logo: "/images/thermador.webp", alt: "Thermador repair", tier: "premium", home: true },
   { name: "Bosch", logo: "/images/bosch.webp", alt: "Bosch repair", tier: "premium", home: true },
   { name: "Samsung", logo: "/images/samsung.webp", alt: "Samsung repair", tier: "mass", home: true },
   { name: "Whirlpool", logo: "/images/whirlpool.webp", alt: "Whirlpool repair", tier: "mass", home: true },
-  { name: "KitchenAid", logo: "/images/kitchen_aid.webp", alt: "KitchenAid repair", tier: "mass", wide: true, home: true },
-  { name: "Electrolux", logo: "/images/electrolux.webp", alt: "Electrolux repair", tier: "mass", wide: true, home: true },
+  { name: "KitchenAid", logo: "/images/kitchen_aid.webp", alt: "KitchenAid repair", tier: "mass", home: true },
+  { name: "Electrolux", logo: "/images/electrolux.webp", alt: "Electrolux repair", tier: "mass", home: true },
   { name: "Maytag", logo: "/images/maytag.webp", alt: "Maytag repair", tier: "mass", home: true },
-  { name: "Frigidaire", logo: "/images/frigidare.webp", alt: "Frigidaire repair", tier: "mass", wide: true, home: true },
+  { name: "Frigidaire", logo: "/images/frigidare.webp", alt: "Frigidaire repair", tier: "mass", home: true },
   { name: "Amana", logo: "/images/Amana.webp", alt: "Amana repair", tier: "mass", home: true },
   { name: "Kenmore", logo: "/images/Kenmore_Logo.webp", alt: "Kenmore repair", tier: "mass", home: true },
   { name: "GE", logo: "/images/GE.webp", alt: "GE repair", tier: "mass" },
@@ -34,7 +34,7 @@ export const brands: Brand[] = [
   // --- Commercial & specialty refrigeration (brands.html section 2) ---
   { name: "Hobart", logo: "/images/hobart.webp", alt: "Hobart repair", tier: "commercial", home: true },
   { name: "Blodgett", logo: "/images/blodget.webp", alt: "Blodgett repair", tier: "commercial", home: true },
-  { name: "Middleby", logo: "/images/Middleby_Corporation.webp", alt: "Middleby Corporation repair", tier: "commercial", wide: true, home: true },
+  { name: "Middleby", logo: "/images/Middleby_Corporation.webp", alt: "Middleby Corporation repair", tier: "commercial", home: true },
   { name: "Girbau", logo: "/images/girbau.webp", alt: "Girbau repair", tier: "commercial", home: true },
   { name: "Copeland", logo: "/images/copeland.webp", alt: "Copeland repair", tier: "commercial", home: true },
   { name: "Beverage-Air", logo: "/images/Beverage_Air.webp", alt: "Beverage-Air repair", tier: "commercial" },

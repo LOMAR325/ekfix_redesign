@@ -139,8 +139,17 @@ lib/
   секцию — проверь соседей (в т.ч. `PageHero` = тёмный и `CtaBand` = `#0b0c0b`).
 - Акцентные текстовые ссылки — без подчёркивания (сигнал: цвет `--accent` + стрелка `→`); hover
   осветляет цвет, `:focus-visible` даёт outline. Инлайн-ссылки ловит `a[style*="--accent"]`, класса нет.
-- `Header`: `.call-dot` удалён; на десктопе (≥861px) дропдауны раскрываются по hover/`focus-within`
-  (CSS + мост `.nav-dropdown::before`), `toggleGroup` там no-op; клик-тап работает только <861px.
+- `Header`: `.call-dot` удалён. **Брейкпоинт меню — `1024px`** (было `860`): ≤1024 — компактная
+  строка «лого + бургер», телефон и «Book a Repair» уезжают в открытое меню как `.nav-ctas`
+  (в `Header.tsx` они продублированы внутри `<nav>`, CSS прячет их вне мобильного меню);
+  ≥1025 — полная горизонтальная навигация (`.header-actions` с пилюлей и кнопкой). Фон хедера
+  `rgba(11,12,11,0.92)`, открытое меню — сплошной `--bg-dark`. На десктопе дропдауны по
+  hover/`focus-within` (CSS + мост `.nav-dropdown::before`), `toggleGroup` no-op ≥1025.
+- `.brand-grid` — **flexbox** (`flex-wrap` + `.brand-cell { flex: 1 1 156px }`), не grid: последняя
+  строка растягивается на всю ширину, ragged-дыр нет. Флаг `Brand.wide` / `.brand-cell.wide`
+  удалён (длинные вордмарки типа Middleby просто масштабируются в обычную ячейку). `.brand-cell`
+  фон `--bg-light` — на `section-light` ячейки невидимы (так на `/brands`, это by design;
+  на главной `#brands` = `section-dark-2`, там белые ячейки видны).
 - `next/image` для всех изображений (не `<img>`); размеры из
   `components/ui/image-dimensions.ts` (`imageDims(src)`); `hero-technician.webp` — `priority`;
   сохранять текущие `object-fit`/`object-position`.

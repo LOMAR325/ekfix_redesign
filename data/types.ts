@@ -76,7 +76,6 @@ export type Brand = {
   logo: string;
   alt: string;
   tier: "commercial" | "premium" | "mass";
-  wide?: boolean;
   /** appears in the reordered home #brands grid (subset of the full /brands list) */
   home?: boolean;
 };

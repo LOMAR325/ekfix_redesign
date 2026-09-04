@@ -92,9 +92,9 @@ button { font-family: inherit; }
   gap: 20px;
   flex-wrap: wrap;
   padding: 18px clamp(20px, 4vw, 40px);
-  background: rgba(11,12,11,0.72);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(11,12,11,0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--line-dark);
 }
 .brand { display: flex; align-items: center; gap: 12px; color: var(--text-light); }
@@ -111,12 +111,13 @@ button { font-family: inherit; }
 
 .main-nav {
   display: flex; align-items: center;
-  gap: clamp(14px, 2vw, 30px);
+  gap: clamp(12px, 1.5vw, 22px);
   font-size: 14px; font-weight: 500;
   flex-wrap: wrap; justify-content: center;
 }
-.main-nav a { color: rgba(244,245,242,0.72); transition: color .2s; }
-.main-nav a:hover, .main-nav a.active { color: var(--accent); }
+.nav-ctas { display: none; }
+.main-nav > a { color: rgba(244,245,242,0.72); transition: color .2s; }
+.main-nav > a:hover, .main-nav > a.active { color: var(--accent); }
 
 .nav-item { position: relative; }
 .nav-trigger {
@@ -364,8 +365,11 @@ a[style*="--accent"]:focus-visible { outline: 2px solid var(--accent); outline-o
 .family-ctas { display: flex; gap: 12px; margin-top: 36px; flex-wrap: wrap; }
 
 .quote-card { padding: clamp(28px, 3vw, 40px); border-radius: 24px; background: var(--bg-dark-3); border: 1px solid rgba(255,255,255,0.09); }
-.quote-card .mark { font-size: 34px; line-height: 0; color: var(--accent); font-weight: 800; }
-.quote-card p { margin: 14px 0 0; font-size: clamp(19px, 1.7vw, 23px); line-height: 1.5; font-weight: 600; letter-spacing: -0.5px; }
+.quote-card p { margin: 0; font-size: clamp(19px, 1.7vw, 23px); line-height: 1.5; font-weight: 600; letter-spacing: -0.5px; }
+/* Matched opening + closing quotes, inline with the text (2026-09-04). */
+.quote-card .mark { color: var(--accent); font-weight: 800; }
+.quote-card p .mark:first-child { margin-right: 3px; }
+.quote-card p .mark:last-child { margin-left: 1px; }
 .quote-card .who { display: flex; align-items: center; gap: 14px; margin-top: 26px; padding-top: 22px; border-top: 1px solid rgba(255,255,255,0.09); }
 .quote-avatar { width: 42px; height: 42px; border-radius: 999px; background: var(--accent); color: var(--bg-dark); display: grid; place-items: center; font-weight: 800; font-size: 15px; flex-shrink: 0; }
 .quote-card .who strong { font-size: 15px; font-weight: 700; display: block; }
@@ -399,15 +403,18 @@ a[style*="--accent"]:focus-visible { outline: 2px solid var(--accent); outline-o
 .rating-badge small { font-size: 13px; color: var(--text-light-60); }
 
 /* ---------------- Brands ---------------- */
-.brand-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 152px), 1fr)); gap: 12px; }
+/* Flex, not grid: `flex: 1 1` lets every row — including the last — stretch to
+   fill the width, so there are no ragged empty cells (2026-09-04, was a
+   grid with span-2 `.wide` cells that left holes when they wrapped). */
+.brand-grid { display: flex; flex-wrap: wrap; gap: 12px; }
 .brand-cell {
+  flex: 1 1 156px; min-width: 0;
   height: 92px; border-radius: 16px; background: var(--bg-light);
   display: grid; place-items: center; padding: 18px 22px;
   border: 1px solid rgba(255,255,255,0.06);
   transition: transform .25s cubic-bezier(.2,.7,.2,1), box-shadow .25s;
 }
 .brand-cell:hover { transform: translateY(-4px); box-shadow: 0 18px 34px -18px rgba(0,0,0,0.9); }
-.brand-cell.wide { grid-column: span 2; }
 .brand-cell img { max-width: 100%; max-height: 42px; object-fit: contain; filter: grayscale(1); opacity: 0.85; transition: filter .25s, opacity .25s; }
 .brand-cell:hover img { filter: grayscale(0); opacity: 1; }
 .brand-note { margin-top: 34px; display: flex; align-items: center; gap: 14px; font-size: 14px; color: rgba(244,245,242,0.5); flex-wrap: wrap; }
@@ -531,28 +538,38 @@ a[style*="--accent"]:focus-visible { outline: 2px solid var(--accent); outline-o
 .audience-card li::before { content: '✓'; color: var(--accent); font-weight: 700; }
 
 /* ---------------- Responsive nav ---------------- */
-@media (max-width: 860px) {
-  .site-header { padding: 14px clamp(18px, 5vw, 32px); align-content: flex-start; }
+/* Tablet + mobile (≤1024px): one compact bar — brand left, hamburger right.
+   The phone + "Book a Repair" move into the open menu as `.nav-ctas`, so the
+   top bar never wraps to two rows (2026-09-04). */
+@media (max-width: 1024px) {
+  .site-header { padding: 14px clamp(18px, 5vw, 32px); flex-wrap: nowrap; }
   .site-header.nav-open {
     height: 100vh; height: 100svh;
-    overflow-y: auto; align-items: flex-start;
+    overflow-y: auto; align-items: flex-start; align-content: flex-start;
+    flex-wrap: wrap; background: var(--bg-dark);
   }
   .brand { order: 1; }
-  .header-actions { order: 2; }
-  .nav-toggle { order: 3; display: flex; }
+  .nav-toggle { order: 2; display: flex; margin-left: auto; }
+  .header-actions { display: none; }
   .main-nav {
     display: none;
-    width: 100%; order: 4; flex-direction: column; align-items: stretch; gap: 0;
+    width: 100%; order: 3; flex-direction: column; align-items: stretch; gap: 0;
     margin-top: 16px; padding-top: 12px; padding-bottom: 24px;
     border-top: 1px solid var(--line-dark);
   }
   .main-nav.open { display: flex; }
-  .main-nav a { padding: 15px 0; width: 100%; border-bottom: 1px solid rgba(255,255,255,0.07); font-size: 16px; }
+  .main-nav > a { padding: 15px 0; width: 100%; border-bottom: 1px solid rgba(255,255,255,0.07); font-size: 16px; }
   .nav-item { border-bottom: 1px solid rgba(255,255,255,0.07); }
   .nav-trigger { width: 100%; justify-content: space-between; padding: 15px 0; font-size: 16px; }
   .nav-dropdown { padding: 0 0 14px 4px; }
   .nav-dropdown a { border-bottom: none; padding: 9px 0; font-size: 15px; }
-  .header-actions .btn-sm { display: none; }
+  .nav-ctas {
+    display: flex; flex-direction: column; gap: 12px;
+    width: 100%; margin-top: 24px;
+  }
+  .nav-ctas .call-pill,
+  .nav-ctas .btn { width: 100%; justify-content: center; }
+  .nav-ctas .call-pill { padding: 15px 20px; font-size: 16px; }
 }
 
 @media (max-width: 480px) {
