@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "check:copy": "node scripts/check-copy.mjs",
+    "check:similarity": "node --no-warnings scripts/similarity.mjs"
   },
   "dependencies": {
     "next": "16.3.4",

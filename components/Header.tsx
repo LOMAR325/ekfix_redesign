@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { Route } from "next";
 import { usePathname } from "next/navigation";
 import { business } from "@/data/business";
+import { site } from "@/data/site";
 import { mainNav } from "@/lib/nav";
 
 // Ported 1:1 from the static <header class="site-header"> + js/main.js:
@@ -68,15 +69,15 @@ export function Header() {
   return (
     <header className={navOpen ? "site-header nav-open" : "site-header"}>
       <Link href="/" className="brand" onClick={closeMenu}>
-        <span className="brand-badge">EK</span>
+        <span className="brand-badge">{site.brandBadge}</span>
         <span className="brand-name">
           <strong>{business.name}</strong>
-          <span>Appliance Repair</span>
+          <span>{site.header.brandSubtitle}</span>
         </span>
       </Link>
       <button
         className="nav-toggle"
-        aria-label="Toggle menu"
+        aria-label={site.header.menuToggleLabel}
         aria-expanded={navOpen}
         onClick={toggleNav}
       >
@@ -137,11 +138,11 @@ export function Header() {
             <span className="call-text">{business.phone}</span>
           </a>
           <Link
-            href={"/#book" as Route}
+            href={site.header.bookCta.href as Route}
             className="btn btn-accent btn-sm"
             onClick={closeMenu}
           >
-            Book a Repair
+            {site.header.bookCta.label}
           </Link>
         </div>
       </nav>
@@ -149,8 +150,11 @@ export function Header() {
         <a href={business.phoneHref} className="call-pill">
           <span className="call-text">{business.phone}</span>
         </a>
-        <Link href={"/#book" as Route} className="btn btn-accent btn-sm">
-          Book a Repair
+        <Link
+          href={site.header.bookCta.href as Route}
+          className="btn btn-accent btn-sm"
+        >
+          {site.header.bookCta.label}
         </Link>
       </div>
     </header>

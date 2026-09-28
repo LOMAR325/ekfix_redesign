@@ -1,7 +1,9 @@
-import type { Review } from "./types";
+import type { Review, ReviewCategory } from "./types";
 
 // The 6 reviews shown in index.html #reviews, verbatim.
 // `author` + `detail` = the <strong> / <span> pair under each quote; `text` = the quote.
+// `segment` / `area` are set only where the review itself says so (spec story 77):
+// Tony Z. → commercial ("Restaurant"); no review names an area yet.
 // TODO: подтвердить у владельца, что все 6 отзывов — настоящие
 export const reviews: Review[] = [
   {
@@ -9,6 +11,7 @@ export const reviews: Review[] = [
     detail: "Dishwasher — Restaurant",
     text: "Constantin did a phenomenal job — came out same day to diagnose, ordered the part, and got our restaurant dishwasher running again. Great price, very friendly.",
     appliance: "Dishwasher",
+    segment: "commercial", // detail says "Restaurant"
   },
   {
     author: "Ally T.",
@@ -53,4 +56,39 @@ export function reviewsByAuthors(authors: string[]): Review[] {
   return authors
     .map((a) => reviews.find((r) => r.author === a))
     .filter((r): r is Review => r !== undefined);
+}
+
+/** Home #reviews order: commercial reviews first, then the rest in their original order. */
+export function homeReviews(): Review[] {
+  return [
+    ...reviews.filter((r) => r.segment === "commercial"),
+    ...reviews.filter((r) => r.segment !== "commercial"),
+  ];
+}
+
+// /reviews sections (spec story 76). A review may land in several; an empty one is dropped.
+const reviewCategoryRules: { id: string; label: string; match: (r: Review) => boolean }[] = [
+  {
+    id: "refrigerators-freezers",
+    label: "Refrigerators & Freezers",
+    match: (r) => r.appliance === "Refrigerator" || r.appliance === "Freezer",
+  },
+  { id: "dishwashers", label: "Dishwashers", match: (r) => r.appliance === "Dishwasher" },
+  {
+    id: "washers-dryers",
+    label: "Washers & Dryers",
+    match: (r) => r.appliance === "Washer" || r.appliance === "Dryer",
+  },
+  { id: "commercial", label: "Commercial", match: (r) => r.segment === "commercial" },
+  {
+    id: "south-charlotte-ballantyne",
+    label: "South Charlotte & Ballantyne",
+    match: (r) => r.area === "south-charlotte" || r.area === "ballantyne",
+  },
+];
+
+export function reviewCategories(): ReviewCategory[] {
+  return reviewCategoryRules
+    .map(({ id, label, match }) => ({ id, label, reviews: reviews.filter(match) }))
+    .filter((c) => c.reviews.length > 0);
 }

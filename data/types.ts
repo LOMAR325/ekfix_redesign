@@ -48,19 +48,48 @@ export type CommercialCategory = {
   href: string;
 };
 
+// ---------------------------------------------------------------------------
+// Publication status (spec §1) — one mechanism for every unit of content. Visibility is
+// decided only in lib/publish.ts; a draft never reaches sitemap, nav, links or JSON-LD.
+// ---------------------------------------------------------------------------
+export type PublishStatus = "draft" | "published";
+export type Publishable = { status: PublishStatus };
+
+/** A FAQ item with its own status (town/area pages, commercial pages). */
+export type PublishableFaq = Publishable & { q: string; a: string };
+
+// Towns and areas (spec §3). A town without `page` has no route (only the text lists on
+// /towns); `page.status` decides whether the route exists in production.
+export type TownPage = Publishable & {
+  seo: { title: string; description: string };
+  hero: { h1?: string; lede: string };
+  prose: string[]; // paragraphs, may contain <strong>
+  districts?: string[];
+  /** cities: hand-picked authors from data/reviews; areas take reviews by Review.area */
+  reviewAuthors?: string[];
+  nearby?: string[]; // "Also serving" chip towns (non-charlotte)
+  nearbyProse?: string; // charlotte only — free-text "also serving nearby" paragraph
+  hasMap?: boolean; // true only for charlotte
+  /** "What we repair" chips (ex-CHARLOTTE_REPAIR_CHIPS); absent → all 12 services */
+  repairChips?: { label: string; href: string }[];
+  // areas only:
+  coverage?: Publishable & { body: string };
+  zips?: Publishable & { items: string[] };
+  communities?: Publishable & { items: string[] };
+  whoWeServe?: Publishable & { business: string; homes: string };
+  applianceNotes?: (Publishable & { serviceSlug: string; heading: string; body: string })[];
+  faqs?: PublishableFaq[];
+};
+
 export type Town = {
   slug: string;
   name: string;
   state: "NC" | "SC";
-  isFullPage: boolean;
-  // only for isFullPage:
-  hero?: { lede: string };
-  prose?: string[]; // paragraphs, may contain <strong>
-  districts?: string[];
-  reviewAuthors?: string[]; // which of data/reviews to show (matched by author)
-  nearby?: string[]; // "Also serving" chip towns (non-charlotte)
-  nearbyProse?: string; // charlotte only — free-text "also serving nearby" paragraph
-  hasMap?: boolean; // true only for charlotte
+  kind: "city" | "area";
+  /** slug of the parent: south-charlotte → charlotte, ballantyne → south-charlotte */
+  parent?: string;
+  /** no page — the town has no route of its own */
+  page?: TownPage;
 };
 
 export type Review = {
@@ -69,6 +98,111 @@ export type Review = {
   text: string;
   appliance?: string;
   town?: string;
+  /** set only where the review itself says so (Tony Z. — "Restaurant") */
+  segment?: "commercial";
+  /** slug of an area from data/towns — only when known (none yet) */
+  area?: string;
+};
+
+/** A /reviews section: label + the reviews its rule selects (see data/reviews). */
+export type ReviewCategory = { id: string; label: string; reviews: Review[] };
+
+/** Anchor ids of the hub segments (data/b2b-segments.forBusinessSegments). */
+export type SegmentId = "property-management" | "horeca" | "hotels" | "hoa";
+
+/** Options of the form's "I'm contacting you as a…" select (data/b2b-segments.contactAsOptions). */
+export type ContactAsOption =
+  | "Homeowner"
+  | "Property Manager"
+  | "Restaurant or Café"
+  | "Hotel or Hospitality"
+  | "Other Business";
+
+// /for-business (→ /commercial-appliance-repair) segment card — anchor id, <h3>, bullets.
+// Publication via `status` — the single draft/published mechanism (spec story 5).
+export type ForBusinessSegment = Publishable & {
+  id: SegmentId; // anchor id on the hub
+  title: string;
+  eyebrow: string;
+  heading: string; // <h3>
+  text: string;
+  href: string;
+  linkLabel: string;
+  bullets: string[];
+};
+
+// Commercial child pages /commercial-appliance-repair/[slug] (spec §6).
+export type CommercialPage = Publishable & {
+  slug: string; // one of the 7 from the brief
+  /** short name for chips/links, e.g. "Commercial Refrigerator Repair" */
+  name: string;
+  kind: "equipment" | "industry";
+  segmentId?: SegmentId; // industry pages only
+  contactAs: ContactAsOption; // form option preset for the CTA (story 52)
+  applianceFormLabel?: string; // equipment — appliance preset (= commercialCategories.formLabel)
+  seo: { title: string; description: string };
+  hero: { h1: string; lede: string }; // h1 may contain <br><span>
+  equipment: {
+    types: string[];
+    brandNames: string[];
+    moreEquipment?: Publishable & { items: string[] };
+  };
+  failures: { title: string; body: string; businessImpact: string }[];
+  callProcess?: Publishable & { body: string };
+  faqs: PublishableFaq[];
+  reviewAuthors: string[];
+  photo?: { src: string; alt: string };
+};
+
+// Knowledge centre (spec §11).
+export type GuideCategory =
+  | "refrigerator"
+  | "dishwasher"
+  | "washer"
+  | "dryer"
+  | "oven-range"
+  | "ice-maker"
+  | "commercial";
+
+export type GuideArticle = Publishable & {
+  slug: string;
+  category: GuideCategory;
+  title: string;
+  metaDescription: string;
+  model?: string;
+  appliesTo?: { brand?: string };
+  symptoms: string[];
+  diagnosis: string[];
+  causes: { cause: string; detail: string }[];
+  repairSteps: string[];
+  whenToCallPro: string;
+  /** a data/services slug or a data/commercial slug */
+  serviceSlug: string;
+  reviewedByOwner: boolean;
+  author?: "owner"; // only when reviewedByOwner
+  technician?: "owner";
+  datePublished?: string; // ISO, set on publication
+  dateModified?: string;
+  sources: { claim: string; url: string; title: string }[]; // never rendered
+};
+
+// Repair cases (story 75) — deliberately NO customer name/address fields.
+export type RepairCase = Publishable & {
+  slug: string;
+  title: string;
+  appliance: string;
+  model?: string;
+  symptom: string;
+  diagnosis: string;
+  failedComponent: string;
+  repair: string;
+  parts: string[];
+  result: string;
+  /** slug of a town/area from data/towns */
+  area?: string;
+  technician?: "owner";
+  /** a data/services slug or a data/commercial slug */
+  serviceSlug: string;
 };
 
 export type Brand = {

@@ -1,29 +1,28 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { business } from "@/data/business";
+import { site } from "@/data/site";
 
 // Routes below are created by later migration tickets; cast until they exist.
 const r = (href: string) => href as Route;
 
 // Ported 1:1 from the static <footer class="site-footer">.
-// NAP values (phone, hours, city, socials) come from data/business.
+// NAP values (phone, hours, city, socials) come from data/business; copy and link labels
+// from data/site.
 export function Footer() {
   return (
     <footer className="site-footer">
       <div className="footer-grid">
         <div className="footer-col">
           <div className="footer-brand">
-            <span className="footer-brand-badge">EK</span>
+            <span className="footer-brand-badge">{site.brandBadge}</span>
             <strong>{business.name}</strong>
           </div>
-          <p>
-            Family-owned appliance repair serving Charlotte NC, the surrounding
-            towns, and northern SC. EPA 608 &amp; OSHA certified. Fully insured.
-          </p>
+          <p>{site.footer.description}</p>
         </div>
         <div className="footer-col">
           <div className="footer-col-title" style={{ marginBottom: 12 }}>
-            Contact
+            {site.footer.contactTitle}
           </div>
           <div className="footer-links">
             <a href={business.phoneHref} className="phone">
@@ -39,30 +38,35 @@ export function Footer() {
         </div>
         <div className="footer-col">
           <div className="footer-col-title" style={{ marginBottom: 12 }}>
-            Follow
+            {site.footer.followTitle}
           </div>
           <div className="footer-links">
-            <a href={business.social.instagram}>Instagram</a>
-            <a href={business.social.facebook}>Facebook</a>
-            <a href={business.social.tiktok}>TikTok</a>
+            {site.footer.social.map((link) => (
+              <a key={link.label} href={link.href}>
+                {link.label}
+              </a>
+            ))}
           </div>
         </div>
         <div className="footer-col">
           <div className="footer-col-title" style={{ marginBottom: 12 }}>
-            Site
+            {site.footer.siteTitle}
           </div>
           <div className="footer-links">
-            <Link href="/">Home</Link>
-            <Link href={r("/about")}>Our Story</Link>
-            <Link href={r("/brands")}>Brands We Service</Link>
-            <Link href={r("/for-business")}>For Business</Link>
-            <Link href={r("/towns")}>Service Area</Link>
+            {site.footer.siteLinks.map((link) => (
+              <Link key={link.href} href={r(link.href)}>
+                {link.label}
+              </Link>
+            ))}
           </div>
         </div>
       </div>
       <div className="footer-bottom">
-        <span>&copy; 2026 {business.name}. All rights reserved.</span>
-        <span>Discounts for veterans, seniors &amp; families with kids</span>
+        <span>
+          &copy; {site.footer.copyrightYear} {business.name}.{" "}
+          {site.footer.rightsReserved}
+        </span>
+        <span>{site.footer.discounts}</span>
       </div>
     </footer>
   );

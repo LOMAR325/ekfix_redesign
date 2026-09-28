@@ -1,3 +1,6 @@
+import type { ContactAsOption, ForBusinessSegment } from "./types";
+import { published } from "../lib/publish";
+
 // B2B content layer — the reorientation of the home page and /for-business toward
 // property managers, restaurants, and hotels first (b2b-priority-brief §7–8).
 //
@@ -15,18 +18,9 @@ export type WhoWeServeCard = {
   linkLabel: string;
 };
 
-// /for-business segment card — carries an anchor id, an <h3> heading, and a bullet list.
-export type ForBusinessSegment = {
-  id: string; // anchor id on /for-business
-  title: string;
-  eyebrow: string;
-  heading: string; // <h3>
-  text: string;
-  href: string;
-  linkLabel: string;
-  bullets: string[];
-  placeholder?: boolean; // vertical not yet confirmed (hoa)
-};
+// /for-business segment card — the type lives in data/types (publication via `status`,
+// the single draft/published mechanism); re-exported here for existing importers.
+export type { ForBusinessSegment } from "./types";
 
 export type NumberedCard = { num: string; title: string; body: string };
 
@@ -75,6 +69,7 @@ export const whoWeServe: WhoWeServeCard[] = [
 export const forBusinessSegments: ForBusinessSegment[] = [
   {
     id: "property-management",
+    status: "published",
     title: "Property Management & Multifamily",
     eyebrow: "Property management",
     heading: "For rental & multi-housing portfolios",
@@ -90,6 +85,7 @@ export const forBusinessSegments: ForBusinessSegment[] = [
   },
   {
     id: "horeca",
+    status: "published",
     title: "Restaurants & Cafés (HoReCa)",
     eyebrow: "Restaurants & cafés (HoReCa)",
     heading: "For kitchens that can't afford downtime",
@@ -105,6 +101,7 @@ export const forBusinessSegments: ForBusinessSegment[] = [
   },
   {
     id: "hotels",
+    status: "published",
     title: "Hotels & Hospitality",
     eyebrow: "Hotels & hospitality",
     heading: "For guest-facing equipment that can't fail",
@@ -120,6 +117,7 @@ export const forBusinessSegments: ForBusinessSegment[] = [
   },
   {
     id: "hoa",
+    status: "draft", // owner has not confirmed the HOA / condo vertical — publish by switching to "published"
     title: "HOA / Condo Associations",
     eyebrow: "HOA / condo associations",
     heading: "For shared and common-area equipment",
@@ -132,16 +130,13 @@ export const forBusinessSegments: ForBusinessSegment[] = [
       "Coordination with board and property manager",
       "Documentation and invoicing for association records",
     ],
-    placeholder: true, // скрыт из рендера: владелец не подтвердил вертикаль HOA / кондо-ассоциаций; вернуть — снять флаг
   },
 ];
 
-// Segments safe to render publicly — any segment whose vertical the owner has not
-// confirmed (`placeholder: true`) is filtered out, so it can never reach production.
-// `/for-business` builds its cards from this, not from `forBusinessSegments`.
-export const publicForBusinessSegments = forBusinessSegments.filter(
-  (s) => !s.placeholder,
-);
+// Segments safe to render publicly — a `status: "draft"` segment (vertical not confirmed by
+// the owner) is filtered out by lib/publish, so it can never reach production.
+// The hub builds its cards from this, not from `forBusinessSegments`.
+export const publicForBusinessSegments: ForBusinessSegment[] = published(forBusinessSegments);
 
 // ---------------------------------------------------------------------------
 // /for-business — "How we work" (#process), numbered .problem-card style.
@@ -242,7 +237,7 @@ export const laundryObjectTypes = {
 
 // Form (#book) — "I'm contacting you as a…" <select> (b2b §7 block 9 / spec story 27).
 // Businesses listed before "Other Business"; feeds LeadInput.contactAs.
-export const contactAsOptions: string[] = [
+export const contactAsOptions: ContactAsOption[] = [
   "Homeowner",
   "Property Manager",
   "Restaurant or Café",

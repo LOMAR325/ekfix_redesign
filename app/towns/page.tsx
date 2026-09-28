@@ -4,7 +4,7 @@ import { pageMetadata } from "@/lib/seo";
 import { breadcrumbTrail } from "@/lib/breadcrumb";
 import {
   townsIndex,
-  fullPageTowns,
+  townsWithPublishedPage,
   alsoServedNC,
   alsoServedSC,
 } from "@/data/towns";
@@ -14,7 +14,7 @@ import { RepairGrid } from "@/components/ui/repair-grid";
 import { CtaBand } from "@/components/ui/cta-band";
 
 // /towns — ported 1:1 from towns/index.html. Hero + section copy comes from
-// data/towns.townsIndex; the "Full local pages" grid is data/towns.fullPageTowns (5);
+// data/towns.townsIndex; the "Full local pages" grid is data/towns.townsWithPublishedPage() (published pages only);
 // the NC / SC text lists are data/towns.alsoServedNC / alsoServedSC (full lists, incl.
 // towns beyond the 20 in business.areaServed — see spec story 8 / R11i).
 export const metadata: Metadata = pageMetadata({
@@ -56,7 +56,7 @@ export default function TownsPage() {
           style={{
             gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
           }}
-          items={fullPageTowns.map((town) => ({
+          items={townsWithPublishedPage().map((town) => ({
             label: `${town.name}, ${town.state}`,
             href: `/towns/${town.slug}`,
             tag: "Full local page",

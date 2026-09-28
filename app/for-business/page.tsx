@@ -44,7 +44,7 @@ const HERO_LEDE = `Property managers, restaurants, cafés, and laundry operators
 // and for-business.html has no links inside its audience cards), so `linkLabel` is
 // cleared — the card's self-referential `href` would only scroll to itself.
 // `publicForBusinessSegments` already drops any unconfirmed vertical (HOA carries
-// `placeholder: true` in data/b2b-segments and is never rendered).
+// `status: "draft"` in data/b2b-segments and is never rendered).
 const segmentCards = publicForBusinessSegments.map((s) => ({
   ...s,
   linkLabel: "",

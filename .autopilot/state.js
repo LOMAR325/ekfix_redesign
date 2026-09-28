@@ -11,7 +11,7 @@ window.STATE =
   "memoryFile": "CLAUDE.md",
   "skillDir": "/Users/User/.agents/skills/autopilot",
   "startedAt": "2026-09-28T22:44:34+03:00",
-  "updatedAt": "2026-09-28T23:22:26+03:00",
+  "updatedAt": "2026-09-28T23:41:20+03:00",
   "finishedAt": null,
   "stages": [
     {
@@ -42,17 +42,21 @@ window.STATE =
     },
     {
       "id": "plan",
-      "status": "active",
+      "status": "done",
       "startedAt": "2026-09-28T23:17:51+03:00",
-      "note": "11 тасков, ярус T3, 5 волн (W3 — 5 тасков параллельно)"
+      "note": "11 тасков, ярус T3, 5 волн (W3 — 5 тасков параллельно)",
+      "finishedAt": "2026-09-28T23:23:00+03:00"
     },
     {
       "id": "build",
-      "status": "pending"
+      "status": "active",
+      "startedAt": "2026-09-28T23:23:00+03:00",
+      "note": "волна 1: фундамент"
     },
     {
       "id": "review",
-      "status": "pending"
+      "status": "active",
+      "startedAt": "2026-09-28T23:37:46+03:00"
     },
     {
       "id": "final",
@@ -60,7 +64,7 @@ window.STATE =
     }
   ],
   "requirements": {
-    "total": 101,
+    "total": 102,
     "done": 1,
     "inTicket": 99,
     "inSpec": 0,
@@ -103,10 +107,14 @@ window.STATE =
         "data/site.ts",
         "scripts/"
       ],
-      "status": "pending",
+      "status": "repair",
       "retries": 0,
-      "repairs": 0,
-      "handoffs": 0
+      "repairs": 1,
+      "handoffs": 0,
+      "startedAt": "2026-09-28T23:23:00+03:00",
+      "repairFindings": [
+        "ревью: одна точка входа к опубликованному; тесты швов 2/5 не зависят от статусов в data; очистка фикстур; предикат городов один и на момент вызова; общий экстрактор + D01 редакционная метрика + маски отраслей; типизация contactAs/segmentId, equipment → Other Business; priority в шве 2; ярлыки из data/site"
+      ]
     },
     {
       "id": "02",
@@ -462,8 +470,8 @@ window.STATE =
   },
   "concerns": [],
   "reviewers": {
-    "manifestSpec": null,
-    "craft": null
+    "manifestSpec": "a0198322a4ca1a633",
+    "craft": "a8a31c0a2128b8bf6"
   },
   "blind": null,
   "branch": "autopilot/entity-commercial-geo",

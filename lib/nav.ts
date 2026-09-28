@@ -2,7 +2,8 @@
 // Derived data, not a source of truth: built from data/services + data/towns + static labels.
 
 import { services } from "../data/services";
-import { fullPageTowns } from "../data/towns";
+import { townsWithPublishedPage } from "../data/towns";
+import { site } from "../data/site";
 
 export type NavLink = { label: string; href: string };
 export type NavGroup = {
@@ -20,11 +21,11 @@ const repairServices: NavLink[] = services.map((s) => ({
 }));
 
 const serviceArea: NavLink[] = [
-  ...fullPageTowns.map((t) => ({
+  ...townsWithPublishedPage().map((t) => ({
     label: `${t.name}, ${t.state}`,
     href: `/towns/${t.slug}`,
   })),
-  { label: "All Service Towns →", href: "/towns" },
+  { label: site.links.allServiceTowns, href: "/towns" },
 ];
 
 export const mainNav: NavEntry[] = [
