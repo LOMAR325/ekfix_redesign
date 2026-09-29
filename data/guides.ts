@@ -108,6 +108,58 @@ const S = {
     url: "https://producthelp.whirlpool.com/Cooking/Cooktops/Product_Info/Cooktop_Product_Assistance/Gas_Burners_are_Clicking_but_Not_Lighting",
     title: "Gas Burners are Clicking but Not Lighting — Product Help, Whirlpool",
   },
+  kitchenaidIceFd: {
+    url: "https://producthelp.kitchenaid.com/Refrigeration/Full-Size_Refrigerators/French_Door_Bottom_Freezer_Refrigerator/Ice_and_Water_Concerns/Ice_and_Dispenser_Concerns/Ice_Production/Not_Making_Ice_-_Refrigerator",
+    title: "Not Making Ice - Refrigerator — Product Help, KitchenAid",
+  },
+  kitchenaidIceSxs: {
+    url: "https://producthelp.kitchenaid.com/Refrigeration/Full-Size_Refrigerators/Side_By_Side_Refrigerator/Ice_and_Water_Concerns/Ice_and_Dispenser_Concerns/Ice_Production/Not_Making_Ice/Not_Making_Ice_-_Side_by_Side_Refrigerator",
+    title: "Not Making Ice - Side by Side Refrigerator — Product Help, KitchenAid",
+  },
+  kitchenaidIceGeneral: {
+    url: "https://producthelp.kitchenaid.com/Refrigeration/Full-Size_Refrigerators/Product_Info/Product_Assistance/Ice_Maker_Not_Working_-_Troubleshooting",
+    title: "Ice Maker Not Working - Troubleshooting — Product Help, KitchenAid",
+  },
+  kitchenaidPressure: {
+    url: "https://producthelp.kitchenaid.com/Refrigeration/Full-Size_Refrigerators/Product_Info/Tips_and_Tricks/Ensuring_Correct_Water_Pressure",
+    title: "Ensuring Correct Water Pressure — Product Help, KitchenAid",
+  },
+  thermadorCodes: {
+    url: "https://www.thermador.com/us/support/dishwashers/error-codes",
+    title: "Error Codes | Dishwashers Support — Thermador US",
+  },
+  thermadorDwhd560: {
+    url: "https://media3.bsh-group.com/Documents/9001682047_B.pdf",
+    title: "Use and Care Guide, Dishwasher DWHD560C — Thermador",
+  },
+  thermadorDwhd640: {
+    url: "https://media3.bsh-group.com/Documents/9001861678_A.pdf",
+    title: "Use and Care Guide, Dishwasher DWHD640EFP — Thermador",
+  },
+  mieleG5006: {
+    url: "https://media.miele.com/downloads/9a/3c/01_C7F138384EF71EEEB2AF8A4386E49A3C.pdf",
+    title: "Operating Instructions, Dishwasher G 5006, G 5008 (en-US, M.-Nr. 11 694 023) — Miele",
+  },
+  lgFrontOe: {
+    url: "https://www.lg.com/us/support/help-library/lg-washer-what-is-a-front-load-washing-machine-oe-error-code--1337714738535",
+    title: "LG Washer - What is a Front Load Washing Machine OE Error Code? — LG USA Support",
+  },
+  lgTopOe: {
+    url: "https://www.lg.com/us/support/help-library/lg-top-load-washer-troubleshooting-an-oe-error-code--1425330996723",
+    title: "LG Top Load Washer - Troubleshooting An OE Error Code — LG USA Support",
+  },
+  samsungWasherCodes: {
+    url: "https://www.samsung.com/us/support/troubleshoot/TSG10000997/",
+    title: "Samsung washing machine information and error codes — Samsung US Support",
+  },
+  samsungWasherDrain: {
+    url: "https://www.samsung.com/us/support/troubleshoot/TSG10007110/",
+    title: "Samsung washing machine will not drain — Samsung US Support",
+  },
+  samsungWasherFill: {
+    url: "https://www.samsung.com/us/support/troubleshoot/TSG10007295/",
+    title: "Water fill issues with Samsung washing machines — Samsung US Support",
+  },
 } as const;
 
 const src = (s: { url: string; title: string }, claim: string) => ({ claim, url: s.url, title: s.title });
@@ -414,6 +466,297 @@ export const articles: GuideArticle[] = [
       src(S.whirlpoolBurners, "Check that the appliance is connected to the gas supply and the shut-off is on; if not connected, contact a qualified gas technician."),
       src(S.whirlpoolBurners, "Clicking with knobs off can be moisture in the switches; allow drying time or use cool air from a hair dryer."),
       src(S.whirlpoolBurners, "Clean clogged burner ports with a straight pin; do not enlarge or distort the port. Burner adjustment: contact a trained repair specialist."),
+    ],
+  },
+  // ── Task 10: additional drafts (story 70a) ──
+  {
+    ...DRAFT,
+    slug: "kitchenaid-ice-maker-not-making-ice",
+    category: "ice-maker",
+    title: "KitchenAid ice maker not making ice",
+    metaDescription:
+      "KitchenAid ice maker not making ice: ice maker switch and reset, freezer temperature, water line and pressure, and filter installation checks.",
+    model: "KitchenAid full-size refrigerators with a built-in ice maker (French door and side-by-side)",
+    appliesTo: { brand: "KitchenAid" },
+    symptoms: [
+      "No ice in the bin",
+      "Slow ice production",
+      "Small, hollow or irregular cubes",
+      "Ice stopped after a filter change",
+    ],
+    diagnosis: [
+      "Check that the ice maker is on. An ice maker switched off by accident is a common reason for no ice.",
+      "Check the freezer setting: 0 to 5°F (-17 to -15°C) is the range for ice production. A refrigerator running too warm reduces ice production; after changing the controls, wait at least 24 hours before rechecking the temperature.",
+      "Check the water supply: the refrigerator must be connected to a cold water supply, the line securely connected and the shutoff valve fully open. Look for kinks; a refrigerator pushed too far back against the wall or cabinet can pinch the line.",
+      "Check the water pressure: 30–120 psi (207–827 kPa) at the refrigerator connection, typically optimal at 40–80 psi. Low pressure causes slow or no ice production and small or hollow cubes. A reverse osmosis system can lower the pressure; with one, the system pressure needs to be at least 40–60 psi.",
+      "After a filter change, confirm the filter is locked in place and sealing. The installation check: remove the filter from the housing and try to dispense water; if water dispenses, the filter was installed improperly and has to be reinstalled.",
+      "On a recently installed side-by-side, the doors, the water dispenser tube connection and the wiring connection at the bottom of the freezer door hinge must be installed as described in the installation instructions.",
+      "An ice maker left on without a water line connected can cause a buzzing noise, and the refrigerator, crisper drawers and freezer may run too cold.",
+    ],
+    causes: [
+      { cause: "Ice maker switched off", detail: "Turned off by accident; a common reason for no ice." },
+      {
+        cause: "Freezer too warm",
+        detail: "Above the 0 to 5°F range the ice maker may not work properly and ice production drops.",
+      },
+      {
+        cause: "Restricted water supply",
+        detail: "Shutoff valve not fully open, a loose connection, or a kinked or pinched water line.",
+      },
+      {
+        cause: "Low water pressure",
+        detail: "Outside 30–120 psi at the connection (with reverse osmosis, system pressure at least 40–60 psi): slow or no ice, small or hollow cubes.",
+      },
+      {
+        cause: "Clogged or badly installed filter",
+        detail: "Reduces water flow to the ice maker; the filter is due every 6 months, when the indicator light comes on, or as needed.",
+      },
+    ],
+    repairSteps: [
+      "Turn the ice maker on — Press and hold the reset button for a few seconds (the manual shows where it is); without a reset button, unplug the refrigerator for one minute and plug it back in.",
+      "Set the freezer — Adjust it to 0–5°F and wait at least 24 hours before rechecking.",
+      "Open the water supply — Open the shutoff valve fully, straighten any kinks and keep the refrigerator from pinching the line against the wall.",
+      "Check the filter — Confirm it is locked and sealed; replace it at 6 months or when the indicator light is on.",
+      "Have the pressure tested — A licensed plumber can test household water pressure if it may be outside 30–120 psi.",
+      "Reset and wait — If ice is made but not dropped into the bin, unplug the refrigerator for 1 minute, then check for ice after a couple of hours.",
+    ],
+    whenToCallPro:
+      "If the ice maker is on, the freezer holds 0–5°F, the water line, pressure and filter check out and there is still no ice, the next step is service. Door water-tube and wiring connections at the freezer hinge are checked against the installation instructions.",
+    serviceSlug: "ice-maker",
+    sources: [
+      src(S.kitchenaidIceSxs, "A common reason an ice maker does not make ice is that it was accidentally turned off. Reset: press and hold the reset button for a few seconds; without one, unplug the refrigerator for one minute."),
+      src(S.kitchenaidIceSxs, "If the ice maker is making ice but not dumping it into the bin, unplug the refrigerator for 1 minute, then wait a couple of hours and check for ice production."),
+      src(S.kitchenaidIceSxs, "If the ice maker is not connected to a water supply line but remains turned on: buzzing noise, refrigerator too cold, crisper food may freeze, freezer too cold."),
+      src(S.kitchenaidIceSxs, "If the refrigerator is too warm, ice production can be impacted; wait at least 24 hours between temperature adjustments."),
+      src(S.kitchenaidIceSxs, "Recently installed side-by-side: check the doors, the water dispenser tube connection and the wiring connection at the bottom of the freezer door hinge."),
+      src(S.kitchenaidIceSxs, "The refrigerator must be installed to a cold water supply; a kink reduces water flow; do not push the refrigerator too far back against the wall or cabinet."),
+      src(S.kitchenaidIceSxs, "Replace the water filter every 6 months, when the indicator light comes on, or as needed; a clogged or improperly installed filter reduces water flow to the ice maker."),
+      src(S.kitchenaidIceGeneral, "Ensure the water line is securely connected and the valve is fully opened. Freezer temperature between 0 and 5 degrees Fahrenheit (-17 to -15 °C) for optimal ice production; too high and the ice maker may not function properly."),
+      src(S.kitchenaidIceFd, "Check that the water filter is locked in place and creating a proper seal; remove the filter from the housing and try to dispense water — if water dispenses, the filter was installed improperly; reinstall it."),
+      src(S.kitchenaidPressure, "Water pressure 30–120 psi (207–827 kPa) at the refrigerator connection, typically optimal at 40–80 psi; outside the range: hollow, small or irregular cubes, slow or no ice production. A licensed plumber can test the pressure."),
+      src(S.kitchenaidPressure, "Connecting a refrigerator to a reverse-osmosis system could lower its water pressure, so ensure the system pressure is at least 40-60 psi."),
+    ],
+  },
+  {
+    ...DRAFT,
+    slug: "thermador-dishwasher-e15-error",
+    category: "dishwasher",
+    title: "Thermador dishwasher E15 error",
+    metaDescription:
+      "What Thermador code E15 means (water detected in the base, leakage protection active), its equivalent on four-digit displays, and the steps before service.",
+    model: "Thermador dishwashers that display E-codes",
+    appliesTo: { brand: "Thermador" },
+    symptoms: [
+      "E15 on the display",
+      "E3100 on a four-digit display",
+      "E:31-00 or E:30-00 lit alternately (newer models)",
+    ],
+    diagnosis: [
+      "E15 means the safety switch has detected water in the base of the dishwasher and the leakage protection system has activated.",
+      "On dishwashers that show four-digit codes, the same condition is listed as E3100. The use and care guide for the DWHD640EFP lists E:30-00 and E:31-00 as the water protection system being activated.",
+      "The first action for all of these codes is to turn off the water inflow by closing the water supply valve.",
+      "On older two-digit models such as the DWHD560C, a code between E:01 and E:30 that has no entry of its own in the fault table indicates a probable technical fault.",
+    ],
+    causes: [
+      {
+        cause: "Water in the base",
+        detail: "The safety switch in the base has detected water and triggered the leakage protection.",
+      },
+      {
+        cause: "Technical fault (older models)",
+        detail: "On two-digit models, an unlisted code from E:01 to E:30 points to a probable technical fault.",
+      },
+    ],
+    repairSteps: [
+      "Turn off the water — Close the water supply valve to the dishwasher.",
+      "Note the code — Record the code exactly as displayed; customer service asks for it.",
+      "Restart once (older models) — Switch off with the ON/OFF switch and restart after a short time.",
+      "Disconnect if it returns — If the code comes back, keep the tap off and pull out the mains plug.",
+      "Book service — Thermador's instruction for this code is to contact customer support once the water inflow is off.",
+    ],
+    whenToCallPro:
+      "E15 is a service code: the manufacturer's instruction is to turn off the water inflow and contact support, and the same applies to E3100 and E:31-00 on newer displays. On older models, a code that returns after a restart also goes to customer service.",
+    serviceSlug: "dishwasher",
+    sources: [
+      src(S.thermadorCodes, "E15 - The safety switch has detected water in the base of the dishwasher. The leakage protection system has activated. Turn off the water inflow and contact Thermador Customer Support."),
+      src(S.thermadorCodes, "E3100 - The safety switch has detected water in the base of the dishwasher; the leakage protection system has been activated. Turn off the water inflow and contact Customer Support."),
+      src(S.thermadorDwhd640, "E:30-00 and E:31-00 light up alternately: water protection system is activated. Close the water supply valve; contact customer service."),
+      src(S.thermadorDwhd560, "A different error code (E:01 to E:30): a technical fault has probably occurred. Switch off with the ON/OFF switch and restart after a short time; if the problem recurs, turn off the tap, pull out the mains plug and call customer service, mentioning the error code."),
+    ],
+  },
+  {
+    ...DRAFT,
+    slug: "miele-dishwasher-error-codes",
+    category: "dishwasher",
+    title: "Miele dishwasher error codes",
+    metaDescription:
+      "Miele dishwasher fault numbers F11, F12, F13, F18, F70 and F78: what each one means and the remedy steps from the operating instructions.",
+    model: "Miele G 5006 and G 5008 (US operating instructions); other models: the model's own operating instructions",
+    appliesTo: { brand: "Miele" },
+    symptoms: [
+      "Fault number in the time display",
+      "Water intake/drainage indicator flashing",
+      "Dishwasher stops during a program",
+      "Water left in the wash cabinet",
+    ],
+    diagnosis: [
+      "F11 — water drainage fault; there might be water in the wash cabinet.",
+      "F12 or F13 — water intake fault. When F and 173 alternate on the time display, the water faucet is turned off.",
+      "F18 — a technical fault has occurred.",
+      "F70 — the Waterproof system has reacted; the drain pump may still be running with the door open.",
+      "F78 — circulation-pump fault; all program selection indicator lights flash.",
+      "A fault number not listed in the instructions may be a technical fault: turn the dishwasher off, back on after a few seconds and restart the program. If the indicator lights flash again, it is a technical fault.",
+      "The water-connection pressure must be between 7.25 and 145 psi (50 and 1,000 kPa).",
+    ],
+    causes: [
+      {
+        cause: "Blocked drain path (F11)",
+        detail: "Clogged filter combination, a blocked drain pump, or a kink or loop in the drain hose.",
+      },
+      {
+        cause: "Restricted water intake (F12, F13)",
+        detail: "Shut-off valve not fully open, a clogged water-intake filter, or pressure below 7.25 psi (50 kPa).",
+      },
+      {
+        cause: "Drain connection too low (F12, F13)",
+        detail: "The on-site drain connection may be too low, in which case the water drainage has to be vented.",
+      },
+      { cause: "Waterproof system reaction (F70)", detail: "The built-in leak protection has reacted." },
+      {
+        cause: "Technical or pump fault (F18, F78)",
+        detail: "F18 is a technical fault; F78 is a circulation-pump fault that counts as technical if it returns after a restart.",
+      },
+    ],
+    repairSteps: [
+      "Switch off first — Turn the dishwasher off before remedying F11, F12 or F13.",
+      "Open the water supply (F12, F13) — Open the shut-off valve all the way, clean the water-intake filter and start the program again.",
+      "Clean the filters (F11) — Remove the lower spray arm and the filter combination, pull the microfilter away, rinse all filters under running water, refit the combination flat and lock the spray arm.",
+      "Clean the drain pump (F11) — Unplug the dishwasher, take out the filters, scoop out the water, press the cover catch inwards and tip the cover to release it. Remove foreign objects carefully (glass splinters are hard to see) and turn the impeller by hand; a little resistance is normal.",
+      "Straighten the drain hose (F11) — Remove any kink or loop.",
+      "Restart once (F78) — Turn the dishwasher off and back on and restart the program.",
+      "Shut off and call (F18, F70) — Turn the dishwasher off, turn off the water-supply faucet and contact Miele service.",
+    ],
+    whenToCallPro:
+      "F18 and F70 go straight to service once the dishwasher and the water supply are off. F78, or an unlisted fault number, goes to service when it returns after a restart. Water-connection pressure below 7.25 psi calls for professional advice on the supply.",
+    serviceSlug: "dishwasher",
+    sources: [
+      src(S.mieleG5006, "Fault number F11 in the time display: water drainage fault; there might be water in the wash cabinet. Turn off the dishwasher; clean the filter combination and the drain pump; remove any kink or loop in the drain hose."),
+      src(S.mieleG5006, "Fault number F12 or F13: water-intake fault. Open the shut-off valve all the way and start the program again; clean the water-intake filter; pressure lower than 7.25 psi (50 kPa): seek professional advice; the on-site drainage connection may be too low and need venting. F and 173 alternating: the faucet is turned off."),
+      src(S.mieleG5006, "Fault number F18: a technical fault has occurred. Turn off the dishwasher, close the shut-off valve, contact Miele Customer Service."),
+      src(S.mieleG5006, "Fault F70: the Waterproof system has reacted; the drain pump may still be running with the door open. Turn off the dishwasher and the water-supply faucet; contact Miele Customer Service."),
+      src(S.mieleG5006, "Fault number F78 with all program selection lights flashing: circulation-pump fault. Turn off, turn back on, restart the program; if it appears again it is a technical fault — turn off the dishwasher and the water-supply faucet and contact Miele Customer Service."),
+      src(S.mieleG5006, "A fault number not listed: turn off, turn back on after a few seconds, restart the program; if the indicator lights flash again there is a technical fault."),
+      src(S.mieleG5006, "The water-connection pressure needs to be between 7.25 and 145 psi (50 and 1,000 kPa)."),
+      src(S.mieleG5006, "Cleaning the filters: remove the lower spray arm and filter combination, pull the microfilter away, rinse under running water, reinstall flat and lock the spray arm. Cleaning the drain pump: disconnect power, remove filters, scoop out water, press the cover catch inwards and tip the cover; remove foreign objects (glass splinters are hard to see); turn the impeller by hand — a little resistance is normal."),
+    ],
+  },
+  {
+    ...DRAFT,
+    slug: "lg-washer-oe-error",
+    category: "washer",
+    title: "LG washer OE error",
+    metaDescription:
+      "LG washer OE code means the washer cannot drain: drain hose, drain pump test, pump filter cleaning on front loaders, forced drain on top loaders, and suds.",
+    model: "LG front-load and top-load washers",
+    appliesTo: { brand: "LG" },
+    symptoms: ["OE on the display", "Water remains in the tub", "Heavy suds in the drum"],
+    diagnosis: [
+      "OE means the washer is unable to drain the water used during the wash cycle. On top-load models the code appears when the washer has been unable to drain for 13 minutes.",
+      "Check the drain hose behind the washer for kinks or clogs. On a top loader, pull the washer far enough from the wall to confirm the hose is not bent, clogged or pinched between the washer and the wall.",
+      "Front loader: test the drain pump with a SPIN ONLY cycle at HIGH spin speed. A humming sound, and possibly water draining, in the first 15 seconds means the pump motor is running; no hum means the pump is not working.",
+      "If the pump hums, the drain pump filter is the next thing to check for a clog.",
+      "If the filter is clean, excessive suds can trigger OE: suds create air pockets, the pump draws air instead of water and signals a drain issue.",
+    ],
+    causes: [
+      { cause: "Kinked or clogged drain hose", detail: "Behind the washer, or pinched between the washer and the wall." },
+      { cause: "Clogged drain pump filter", detail: "Front loaders: debris in the filter behind the service panel." },
+      { cause: "Excessive suds", detail: "Air pockets make the pump draw air instead of water." },
+      { cause: "Drain pump not working", detail: "No humming sound during the spin-only test." },
+    ],
+    repairSteps: [
+      "Clear the drain hose — Straighten kinks and remove clogs, then run a spin cycle to see whether OE has cleared.",
+      "Run SPIN ONLY — Front loader: select HIGH spin speed and start the spin-only cycle. Top loader: select SPIN ONLY under Special Use; the washer tries to drain the remaining water.",
+      "Force a drain (top loaders without SPIN ONLY) — Start a cycle, let it run a few minutes and pause it; after 8 minutes the washer times out, shows DR and tries to drain.",
+      "Drain the tub (front loaders) — Unplug the washer, open the service panel at the bottom-left, unclip the small drain hose, remove its cap and drain into a shallow pan. Do not pull the hose too far out; if nothing drains, push it back in about 1 inch.",
+      "Clean the pump filter (front loaders) — With a towel underneath, twist the filter counter-clockwise to remove it; clean it and its opening with a soft-bristle brush and warm water (not in a dishwasher), refit it clockwise until it stops and recap the drain hose.",
+      "Run a tub clean — Run TUB CLEAN, reduce the detergent dose, then run a new cycle to see whether the code clears.",
+    ],
+    whenToCallPro:
+      "No humming during the spin-only test means the drain pump is not working and the washer needs repair. OE that returns after the hose, filter and tub clean steps (front loaders), or on an empty wash cycle after the forced drain (top loaders), also needs repair service.",
+    serviceSlug: "washer",
+    sources: [
+      src(S.lgFrontOe, "An OE error code indicates the washing machine is unable to drain the water used during the wash cycle; it can be caused by a kinked drain hose or a clogged drain pump filter. Check behind the washer that the drain hose is not kinked or clogged, then run a spin cycle."),
+      src(S.lgFrontOe, "Test the drain pump: POWER on, SPIN SPEED to HIGH, start SPIN ONLY; a humming sound and possibly draining water for the first 15 seconds means the pump motor works. No humming: the drain pump is not working and the unit requires repair service."),
+      src(S.lgFrontOe, "OE filter cleaning: unplug; open the service panel on the bottom-left; unclip the drain hose, remove its cap and drain into a shallow pan — do not pull the hose too far out; if nothing drains, push it back in about 1 inch; twist the pump filter counter-clockwise to remove; clean with a soft-bristle brush and warm water, not in the dishwasher; refit clockwise until it stops."),
+      src(S.lgFrontOe, "OE with a clean filter: excessive suds create air pockets and the pump sucks air instead of water; perform a TUB CLEAN cycle and reduce detergent. If OE appears again, the unit may require repair service."),
+      src(S.lgTopOe, "Top load OE: the washer has been unable to drain water for 13 minutes. Check the drain hose is not bent, clogged or pinched between the washer and the wall; run SPIN ONLY (Special Use); then a TUB CLEAN cycle."),
+      src(S.lgTopOe, "Top load without SPIN ONLY: start a cycle, pause it after a few minutes; after 8 minutes the unit times out, displays DR and tries to drain. If OE occurs again on an empty wash cycle, the unit requires repair service."),
+    ],
+  },
+  {
+    ...DRAFT,
+    slug: "samsung-washer-error-codes",
+    category: "washer",
+    title: "Samsung washer error codes",
+    metaDescription:
+      "Samsung washer codes for filling (4C, 4E), draining (5C, 5E), door, unbalanced load, leakage and suds: what each means and the checks before service.",
+    model: "Samsung washers with a digital display; some codes differ by model — the user manual confirms",
+    appliesTo: { brand: "Samsung" },
+    symptoms: [
+      "Code on the display and the cycle stops",
+      "Washer does not fill",
+      "Water left in the drum",
+      "Cycle does not finish because the load is unbalanced",
+    ],
+    diagnosis: [
+      "4C, 4E or nF — not filling: water is not entering the washer correctly. 4C2 or 4E2 means the hot and cold supply hoses are swapped.",
+      "5C, 5E, nd, SC or SE — no drain: water is not draining at the correct speed, or at all. OE, OC, 0E or 0C — overflow: too much water in the washer.",
+      "dC, dE, dS, dL, FL or LO — the door is not detected as closed and locked. On some models dC means an unbalanced load instead; the user manual for the model confirms which.",
+      "UE, Ub or U6 — the load is unbalanced and the cycle cannot complete. Ur means the washer is retrying to balance the load; it is not a fault.",
+      "LE, LC, 1E or 1C — water level or leakage: moisture where it does not belong, or a sensor issue.",
+      "SUd, Sd or SUdS — over-sudsing: the washer pauses so the suds can dissipate and then continues. This is not a service code; it comes from incorrect detergent use.",
+      "Codes such as 3E have different meanings across models (voltage error on some, motor error on others). A code without its own entry follows the basic steps: power off for 2–3 minutes, power on, restart the cycle.",
+    ],
+    causes: [
+      {
+        cause: "Supply problem (4C, 4E)",
+        detail: "Hoses on the wrong inlets, bent or kinked; supply valves not fully open; debris blocking the inlet filters.",
+      },
+      {
+        cause: "Drain problem (5C, 5E)",
+        detail: "Incorrect drain hose installation (a common cause), a clogged pump filter on front loaders, or a washer that is not level.",
+      },
+      { cause: "Door not latched (dC, dE)", detail: "Laundry caught in the door, or the latch not secure." },
+      { cause: "Unbalanced load (UE, Ub)", detail: "Tangled or unevenly spread laundry." },
+      {
+        cause: "Leak or suds (LE, 1E, SUd)",
+        detail: "A small leak, kinked hoses, or suds from too much or non-HE detergent.",
+      },
+    ],
+    repairSteps: [
+      "Check the supply (4C, 4E) — Hot hose to the hot inlet, cold to cold, no kinks; open both valves fully; unplug the washer or switch off its breaker for 1 minute, then retry.",
+      "Clean the inlet filters (4C, 4E) — Turn the valves off, disconnect the hoses at the washer, remove debris from the inlet filters, reconnect and open the valves fully.",
+      "Check the drain hose (5C, 5E) — Inserted 6–8 inches into the standpipe, secured, not airtight, not kinked; at least 18 inches high (24 for a wash basin) and not above 96 inches (35 for a basin); no extension kit. After a hot cycle, allow about an hour for the water to cool first.",
+      "Clean the pump filter (5C, 5E, front loaders) — Top loaders have no removable pump filter. Then start a cycle: the washer should drain at the beginning.",
+      "Close the door properly (dC, dE) — Check the latch and that no laundry is caught in the door.",
+      "Rebalance the load (UE, Ub) — Untangle and spread the laundry, close the door and restart the cycle.",
+      "Clear the suds (LE, 1E, SUd) — Run empty cycles with no detergent or softener until no suds appear.",
+      "Reset other codes — Power off for 2–3 minutes, power on and restart the cycle.",
+    ],
+    whenToCallPro:
+      "Service is the next step when a code returns after its checks: a not-filling or leakage code that continues, a washer that does not drain at the start of a test cycle, a damaged door or latch, or any other code that persists after a 2–3 minute power-off. A washer that keeps filling needs its water valves turned off before service. A missing drain-hose holder on the back of the washer is also a service item.",
+    serviceSlug: "washer",
+    sources: [
+      src(S.samsungWasherCodes, "4C, 1 4C, nF, 4E: not filling error — hot to hot and cold to cold, hoses not kinked; open the water valves completely; drain hose 6–8 inches into the drain pipe; unplug or flip the breaker for 1 minute; debris in the inlet filters blocks water; if the code continues, request service."),
+      src(S.samsungWasherCodes, "4C2, 4E2, CE, 14C2, nF1: hot/cold error — supply hoses are swapped; connect cold to cold and hot to hot."),
+      src(S.samsungWasherCodes, "nd, 5E, SE, 5C, SC, 1 5C: no drain error. OE, 0E, OC, 0C: overflow error — too much water in the washer."),
+      src(S.samsungWasherCodes, "dS, dE, dC, dL, FL, LO: door error — latch secure, nothing caught in the door; damaged door or latch: request service. On some models dC is a Door Error, on others an Unbalanced Load Error; see the user manual."),
+      src(S.samsungWasherCodes, "dc, Ub, U6, Ur, UE: unbalanced load — untangle and rearrange the laundry, close the door and restart; Ur means the washer is retrying and is not an issue."),
+      src(S.samsungWasherCodes, "1E, LE, 1C, LC: water level or leakage error — look for a leak, check hoses are not kinked, run an empty cycle with no additives; suds mean too much or non-HE detergent; if no suds and the code continues, request service. Do not remove the screw holding the drain hose; a missing holder requires service."),
+      src(S.samsungWasherCodes, "SUd, Sd, SUdS: excessive suds — the washer stops for a short period and continues automatically; not a service issue; caused by incorrect detergent use."),
+      src(S.samsungWasherCodes, "3E is a Voltage Error on some models and a Motor Error on others. All other errors: power off for 2-3 minutes, power on, restart the cycle; if the error continues, request service."),
+      src(S.samsungWasherDrain, "Drain hose: not inserted less than 6 or more than 8 inches, secured, not airtight, not kinked, at least 18 inches high (24 for wash basins), not higher than 96 inches (35 for wash basins), no extension kit. Level the washer. Pump filter on front loaders only. The washer should drain at the beginning of the test cycle, otherwise request service. After hot cycles allow approximately one hour for the water to cool."),
+      src(S.samsungWasherFill, "If the washer continuously fills with water, turn off the water valves and request service."),
     ],
   },
 ];
