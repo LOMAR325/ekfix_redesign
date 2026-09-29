@@ -33,11 +33,17 @@ export type Service = {
   /** thumbnail used in the home #repair grid, e.g. "/images/Refrigerator.webp" */
   image: string;
   hero: { h1: string; lede: string }; // h1 may contain <br><span>
+  /** The places the H1 names, in H1 order — the page's JSON-LD `Service.areaServed` (story 19). */
+  areaServed: { name: string; kind: Town["kind"] }[];
+  /** The two section headings that vary per appliance (trusted HTML, may contain <br>). */
+  sectionHeads: { problems: string; faq: string };
   problems: { title: string; body: string }[]; // exactly 6
   brands: string[];
   faqs: { q: string; a: string }[]; // 5
   whereWeWork: { name: string; href?: string }[];
   alsoRepair: { name: string; slug: string }[]; // empty for refrigerator
+  /** Local Ballantyne block — only where this appliance has published local specifics (story 63). */
+  ballantyneNote?: Publishable & { heading: string; body: string };
 };
 
 export type CommercialCategory = {

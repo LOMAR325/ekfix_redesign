@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getService, serviceSlugs } from "@/data/services";
+import {
+  applianceRepairHub as hub,
+  getService,
+  servicePage as copy,
+  serviceRepairName,
+  serviceSlugs,
+} from "@/data/services";
 import { pageMetadata } from "@/lib/seo";
-import { business } from "@/data/business";
+import { isPublished } from "@/lib/publish";
+import { areaLinksForService } from "@/lib/links";
 import { businessNode, faqNode, graph, serviceNode } from "@/lib/jsonld";
 import { breadcrumbTrail } from "@/lib/breadcrumb";
 import { JsonLd } from "@/components/JsonLd";
@@ -10,69 +17,19 @@ import { Anchor } from "@/components/ui/anchor";
 import { PageHero } from "@/components/ui/page-hero";
 import { SectionHead } from "@/components/ui/section-head";
 import { ProblemCardGrid } from "@/components/ui/problem-card-grid";
-import { ChipRow } from "@/components/ui/chip-row";
+import { ChipRow, type ChipItem } from "@/components/ui/chip-row";
 import { FaqAccordion } from "@/components/ui/faq-accordion";
+import { Prose } from "@/components/ui/prose";
 import { CtaBand } from "@/components/ui/cta-band";
 
 // One dynamic route for all 12 appliance-repair pages. Structure is 1:1 with
 // appliance-repair/*.html (refrigerator.html is the reference; it is the only one
-// without the "Also repair" section). Content comes from data/services.
+// without the "Also repair" section). All copy comes from data/services: the service
+// itself (H1 with the places, title/meta, section headings, the optional Ballantyne
+// note) and `servicePage` (headings shared by all 12).
 //
-// Only two section headings vary per appliance and are not held in data/services
-// (that module owns hero/problems/brands/faqs/whereWeWork/alsoRepair). They are
-// transcribed verbatim from the static HTML here — keyed by slug so a diff against
-// the HTML is trivial. Everything else (eyebrows, the brands / where-we-work /
-// also-repair / CTA headings) is identical across all 12 files.
-const SECTION_H2: Record<string, { problems: string; faq: string }> = {
-  refrigerator: {
-    problems: "Six refrigerator faults<br>we see most often.",
-    faq: "Refrigerator repair,<br>answered honestly.",
-  },
-  washer: {
-    problems: "Six washer faults<br>we see most often.",
-    faq: "Washer repair,<br>answered honestly.",
-  },
-  dryer: {
-    problems: "Six dryer faults<br>we see most often.",
-    faq: "Dryer repair,<br>answered honestly.",
-  },
-  dishwasher: {
-    problems: "Six dishwasher faults<br>we see most often.",
-    faq: "Dishwasher repair,<br>answered honestly.",
-  },
-  stove: {
-    problems: "Six stove &amp; oven faults<br>we see most often.",
-    faq: "Stove repair,<br>answered honestly.",
-  },
-  range: {
-    problems: "Six range faults<br>we see most often.",
-    faq: "Range repair,<br>answered honestly.",
-  },
-  cooktop: {
-    problems: "Six cooktop faults<br>we see most often.",
-    faq: "Cooktop repair,<br>answered honestly.",
-  },
-  microwave: {
-    problems: "Six microwave faults<br>we see most often.",
-    faq: "Microwave repair,<br>answered honestly.",
-  },
-  freezer: {
-    problems: "Six freezer faults<br>we see most often.",
-    faq: "Freezer repair,<br>answered honestly.",
-  },
-  "ice-maker": {
-    problems: "Six ice maker faults<br>we see most often.",
-    faq: "Ice Maker repair,<br>answered honestly.",
-  },
-  "wine-cooler": {
-    problems: "Six wine cooler faults<br>we see most often.",
-    faq: "Wine Cooler repair,<br>answered honestly.",
-  },
-  "garbage-disposal": {
-    problems: "Six garbage disposal faults<br>we see most often.",
-    faq: "Garbage Disposal repair,<br>answered honestly.",
-  },
-};
+// Sections alternate shades (no divider lines): hero D · problems L · brands D ·
+// [Ballantyne note L2] · FAQ L · where-we-work D2 · [also repair L] · CTA band.
 
 const H2_CLAMP = {
   fontSize: "clamp(30px, 3.2vw, 44px)",
@@ -97,7 +54,7 @@ export async function generateMetadata({
   return pageMetadata({
     title: service.title,
     description: service.metaDescription,
-    path: `/appliance-repair/${slug}`,
+    path: `${hub.path}/${slug}`,
   });
 }
 
@@ -110,26 +67,32 @@ export default async function ApplianceRepairPage({
   const service = getService(slug);
   if (!service) notFound();
 
-  const heads = SECTION_H2[slug];
-  if (!heads) notFound();
-
-  const path = `/appliance-repair/${service.slug}`;
-  const serviceName = `${service.name} Repair`;
+  const path = `${hub.path}/${service.slug}`;
+  const serviceName = serviceRepairName(service);
   const { crumbs, jsonLd } = breadcrumbTrail([
-    { name: "Home", path: "/" },
-    { name: "We Repair", path: "/#repair" },
+    { name: copy.homeCrumb, path: "/" },
+    { name: hub.name, path: hub.path },
     { name: serviceName, path },
   ]);
-  // areaServed = the place in the H1. The H1s carry no place yet, so it is the home
-  // city the whole site names (header/footer) — Charlotte.
-  const h1Area = `${business.address.locality}, ${business.address.region}`;
+  const note =
+    service.ballantyneNote && isPublished(service.ballantyneNote) ? service.ballantyneNote : null;
+
+  // "Where we work": the published areas (lib/links — Ballantyne, South Charlotte; drafts
+  // never appear) ahead of the service's own town list.
+  const whereWeWork: ChipItem[] = [
+    ...areaLinksForService(service.slug),
+    ...service.whereWeWork.map((town) => ({ label: town.name, href: town.href })),
+  ].filter(
+    (chip, i, all) => all.findIndex((c) => chipLabel(c) === chipLabel(chip)) === i,
+  );
 
   return (
     <>
       <JsonLd
         data={graph(
           businessNode(),
-          serviceNode({ url: path, name: serviceName, areaServed: [h1Area] }),
+          // areaServed = exactly the places the H1 names (data/services H1_AREAS).
+          serviceNode({ url: path, name: serviceName, areaServed: service.areaServed }),
           faqNode(path, service.faqs),
           jsonLd,
         )}
@@ -144,9 +107,9 @@ export default async function ApplianceRepairPage({
       <section className="section section-light">
         <SectionHead
           tone="light"
-          eyebrow="Common problems we fix"
-          h2={heads.problems}
-          lede="Every diagnostic includes a plain-language explanation of what's actually wrong — before we touch a part."
+          eyebrow={copy.problems.eyebrow}
+          h2={service.sectionHeads.problems}
+          lede={copy.problems.lede}
         />
         <ProblemCardGrid items={service.problems} variant="light" columns={3} />
       </section>
@@ -154,69 +117,68 @@ export default async function ApplianceRepairPage({
       <section className="section section-dark">
         <SectionHead
           tone="dark"
-          eyebrow="Brands we service"
-          h2="Standard to premium."
+          eyebrow={copy.brands.eyebrow}
+          h2={copy.brands.h2}
           h2Style={H2_CLAMP}
         />
         <ChipRow tone="dark" items={service.brands} />
         <p style={{ marginTop: 24 }}>
           <Anchor
-            href="/brands"
+            href={copy.brands.link.href}
             style={{
               color: "var(--accent)",
               fontSize: 14,
               fontWeight: 600,
             }}
           >
-            See every brand we service →
+            {copy.brands.link.label}
           </Anchor>
         </p>
       </section>
 
+      {note && (
+        <section className="section section-light-2">
+          <Prose heading={note.heading} paragraphs={[note.body]} />
+        </section>
+      )}
+
       <section className="section section-light">
-        <SectionHead tone="light" eyebrow="FAQ" h2={heads.faq} />
+        <SectionHead tone="light" eyebrow={copy.faq.eyebrow} h2={service.sectionHeads.faq} />
         <FaqAccordion items={service.faqs} style={{ maxWidth: 760 }} />
       </section>
 
       <section className="section section-dark-2">
         <SectionHead
           tone="dark"
-          eyebrow="Where we work"
-          h2="Charlotte &amp; nearby towns."
+          eyebrow={copy.whereWeWork.eyebrow}
+          h2={copy.whereWeWork.h2}
           style={{ marginBottom: 30 }}
           h2Style={H2_CLAMP}
         />
-        <ChipRow
-          tone="dark"
-          items={service.whereWeWork.map((town) => ({
-            label: town.name,
-            href: town.href,
-          }))}
-        />
+        <ChipRow tone="dark" items={whereWeWork} />
       </section>
 
       {service.alsoRepair.length > 0 && (
         <section className="section section-light">
           <SectionHead
             tone="light"
-            eyebrow="Also repair"
-            h2="Other appliances."
+            eyebrow={copy.alsoRepair.eyebrow}
+            h2={copy.alsoRepair.h2}
             style={{ marginBottom: 30 }}
             h2Style={H2_CLAMP}
           />
           <ChipRow
             items={service.alsoRepair.map((item) => ({
               label: item.name,
-              href: `/appliance-repair/${item.slug}`,
+              href: `${hub.path}/${item.slug}`,
             }))}
           />
         </section>
       )}
 
-      <CtaBand
-        h2="Ready when you are."
-        body="$75 diagnostic — waived completely once you book the repair."
-      />
+      <CtaBand h2={copy.cta.h2} body={copy.cta.body} />
     </>
   );
 }
+
+const chipLabel = (chip: ChipItem): string => (typeof chip === "string" ? chip : chip.label);

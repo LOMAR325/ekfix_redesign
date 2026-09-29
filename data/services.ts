@@ -1,10 +1,32 @@
 import type { CommercialCategory, Service } from "./types";
+import { business } from "./business";
 
 // 12 appliance-repair services, content carried over verbatim from appliance-repair/*.html.
 // Order matches the "We Repair" menu in index.html.
 //
 // FAQ answers on every page follow one template with the appliance noun substituted and a
 // per-appliance "beyond repair" example; `repairFaqs` reproduces that text exactly.
+//
+// Geography (spec stories 19, 62): every H1 names the same two places, and those places are
+// also the page's JSON-LD `Service.areaServed` — both come from H1_AREAS, so they can't drift.
+
+/** The places a service page's H1 names — Charlotte (the city) and South Charlotte (an area of it). */
+const H1_AREAS: Service["areaServed"] = [
+  { name: "Charlotte", kind: "city" },
+  { name: "South Charlotte", kind: "area" },
+];
+const AREAS_TEXT = H1_AREAS.map((a) => a.name).join(" & "); // "Charlotte & South Charlotte"
+const AREAS_HTML = H1_AREAS.map((a) => a.name).join(" &amp; ");
+
+/** «Refrigerator repair<br><span>in Charlotte & South Charlotte.</span>» (brief 3.5). */
+const heroH1 = (name: string): string => `${name} repair<br><span>in ${AREAS_HTML}.</span>`;
+
+/** `<title>`: the service and both places from the H1. */
+const seoTitle = (name: string): string => `${name} Repair in ${AREAS_TEXT}, NC | ${business.name}`;
+
+/** Meta description: the service, both places, and the page's own leading faults. */
+const seoDescription = (noun: string, faults: string): string =>
+  `Same-day ${noun} repair in ${AREAS_TEXT}, NC — ${faults}. EPA 608 & OSHA certified, original parts, warranty on every repair.`;
 
 const Q1_DEFAULT =
   "In most cases we can get a technician out same-day or within 24-48 hours. The repair itself usually takes place in a single visit once the issue is diagnosed and parts are on hand.";
@@ -71,13 +93,17 @@ export const services: Service[] = [
     slug: "refrigerator",
     name: "Refrigerator",
     formLabel: "Refrigerator",
-    title: "Refrigerator Repair in Charlotte, NC | Same-Day | EK Global",
-    metaDescription:
-      "Same-day refrigerator repair in Charlotte, NC. Cooling issues, leaks, ice maker faults & more. EPA 608 certified, original parts, warranty on every repair.",
+    title: seoTitle("Refrigerator"),
+    metaDescription: seoDescription("refrigerator", "not cooling, leaks, ice maker faults"),
     image: "/images/Refrigerator.webp",
     hero: {
-      h1: "Refrigerator repair,<br><span>done same day.</span>",
+      h1: heroH1("Refrigerator"),
       lede: "Not cooling, leaking, or making noise it shouldn't? Diagnosed on the spot and fixed with manufacturer-approved parts — most jobs finished in one visit.",
+    },
+    areaServed: H1_AREAS,
+    sectionHeads: {
+      problems: "Six refrigerator faults<br>we see most often.",
+      faq: "Refrigerator repair,<br>answered honestly.",
     },
     problems: [
       { title: "Cooling issues", body: "Not cooling, or cooling unevenly. We check condenser coils, the evaporator fan, and the compressor to restore consistent temperature." },
@@ -105,18 +131,30 @@ export const services: Service[] = [
       { name: "Monroe" },
     ],
     alsoRepair: [],
+    // Published fact (Charlotte / Ballantyne pages): newer construction there is heavier on
+    // built-in and panel-ready Sub-Zero, Thermador, Bosch and KitchenAid units, which need
+    // different tools and a different diagnostic approach. + this page's FAQ: on-site, in the kitchen.
+    ballantyneNote: {
+      status: "published",
+      heading: "Built-in refrigeration in Ballantyne",
+      body: "Newer construction in Ballantyne is heavier on built-in and panel-ready refrigerators from Sub-Zero, Thermador, Bosch and KitchenAid. A unit framed into the cabinetry calls for different tools and a different diagnostic approach than a freestanding one, and the repair still happens on-site, in the kitchen.",
+    },
   },
   {
     slug: "washer",
     name: "Washer",
     formLabel: "Washer",
-    title: "Washer Repair in Charlotte, NC | Same-Day | EK Global",
-    metaDescription:
-      "Same-day washer repair in Charlotte, NC and nearby towns. EPA 608 & OSHA certified technicians, original parts, warranty on every repair.",
+    title: seoTitle("Washer"),
+    metaDescription: seoDescription("washer", "won't spin, leaks, won't drain"),
     image: "/images/dryer.webp", // TODO: нужно фото стиральной машины — в public/images его нет
     hero: {
-      h1: "Washer repair,<br><span>done same day.</span>",
+      h1: heroH1("Washer"),
       lede: "Not spinning, leaking, or stuck mid-cycle? Diagnosed on the spot and fixed with manufacturer-approved parts — most jobs finished in one visit.",
+    },
+    areaServed: H1_AREAS,
+    sectionHeads: {
+      problems: "Six washer faults<br>we see most often.",
+      faq: "Washer repair,<br>answered honestly.",
     },
     problems: [
       { title: "Won't spin", body: "A worn drive belt, failed motor coupling, or a stuck lid/door switch. We check the parts that actually transfer power to the drum." },
@@ -135,13 +173,17 @@ export const services: Service[] = [
     slug: "dryer",
     name: "Dryer",
     formLabel: "Dryer",
-    title: "Dryer Repair in Charlotte, NC | Same-Day | EK Global",
-    metaDescription:
-      "Same-day dryer repair in Charlotte, NC and nearby towns. EPA 608 & OSHA certified technicians, original parts, warranty on every repair.",
+    title: seoTitle("Dryer"),
+    metaDescription: seoDescription("dryer", "no heat, slow drying, won't tumble"),
     image: "/images/dryer_16.webp",
     hero: {
-      h1: "Dryer repair,<br><span>done same day.</span>",
+      h1: heroH1("Dryer"),
       lede: "Not heating, taking forever to finish a cycle, or making noise it shouldn't? Diagnosed on the spot and fixed with manufacturer-approved parts.",
+    },
+    areaServed: H1_AREAS,
+    sectionHeads: {
+      problems: "Six dryer faults<br>we see most often.",
+      faq: "Dryer repair,<br>answered honestly.",
     },
     problems: [
       { title: "Not heating", body: "A failed heating element on electric models, or an igniter issue on gas dryers. We test the heat source directly." },
@@ -160,13 +202,17 @@ export const services: Service[] = [
     slug: "dishwasher",
     name: "Dishwasher",
     formLabel: "Dishwasher",
-    title: "Dishwasher Repair in Charlotte, NC | Same-Day | EK Global",
-    metaDescription:
-      "Same-day dishwasher repair in Charlotte, NC and nearby towns. EPA 608 & OSHA certified technicians, original parts, warranty on every repair.",
+    title: seoTitle("Dishwasher"),
+    metaDescription: seoDescription("dishwasher", "not cleaning, not draining, leaks"),
     image: "/images/dishwasher.webp",
     hero: {
-      h1: "Dishwasher repair,<br><span>done same day.</span>",
+      h1: heroH1("Dishwasher"),
       lede: "Not cleaning, not draining, or leaking underneath? Diagnosed on the spot and fixed with manufacturer-approved parts — including commercial units.",
+    },
+    areaServed: H1_AREAS,
+    sectionHeads: {
+      problems: "Six dishwasher faults<br>we see most often.",
+      faq: "Dishwasher repair,<br>answered honestly.",
     },
     problems: [
       { title: "Not cleaning properly", body: "Clogged spray arms, a dirty filter, or a failing wash pump. We check the whole water-circulation path." },
@@ -180,18 +226,29 @@ export const services: Service[] = [
     faqs: repairFaqs({ noun: "dishwasher", beyondRepair: "a cracked tub on a 15-year-old unit" }),
     whereWeWork: TOWNS_5,
     alsoRepair: alsoRepairCore("dishwasher"),
+    // Same published observation (panel-ready units in Ballantyne's newer construction) +
+    // this page's own facts: brand-specific error codes, manufacturer-approved parts.
+    ballantyneNote: {
+      status: "published",
+      heading: "Panel-ready dishwashers in Ballantyne",
+      body: "Ballantyne's newer kitchens often hide the dishwasher behind a cabinet-matched panel, with Bosch, KitchenAid and Thermador among the brands. Their fault codes are brand-specific, so the diagnosis starts from that brand's code table, and the fix uses manufacturer-approved parts.",
+    },
   },
   {
     slug: "stove",
     name: "Stove",
     formLabel: "Stove / Range",
-    title: "Stove Repair in Charlotte, NC | Same-Day | EK Global",
-    metaDescription:
-      "Same-day stove repair in Charlotte, NC and nearby towns. EPA 608 & OSHA certified technicians, original parts, warranty on every repair.",
+    title: seoTitle("Stove"),
+    metaDescription: seoDescription("stove", "oven not heating, burners that won't ignite"),
     image: "/images/stove.webp",
     hero: {
-      h1: "Stove repair,<br><span>done same day.</span>",
+      h1: heroH1("Stove"),
       lede: "Oven not heating, burner won't ignite, or self-clean not working? Diagnosed on the spot and fixed with manufacturer-approved parts.",
+    },
+    areaServed: H1_AREAS,
+    sectionHeads: {
+      problems: "Six stove &amp; oven faults<br>we see most often.",
+      faq: "Stove repair,<br>answered honestly.",
     },
     problems: [
       { title: "Oven not heating", body: "A failing bake or broil element, or an igniter issue on gas models. We test the actual heat source." },
@@ -210,13 +267,17 @@ export const services: Service[] = [
     slug: "range",
     name: "Range",
     formLabel: "Stove / Range",
-    title: "Range Repair in Charlotte, NC | Same-Day | EK Global",
-    metaDescription:
-      "Same-day range repair in Charlotte, NC and nearby towns. EPA 608 & OSHA certified technicians, original parts, warranty on every repair.",
+    title: seoTitle("Range"),
+    metaDescription: seoDescription("range", "burners that won't stay lit, uneven oven heat"),
     image: "/images/stove.webp", // range ≈ freestanding stove; идеально — отдельное фото плиты. stove и range теперь делят фото
     hero: {
-      h1: "Range repair,<br><span>done same day.</span>",
+      h1: heroH1("Range"),
       lede: "Burner won't stay lit, oven temperature is off, or the griddle zone quit heating? We work on freestanding and professional-grade ranges alike.",
+    },
+    areaServed: H1_AREAS,
+    sectionHeads: {
+      problems: "Six range faults<br>we see most often.",
+      faq: "Range repair,<br>answered honestly.",
     },
     problems: [
       { title: "Burner won't stay lit", body: "A worn simmer burner or a failing thermocouple — common on professional-style ranges." },
@@ -235,13 +296,17 @@ export const services: Service[] = [
     slug: "cooktop",
     name: "Cooktop",
     formLabel: "Cooktop",
-    title: "Cooktop Repair in Charlotte, NC | Same-Day | EK Global",
-    metaDescription:
-      "Same-day cooktop repair in Charlotte, NC and nearby towns. EPA 608 & OSHA certified technicians, original parts, warranty on every repair.",
+    title: seoTitle("Cooktop"),
+    metaDescription: seoDescription("cooktop", "dead burners, induction pan detection, touch controls"),
     image: "/images/cooktop.webp",
     hero: {
-      h1: "Cooktop repair,<br><span>done same day.</span>",
+      h1: heroH1("Cooktop"),
       lede: "Burner won't heat, induction isn't detecting pans, or the touch controls stopped responding? Diagnosed on the spot and fixed right.",
+    },
+    areaServed: H1_AREAS,
+    sectionHeads: {
+      problems: "Six cooktop faults<br>we see most often.",
+      faq: "Cooktop repair,<br>answered honestly.",
     },
     problems: [
       { title: "Burner won't heat", body: "An element failure on electric models, or an igniter/valve issue on gas." },
@@ -260,13 +325,17 @@ export const services: Service[] = [
     slug: "microwave",
     name: "Microwave",
     formLabel: "Microwave",
-    title: "Microwave Repair in Charlotte, NC | Same-Day | EK Global",
-    metaDescription:
-      "Same-day microwave repair in Charlotte, NC and nearby towns. EPA 608 & OSHA certified technicians, original parts, warranty on every repair.",
+    title: seoTitle("Microwave"),
+    metaDescription: seoDescription("microwave", "no heat, sparking, a stalled turntable"),
     image: "/images/new_microwave.webp",
     hero: {
-      h1: "Microwave repair,<br><span>done same day.</span>",
+      h1: heroH1("Microwave"),
       lede: "Not heating, sparking inside, or the turntable stopped turning? Diagnosed on the spot and fixed with manufacturer-approved parts.",
+    },
+    areaServed: H1_AREAS,
+    sectionHeads: {
+      problems: "Six microwave faults<br>we see most often.",
+      faq: "Microwave repair,<br>answered honestly.",
     },
     problems: [
       { title: "Not heating", body: "A faulty magnetron or a bad high-voltage diode — the two most common failure points." },
@@ -285,13 +354,17 @@ export const services: Service[] = [
     slug: "freezer",
     name: "Freezer",
     formLabel: "Freezer",
-    title: "Freezer Repair in Charlotte, NC | Same-Day | EK Global",
-    metaDescription:
-      "Same-day freezer repair in Charlotte, NC and nearby towns. EPA 608 & OSHA certified technicians, original parts, warranty on every repair.",
+    title: seoTitle("Freezer"),
+    metaDescription: seoDescription("freezer", "not freezing, frost buildup, constant running"),
     image: "/images/freezer_new.webp",
     hero: {
-      h1: "Freezer repair,<br><span>done same day.</span>",
+      h1: heroH1("Freezer"),
       lede: "Not freezing, running constantly, or leaking water? Diagnosed on the spot and fixed with manufacturer-approved parts — upright, chest, or built-in.",
+    },
+    areaServed: H1_AREAS,
+    sectionHeads: {
+      problems: "Six freezer faults<br>we see most often.",
+      faq: "Freezer repair,<br>answered honestly.",
     },
     problems: [
       { title: "Not freezing", body: "A failing compressor or a bad thermostat — we test both before condemning the compressor." },
@@ -310,13 +383,17 @@ export const services: Service[] = [
     slug: "ice-maker",
     name: "Ice Maker",
     formLabel: "Ice Maker",
-    title: "Ice Maker Repair in Charlotte, NC | Same-Day | EK Global",
-    metaDescription:
-      "Same-day ice maker repair in Charlotte, NC and nearby towns. EPA 608 & OSHA certified technicians, original parts, warranty on every repair.",
+    title: seoTitle("Ice Maker"),
+    metaDescription: seoDescription("ice maker", "no ice, hollow cubes, overflowing"),
     image: "/images/ice_maker_under.webp",
     hero: {
-      h1: "Ice Maker repair,<br><span>done same day.</span>",
+      h1: heroH1("Ice Maker"),
       lede: "Not making ice, dispensing small or hollow cubes, or overflowing? Diagnosed on the spot and fixed — built-in, under-counter, or in-fridge.",
+    },
+    areaServed: H1_AREAS,
+    sectionHeads: {
+      problems: "Six ice maker faults<br>we see most often.",
+      faq: "Ice Maker repair,<br>answered honestly.",
     },
     problems: [
       { title: "Not making ice", body: "A faulty water inlet valve or a frozen supply line — the two usual suspects." },
@@ -335,13 +412,17 @@ export const services: Service[] = [
     slug: "wine-cooler",
     name: "Wine Cooler",
     formLabel: "Wine Cooler",
-    title: "Wine Cooler Repair in Charlotte, NC | Same-Day | EK Global",
-    metaDescription:
-      "Same-day wine cooler repair in Charlotte, NC and nearby towns. EPA 608 & OSHA certified technicians, original parts, warranty on every repair.",
+    title: seoTitle("Wine Cooler"),
+    metaDescription: seoDescription("wine cooler", "temperature drift, compressor noise, condensation"),
     image: "/images/wine_coolers.webp",
     hero: {
-      h1: "Wine Cooler repair,<br><span>done same day.</span>",
+      h1: heroH1("Wine Cooler"),
       lede: "Not holding temperature, fluctuating, or the compressor's too loud? Diagnosed on the spot and fixed with manufacturer-approved parts.",
+    },
+    areaServed: H1_AREAS,
+    sectionHeads: {
+      problems: "Six wine cooler faults<br>we see most often.",
+      faq: "Wine Cooler repair,<br>answered honestly.",
     },
     problems: [
       { title: "Not cooling to the set temperature", body: "A compressor or thermostat fault — we confirm which before replacing anything." },
@@ -360,13 +441,17 @@ export const services: Service[] = [
     slug: "garbage-disposal",
     name: "Garbage Disposal",
     formLabel: "Garbage Disposal",
-    title: "Garbage Disposal Repair in Charlotte, NC | Same-Day | EK Global",
-    metaDescription:
-      "Same-day garbage disposal repair in Charlotte, NC and nearby towns. EPA 608 & OSHA certified technicians, original parts, warranty on every repair.",
+    title: seoTitle("Garbage Disposal"),
+    metaDescription: seoDescription("garbage disposal", "jams, leaks, slow draining"),
     image: "/images/garb_dispo.webp",
     hero: {
-      h1: "Garbage Disposal repair,<br><span>done same day.</span>",
+      h1: heroH1("Garbage Disposal"),
       lede: "Won't turn on, humming but not spinning, or leaking underneath? Diagnosed on the spot and fixed the same visit in almost every case.",
+    },
+    areaServed: H1_AREAS,
+    sectionHeads: {
+      problems: "Six garbage disposal faults<br>we see most often.",
+      faq: "Garbage Disposal repair,<br>answered honestly.",
     },
     problems: [
       { title: "Won't turn on", body: "A tripped reset button or a wiring fault — often solved in minutes." },
@@ -397,6 +482,56 @@ export const serviceSlugs: string[] = services.map((s) => s.slug);
 
 export const getService = (slug: string): Service | undefined =>
   services.find((s) => s.slug === slug);
+
+/** "Refrigerator Repair" — the service page's crumb and JSON-LD `Service.name`. */
+export const serviceRepairName = (s: Pick<Service, "name">): string => `${s.name} Repair`;
+
+// Copy shared by all 12 /appliance-repair/[slug] pages (moved verbatim out of the page, spec §2).
+// Headings are trusted HTML strings.
+export const servicePage = {
+  homeCrumb: "Home",
+  problems: {
+    eyebrow: "Common problems we fix",
+    lede: "Every diagnostic includes a plain-language explanation of what's actually wrong — before we touch a part.",
+  },
+  brands: {
+    eyebrow: "Brands we service",
+    h2: "Standard to premium.",
+    link: { label: "See every brand we service →", href: "/brands" },
+  },
+  faq: { eyebrow: "FAQ" },
+  whereWeWork: { eyebrow: "Where we work", h2: "Charlotte &amp; nearby towns." },
+  alsoRepair: { eyebrow: "Also repair", h2: "Other appliances." },
+  cta: {
+    h2: "Ready when you are.",
+    body: "$75 diagnostic — waived completely once you book the repair.",
+  },
+} as const;
+
+// The residential hub /appliance-repair (spec story 41, brief 2.3): the 12 services as the
+// same cards as the home #repair grid. New copy — impersonal, facts already on the site only
+// (§13): diagnosed on the spot, manufacturer-approved parts, one visit, $75 waived with the repair.
+export const applianceRepairHub = {
+  path: "/appliance-repair",
+  /** crumb label on the hub and on every service page, and the JSON-LD crumb name */
+  name: "Home Appliance Repair",
+  title: `Home Appliance Repair in ${AREAS_TEXT}, NC | ${business.name}`,
+  metaDescription: `Same-day home appliance repair in ${AREAS_TEXT}, NC: refrigerators, washers, dryers, dishwashers, stoves and more. $75 diagnostic, waived with the repair.`,
+  hero: {
+    h1: `Home appliance repair<br><span>in ${AREAS_HTML}.</span>`,
+    lede: "Diagnosed on the spot and fixed with manufacturer-approved parts — most jobs finished in one visit. The $75 diagnostic is waived once the repair is booked.",
+  },
+  grid: {
+    eyebrow: `${services.length} home appliances`,
+    h2: "Pick the appliance<br>that needs fixing.",
+    lede: "Each page covers the common faults, the brands serviced, and straight answers on timing and cost.",
+    /** plain text (RepairCard renders it as a text node) */
+    cardTag: "Repair · Faults & FAQ",
+  },
+  /** `.not-listed` line under the grid (trusted HTML) */
+  notListed: `<strong>Not on the list?</strong> Most major and commercial appliances are serviced — <a href="${business.phoneHref}">call to check</a>.`,
+  cta: servicePage.cta,
+} as const;
 
 // Options for <select id="appliance"> in the booking form (index.html #book).
 // Service form labels (deduped — "Stove / Range" appears once) + commercial categories +
