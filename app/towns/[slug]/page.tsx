@@ -1,12 +1,21 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getTown, townSlugs } from "@/data/towns";
-import { reviewsByAuthors } from "@/data/reviews";
+import {
+  areaCopy,
+  getTown,
+  publishedAncestors,
+  publishedDescendants,
+  townPageCopy as copy,
+  townSlugs,
+} from "@/data/towns";
+import type { Town } from "@/data/types";
+import { reviews, reviewsByAuthors } from "@/data/reviews";
 import { services } from "@/data/services";
+import { owner } from "@/data/people";
 import { pageMetadata } from "@/lib/seo";
-import { routable } from "@/lib/publish";
-import { businessNode, graph } from "@/lib/jsonld";
-import { breadcrumbTrail } from "@/lib/breadcrumb";
+import { isPublished, routable } from "@/lib/publish";
+import { businessNode, faqNode, graph } from "@/lib/jsonld";
+import { breadcrumbTrail, type BreadcrumbStep } from "@/lib/breadcrumb";
 import { JsonLd } from "@/components/JsonLd";
 import { DraftBanner } from "@/components/DraftBanner";
 import { PageHero } from "@/components/ui/page-hero";
@@ -15,14 +24,16 @@ import { Prose } from "@/components/ui/prose";
 import { ChipRow, type ChipItem } from "@/components/ui/chip-row";
 import { ReviewsGrid } from "@/components/ui/review-card";
 import { LocalPhoto } from "@/components/ui/local-photo";
+import { ProblemCardGrid } from "@/components/ui/problem-card-grid";
+import { FaqAccordion } from "@/components/ui/faq-accordion";
 import { CtaBand } from "@/components/ui/cta-band";
 
 // One dynamic route for every town/area whose `page` is routable (lib/publish): the 5
-// published city pages (charlotte, rock-hill, fort-mill, matthews, indian-trail) and, in
-// `next dev` only, draft pages (with the DRAFT banner). Structure is 1:1 with
-// towns/<slug>.html — charlotte.html is the odd one out (map section + prose "also
-// serving nearby"; the other 4 use a "Nearby" chip section instead). All content,
-// including <title>/<meta> and Charlotte's repair chips, comes from data/towns.
+// published city pages and the two areas of Charlotte (spec §3), plus — in `next dev` only —
+// draft pages with the DRAFT banner. City pages are 1:1 with towns/<slug>.html
+// (charlotte.html is the odd one out: map section + prose "also serving nearby"; the other 4
+// use a "Nearby" chip section). Area pages are built from the same ui/* pieces, a section
+// per filled field; draft blocks inside a page are never rendered. All copy: data/towns.
 // towns/<slug>.html: h2 clamp on the dark sections.
 const H2_CLAMP = {
   fontSize: "clamp(30px, 3.2vw, 44px)",
@@ -52,6 +63,11 @@ export async function generateMetadata({
   });
 }
 
+const townPath = (t: Town) => `/towns/${t.slug}`;
+/** Cities read "Charlotte, NC"; areas are named bare ("Ballantyne"), as in the brief's trail. */
+const placeName = (t: Town) => (t.kind === "city" ? `${t.name}, ${t.state}` : t.name);
+const townLink = (t: Town): ChipItem => ({ label: placeName(t), href: townPath(t) });
+
 export default async function TownPage({
   params,
 }: {
@@ -63,71 +79,156 @@ export default async function TownPage({
   // no draft page is reachable in a production build.
   if (!town?.page || !routable(town.page)) notFound();
   const page = town.page;
-
-  const isCharlotte = town.slug === "charlotte";
+  const path = townPath(town);
   const cityState = `${town.name}, ${town.state}`;
-  const repairChips: ChipItem[] =
-    page.repairChips ??
-    services.map((s) => ({
-        label: s.name,
-        href: `/appliance-repair/${s.slug}`,
-      }));
+  const isArea = town.kind === "area";
+  const isCharlotte = town.slug === "charlotte";
 
-  // charlotte.html leaves "Service Area" unlinked in the visual trail; it stays
-  // linked in the JSON-LD either way.
-  const { crumbs, jsonLd } = breadcrumbTrail([
+  // Trail from the parent chain; a draft level is skipped (story 61). charlotte.html leaves
+  // "Service Area" unlinked in the visual trail; it stays linked in the JSON-LD either way.
+  const { crumbs, jsonLd: breadcrumbJsonLd } = breadcrumbTrail([
     { name: "Home", path: "/" },
     { name: "Service Area", path: "/towns", unlinked: isCharlotte },
-    { name: cityState, path: `/towns/${town.slug}` },
+    ...publishedAncestors(town).map((t): BreadcrumbStep => ({ name: placeName(t), path: townPath(t) })),
+    { name: placeName(town), path },
   ]);
+
+  const faqs = (page.faqs ?? []).filter(isPublished);
+  const notes = (page.applianceNotes ?? []).filter(isPublished);
+  const areasBelow = publishedDescendants(town);
+  const repairChips: ChipItem[] =
+    page.repairChips ?? services.map((s) => ({ label: s.name, href: `/appliance-repair/${s.slug}` }));
+  // A district chip links to its area page once that page is published; published areas
+  // not named among the districts are appended.
+  const districtChips: ChipItem[] = [
+    ...(page.districts ?? []).map((d): ChipItem => {
+      const area = areasBelow.find((a) => a.name === d);
+      return area ? { label: d, href: townPath(area) } : d;
+    }),
+    ...areasBelow.filter((a) => !(page.districts ?? []).includes(a.name)).map(townLink),
+  ];
+
+  const jsonLd = (
+    <JsonLd
+      data={graph(
+        // areaServed: this page's own zone, as named in its H1.
+        businessNode({ areaServed: [{ name: cityState, kind: town.kind }] }),
+        faqNode(path, faqs),
+        breadcrumbJsonLd,
+      )}
+    />
+  );
+  const hero = (
+    <PageHero breadcrumb={crumbs} h1={page.hero.h1 ?? copy.h1(cityState)} lede={page.hero.lede} />
+  );
+  const lineup = (eyebrow: string) => (
+    <section className="section section-dark">
+      <SectionHead tone="dark" eyebrow={eyebrow} h2={copy.lineupH2} h2Style={H2_CLAMP} />
+      <ChipRow tone="dark" items={repairChips} />
+    </section>
+  );
+  const cta = <CtaBand h2={copy.ctaH2(town.name)} body={copy.ctaBody} />;
+
+  if (isArea) {
+    const headings = areaCopy[town.slug];
+    const coverage = page.coverage && isPublished(page.coverage) ? [page.coverage.body] : [];
+    // The owner's portrait where he is based (owner.basedIn), the generic town photo elsewhere.
+    const photo =
+      owner.basedIn === town.name ? owner.photos.portrait : { src: copy.townPhoto, alt: cityState };
+    const areaReviews = reviews.filter((r) => r.area === town.slug);
+    const related = [...publishedAncestors(town).reverse(), ...areasBelow].map(townLink);
+
+    return (
+      <>
+        <DraftBanner item={page} />
+        {jsonLd}
+        {hero}
+
+        <section className="section section-light">
+          <div className="two-col">
+            <Prose heading={headings?.proseHeading} paragraphs={[...page.prose, ...coverage]}>
+              {districtChips.length > 0 && <ChipRow items={districtChips} style={{ marginTop: 24 }} />}
+            </Prose>
+            <LocalPhoto src={photo.src} alt={photo.alt} imgStyle={{ background: "var(--bg-light-2)" }} />
+          </div>
+        </section>
+
+        {notes.length > 0 && (
+          <section className="section section-light-2">
+            <SectionHead tone="light" eyebrow={copy.notesEyebrow(town.name)} h2={headings?.notesH2 ?? ""} />
+            <ProblemCardGrid
+              variant="light"
+              items={notes.map((n) => ({ title: n.heading, body: n.body }))}
+              style={{ gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" }}
+            />
+            <ChipRow
+              items={notes.flatMap((n) => {
+                const s = services.find((x) => x.slug === n.serviceSlug);
+                return s ? [{ label: s.name, href: `/appliance-repair/${s.slug}` }] : [];
+              })}
+              style={{ marginTop: 24 }}
+            />
+          </section>
+        )}
+
+        {lineup(copy.areaLineupEyebrow)}
+
+        {areaReviews.length > 0 && (
+          <section className="section section-light-2">
+            <SectionHead tone="light" eyebrow={copy.reviewsEyebrow} h2={copy.reviewsH2} />
+            <ReviewsGrid reviews={areaReviews} />
+          </section>
+        )}
+
+        {faqs.length > 0 && (
+          <section className="section section-light">
+            <SectionHead tone="light" eyebrow={copy.faqEyebrow} h2={copy.faqH2(town.name)} />
+            <FaqAccordion items={faqs} style={{ maxWidth: 760 }} />
+          </section>
+        )}
+
+        {related.length > 0 && (
+          <section className="section section-dark-2">
+            <SectionHead
+              tone="dark"
+              eyebrow={copy.relatedEyebrow}
+              h2={copy.relatedH2}
+              style={{ marginBottom: 24 }}
+              h2Style={H2_CLAMP}
+            />
+            <ChipRow tone="dark" items={related} />
+          </section>
+        )}
+
+        {cta}
+      </>
+    );
+  }
+
+  const cityPhoto = isCharlotte ? copy.charlottePhoto : { src: copy.townPhoto, alt: cityState };
 
   return (
     <>
       <DraftBanner item={page} />
-      {/* areaServed: this page's own zone, as named in its H1. */}
-      <JsonLd
-        data={graph(
-          businessNode({ areaServed: [{ name: cityState, kind: town.kind }] }),
-          jsonLd,
-        )}
-      />
-
-      <PageHero
-        breadcrumb={crumbs}
-        h1={`Appliance repair<br><span>in ${cityState}.</span>`}
-        lede={page.hero.lede}
-      />
+      {jsonLd}
+      {hero}
 
       <section className="section section-light">
         <div className="two-col">
-          <Prose
-            heading="Local, not a dispatch center"
-            paragraphs={page.prose}
-          >
-            <ChipRow items={page.districts ?? []} style={{ marginTop: 24 }} />
+          <Prose heading={copy.cityProseHeading} paragraphs={page.prose}>
+            <ChipRow items={districtChips} style={{ marginTop: 24 }} />
           </Prose>
-          <LocalPhoto
-            src={isCharlotte ? "/images/charlotte.webp" : "/images/town.webp"}
-            alt={isCharlotte ? "Charlotte, NC skyline" : cityState}
-          />
+          <LocalPhoto src={cityPhoto.src} alt={cityPhoto.alt} />
         </div>
       </section>
 
-      <section className="section section-dark">
-        <SectionHead
-          tone="dark"
-          eyebrow={`What we repair in ${town.name}`}
-          h2="The full lineup."
-          h2Style={H2_CLAMP}
-        />
-        <ChipRow tone="dark" items={repairChips} />
-      </section>
+      {lineup(copy.cityLineupEyebrow(town.name))}
 
       <section className="section section-light">
         <SectionHead
           tone="light"
-          eyebrow={isCharlotte ? "Charlotte customers" : "Local customers"}
-          h2="What they say."
+          eyebrow={isCharlotte ? copy.charlotteReviewsEyebrow : copy.reviewsEyebrow}
+          h2={copy.reviewsH2}
           ratingBadge
         />
         <ReviewsGrid reviews={reviewsByAuthors(page.reviewAuthors ?? [])} />
@@ -138,14 +239,14 @@ export default async function TownPage({
           <section className="section section-dark-2">
             <SectionHead
               tone="dark"
-              eyebrow="Find us"
-              h2={`${town.name}, ${town.state}.`}
+              eyebrow={copy.mapEyebrow}
+              h2={`${cityState}.`}
               style={{ marginBottom: 24 }}
               h2Style={H2_CLAMP}
             />
             <LocalPhoto style={{ borderColor: "rgba(255,255,255,0.09)" }}>
               <iframe
-                title={`${town.name}, ${town.state} map`}
+                title={copy.mapTitle(cityState)}
                 src="https://www.google.com/maps?q=Charlotte,NC&output=embed"
                 width="100%"
                 height="360"
@@ -158,7 +259,7 @@ export default async function TownPage({
 
           <section className="section section-light">
             <Prose
-              heading="Also serving nearby"
+              heading={copy.nearbyProseHeading}
               paragraphs={page.nearbyProse ? [page.nearbyProse] : []}
             />
           </section>
@@ -167,8 +268,8 @@ export default async function TownPage({
         <section className="section section-dark-2">
           <SectionHead
             tone="dark"
-            eyebrow="Nearby"
-            h2="Also serving."
+            eyebrow={copy.nearbyEyebrow}
+            h2={copy.nearbyH2}
             style={{ marginBottom: 24 }}
             h2Style={H2_CLAMP}
           />
@@ -176,10 +277,7 @@ export default async function TownPage({
         </section>
       )}
 
-      <CtaBand
-        h2={`Same-day repair,<br>right here in ${town.name}.`}
-        body="$75 diagnostic, waived if you book the repair."
-      />
+      {cta}
     </>
   );
 }

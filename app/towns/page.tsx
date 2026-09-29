@@ -7,6 +7,7 @@ import { business } from "@/data/business";
 import {
   townsIndex,
   townsWithPublishedPage,
+  publishedAncestors,
   alsoServedNC,
   alsoServedSC,
 } from "@/data/towns";
@@ -53,7 +54,7 @@ export default function TownsPage() {
       <section className="section section-light">
         <SectionHead
           tone="light"
-          eyebrow="Full local pages"
+          eyebrow={townsIndex.activeHead.eyebrow}
           h2={townsIndex.activeHead.h2}
           lede={townsIndex.activeHead.lede}
         />
@@ -64,7 +65,11 @@ export default function TownsPage() {
           items={townsWithPublishedPage().map((town) => ({
             label: `${town.name}, ${town.state}`,
             href: `/towns/${town.slug}`,
-            tag: "Full local page",
+            // A published area sits right under its city in data/towns, so it follows it here.
+            tag:
+              town.kind === "area"
+                ? townsIndex.areaCardTag(publishedAncestors(town)[0]?.name ?? town.name)
+                : townsIndex.cardTag,
             style: { minHeight: "auto" },
             bodyStyle: { padding: 22, marginTop: 0 },
           }))}
@@ -74,7 +79,7 @@ export default function TownsPage() {
       <section className="section section-dark">
         <SectionHead
           tone="dark"
-          eyebrow="Also serving — North Carolina"
+          eyebrow={townsIndex.alsoServingNCEyebrow}
           h2={townsIndex.alsoServingNCLabel}
           h2Style={LIST_H2_STYLE}
         />
@@ -86,14 +91,15 @@ export default function TownsPage() {
             color: "var(--text-light-60)",
           }}
         >
-          {alsoServedNC.join(", ")}, and the towns between them.
+          {alsoServedNC.join(", ")}
+          {townsIndex.alsoServingTail}
         </p>
       </section>
 
       <section className="section section-light">
         <SectionHead
           tone="light"
-          eyebrow="Also serving — South Carolina"
+          eyebrow={townsIndex.alsoServingSCEyebrow}
           h2={townsIndex.alsoServingSCLabel}
           h2Style={LIST_H2_STYLE}
         />
@@ -105,14 +111,12 @@ export default function TownsPage() {
             color: "var(--text-dark-60)",
           }}
         >
-          {alsoServedSC.join(", ")}, and the towns between them.
+          {alsoServedSC.join(", ")}
+          {townsIndex.alsoServingTail}
         </p>
       </section>
 
-      <CtaBand
-        h2="Not sure if you're<br>in range?"
-        body="Just call — we'll tell you straight away."
-      />
+      <CtaBand h2={townsIndex.cta.h2} body={townsIndex.cta.body} />
     </>
   );
 }
