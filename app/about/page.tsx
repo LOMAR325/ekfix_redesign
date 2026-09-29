@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/JsonLd";
-import { owner } from "@/data/people";
+import { DraftBanner } from "@/components/DraftBanner";
+import { aboutPage, aboutPendingBlocks, owner } from "@/data/people";
+import { commercialCategories, services } from "@/data/services";
 import { businessNode, graph, ownerNode } from "@/lib/jsonld";
+import { commercialCardHref } from "@/lib/links";
+import { routable } from "@/lib/publish";
 import { pageMetadata } from "@/lib/seo";
 import { breadcrumbTrail } from "@/lib/breadcrumb";
 import { PageHero } from "@/components/ui/page-hero";
@@ -12,46 +16,35 @@ import { StatRow } from "@/components/ui/stat-row";
 import { LocalPhoto } from "@/components/ui/local-photo";
 import { ProblemCardGrid } from "@/components/ui/problem-card-grid";
 import { PhotoPair } from "@/components/ui/photo-pair";
+import { ChipRow, type ChipItem } from "@/components/ui/chip-row";
 import { CtaBand } from "@/components/ui/cta-band";
 
-// /about — ported 1:1 from about.html. Editorial copy lives here (there is no
-// data/about module and this page owns its own prose); NAP values still come
-// from data/business via the shared components.
-export const metadata: Metadata = pageMetadata({
-  title: `Our Story — Meet ${owner.name} | EK Global Appliance Repair`,
-  description:
-    `EK Global is run by ${owner.name}, a Charlotte-based, EPA Universal certified technician with 10+ years of experience. Family business, not a franchise.`,
-  path: "/about",
-});
+// /about — the owner-technician page (stories 66–68). All copy is data/people.aboutPage;
+// every block is guarded by lib/publish.routable, so the draft blocks (brands, training,
+// company history) render only in `next dev`, under the DRAFT banner. The Person node is
+// ownerNode() — its jobTitle, credentials and knowsAbout are printed below verbatim
+// (data/people.test.ts). Sections alternate shades: hero D · meet L · approach D ·
+// appliances L · on the job L2 · [pending L, dev only] · cta-band D.
 
-const meetOwner = [
-  `${owner.name} has spent more than 10 years repairing home and commercial appliances around Charlotte. He's an EPA Universal certified technician and OSHA certified, which means he's qualified to handle everything from a leaking dishwasher to a commercial walk-in compressor — the kind of certification most local outfits don't bother to hold.`,
-  "He lives in the Ballantyne area with his family, and EK Global is genuinely a family operation — not a lead-generation site that dispatches whoever's available. When you call, you're talking to the technician who shows up at your door, and the same person who comes back if something isn't right.",
-  "That's the whole pitch: real diagnostics, original parts, honest pricing, and a warranty on every job — from a homeowner's refrigerator to a restaurant's walk-in freezer.",
-];
+export const metadata: Metadata = pageMetadata({ ...aboutPage.meta, path: "/about" });
 
-const whatThatMeans = [
-  {
-    num: "01",
-    title: "One technician, start to finish",
-    body: "The person who diagnoses your appliance is the same person who repairs it and the same person you'd call back if anything felt off. No hand-offs.",
-  },
-  {
-    num: "02",
-    title: "Certified, not just experienced",
-    body: "EPA Universal and OSHA certification means proper refrigerant handling and safety practices on every job — residential and commercial.",
-  },
-  {
-    num: "03",
-    title: "Local, and it shows",
-    body: "Based in Ballantyne, working across Charlotte and the surrounding NC/SC towns. We show up at neighborhood events — we're not a call center in another state.",
-  },
-];
+/** Residential chip → its service page; commercial chip → lib/links' target for that category. */
+const residentialChip = (name: string): ChipItem => {
+  const service = services.find((s) => s.name === name);
+  return service ? { label: name, href: `/appliance-repair/${service.slug}` } : name;
+};
+const commercialChip = (label: string): ChipItem => {
+  const category = commercialCategories.find((c) => c.label === label);
+  return category ? { label, href: commercialCardHref(category) } : label;
+};
 
 export default function AboutPage() {
+  const { breadcrumb, hero, meet, appliances, approach, onTheJob, pending, cta } = aboutPage;
+  const pendingBlocks = aboutPendingBlocks();
+  const previewedDraft = pendingBlocks.find((block) => block.status === "draft");
   const { crumbs, jsonLd } = breadcrumbTrail([
-    { name: "Home", path: "/" },
-    { name: "Our Story", path: "/about" },
+    { name: breadcrumb.home, path: "/" },
+    { name: breadcrumb.self, path: "/about" },
   ]);
 
   return (
@@ -60,70 +53,80 @@ export default function AboutPage() {
 
       <PageHero
         breadcrumb={crumbs}
-        h1="A family business,<br><span>not a franchise.</span>"
-        lede={`EK Global is run by ${owner.name} — the person who answers the phone, does the diagnostic, and comes back if something isn't right. No call center, no subcontractors, no ticket numbers.`}
-        ctas={<BookCallCtas bookLabel="Book a Repair" />}
+        h1={hero.h1}
+        lede={hero.lede}
+        ctas={<BookCallCtas bookLabel={hero.bookLabel} />}
       />
 
-      <section className="section section-light">
-        <div className="two-col">
-          <Prose heading={`Meet ${owner.name}`} paragraphs={meetOwner}>
-            <StatRow
-              stats={[
-                { k: "10+ yrs", v: "Hands-on repair experience" },
-                { k: "EPA Universal", v: "Certified technician" },
-                { k: "OSHA", v: "Certified & fully insured" },
-              ]}
+      {routable(meet) && (
+        <section className="section section-light">
+          <div className="two-col">
+            <Prose heading={meet.heading} paragraphs={meet.paragraphs}>
+              <StatRow stats={meet.stats} />
+            </Prose>
+            <LocalPhoto
+              src={owner.photos.portrait.src}
+              alt={owner.photos.portrait.alt}
+              imgStyle={{ background: "var(--bg-light-2)" }}
             />
-          </Prose>
-          <LocalPhoto
-            src={owner.photos.portrait.src}
-            alt={owner.photos.portrait.alt}
-            imgStyle={{ background: "var(--bg-light-2)" }}
+          </div>
+        </section>
+      )}
+
+      {routable(approach) && (
+        <section className="section section-dark">
+          <SectionHead tone="dark" eyebrow={approach.eyebrow} h2={approach.h2} />
+          <ProblemCardGrid variant="dark" items={approach.items} />
+        </section>
+      )}
+
+      {routable(appliances) && (
+        <section className="section section-light">
+          <SectionHead
+            tone="light"
+            eyebrow={appliances.eyebrow}
+            h2={appliances.h2}
+            lede={appliances.lede}
           />
-        </div>
-      </section>
+          <div className="two-col">
+            <Prose heading={appliances.residential.heading}>
+              <ChipRow items={appliances.residential.items.map(residentialChip)} />
+            </Prose>
+            <Prose heading={appliances.commercial.heading}>
+              <ChipRow items={appliances.commercial.items.map(commercialChip)} />
+            </Prose>
+          </div>
+        </section>
+      )}
 
-      <section className="section section-dark">
-        <SectionHead
-          tone="dark"
-          eyebrow="Why it matters"
-          h2="What that means<br>for your repair."
-        />
-        <ProblemCardGrid variant="dark" items={whatThatMeans} />
-      </section>
+      {routable(onTheJob) && (
+        <section className="section section-light-2">
+          <SectionHead
+            tone="light"
+            eyebrow={onTheJob.eyebrow}
+            h2={onTheJob.h2}
+            style={{ marginBottom: 30 }}
+          />
+          <PhotoPair
+            style={{ marginTop: 0 }}
+            photos={onTheJob.photos.map((photo) => ({ ...photo, figureStyle: { height: 280 } }))}
+          />
+        </section>
+      )}
 
-      <section className="section section-light">
-        <SectionHead
-          tone="light"
-          eyebrow="On the job"
-          h2="Homes, restaurants,<br>and everything between."
-          style={{ marginBottom: 30 }}
-        />
-        <PhotoPair
-          style={{ marginTop: 0 }}
-          photos={[
-            {
-              src: owner.photos.restaurantKitchen.src,
-              alt: owner.photos.restaurantKitchen.alt,
-              caption: "Restaurant kitchen — commercial dishwasher",
-              figureStyle: { height: 280 },
-            },
-            {
-              src: owner.photos.rooftopLaundry.src,
-              alt: owner.photos.rooftopLaundry.alt,
-              caption: "Commercial laundry — rooftop equipment",
-              objectPosition: "30% 75%",
-              figureStyle: { height: 280 },
-            },
-          ]}
-        />
-      </section>
+      {pendingBlocks.length > 0 && (
+        <section className="section section-light">
+          {previewedDraft && <DraftBanner item={previewedDraft} />}
+          <SectionHead tone="light" eyebrow={pending.eyebrow} h2={pending.h2} />
+          <div className="two-col">
+            {pendingBlocks.map((block) => (
+              <Prose key={block.id} heading={block.heading} paragraphs={block.paragraphs} />
+            ))}
+          </div>
+        </section>
+      )}
 
-      <CtaBand
-        h2="Talk to the person<br>doing the repair."
-        body={`No dispatch queue. Call ${owner.name} directly, or book online in under a minute.`}
-      />
+      <CtaBand h2={cta.h2} body={cta.body} />
     </>
   );
 }

@@ -1,8 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { owner } from "@/data/people";
+import { aboutPage, owner } from "@/data/people";
 import { reviews } from "@/data/reviews";
+import { commercialCategories, services } from "@/data/services";
+import { ownerNode } from "@/lib/jsonld";
 
 // Seam 6, data invariant (spec story 9 / R11): the owner is "Constantin" everywhere in
 // the content layer. The only place the other spelling may survive is a review quote
@@ -51,5 +53,37 @@ describe("owner name in data/*", () => {
     for (const key of ["surname", "lastName", "familyName"]) {
       expect(owner).not.toHaveProperty(key);
     }
+  });
+});
+
+// Seam 6 + 3 (stories 18, 66, R23): the Person node on /about claims only what /about shows.
+// Visible copy = every string of `aboutPage` outside a `status: "draft"` block (drafts never
+// render in production), tags stripped.
+function visibleText(value: unknown): string {
+  if (typeof value === "string") return value.replace(/<[^>]+>/g, " ");
+  if (value === null || typeof value !== "object") return "";
+  if ((value as { status?: unknown }).status === "draft") return "";
+  return Object.values(value).map(visibleText).join(" \n ");
+}
+
+describe("the Person node and the /about copy", () => {
+  const text = visibleText(aboutPage);
+  const node = ownerNode();
+
+  it("prints the jobTitle and each credential name verbatim", () => {
+    const creds = (node.hasCredential as { name: string }[]).map((c) => c.name);
+    for (const s of [node.jobTitle as string, ...creds]) expect(text).toContain(s);
+  });
+
+  it("prints every knowsAbout category verbatim", () => {
+    const missing = (node.knowsAbout as string[]).filter((k) => !text.includes(k));
+    expect(missing).toEqual([]);
+  });
+
+  it("knows about the site's appliance categories: the 12 services + the commercial categories", () => {
+    expect(node.knowsAbout).toEqual([
+      ...services.map((s) => s.name),
+      ...commercialCategories.map((c) => c.label),
+    ]);
   });
 });

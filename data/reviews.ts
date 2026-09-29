@@ -92,3 +92,27 @@ export function reviewCategories(): ReviewCategory[] {
     .map(({ id, label, match }) => ({ id, label, reviews: reviews.filter(match) }))
     .filter((c) => c.reviews.length > 0);
 }
+
+/**
+ * /reviews copy. Takes the business name as an argument instead of importing data/business:
+ * that module imports this one (`aggregate`), and importing it back would be a cycle.
+ */
+export function reviewsPageCopy(businessName: string) {
+  return {
+    meta: {
+      title: `Customer Reviews — Appliance Repair in Charlotte, NC | ${businessName}`,
+      description: `What customers say about ${businessName} appliance repair in Charlotte, NC — reviews grouped by the appliance repaired and by commercial work.`,
+    },
+    breadcrumb: { home: "Home", self: "Reviews" },
+    hero: {
+      h1: "What customers say,<br><span>by appliance.</span>",
+      lede: `Reviews from ${businessName} customers, grouped by the appliance repaired and by commercial work. A review can appear in more than one group.`,
+    },
+    /** Eyebrow over each category section. */
+    countLabel: (n: number) => `${n} ${n === 1 ? "review" : "reviews"}`,
+    cta: {
+      h2: "Need a repair?<br>Book it in a minute.",
+      body: "Same-day service across Charlotte and the surrounding towns, with a warranty on every repair.",
+    },
+  };
+}
