@@ -1,5 +1,6 @@
 import { ChipRow } from "@/components/ui/chip-row";
 import { SectionHead } from "@/components/ui/section-head";
+import { commercialHub } from "@/data/commercial";
 
 // `#formats` — "Service formats", a dark `.section` whose body is a single
 // `.chip-row` (b2b-priority-brief §8 block 6). Thin wrapper over the shared UI
@@ -9,8 +10,8 @@ export function ServiceFormats({ items }: { items: string[] }) {
     <section className="section section-dark" id="formats">
       <SectionHead
         tone="dark"
-        eyebrow="Service formats"
-        h2="Ways to work<br>with us."
+        eyebrow={commercialHub.formats.eyebrow}
+        h2={commercialHub.formats.h2}
         style={{ marginBottom: 30 }}
       />
       <ChipRow items={items} tone="dark" />

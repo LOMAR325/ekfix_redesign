@@ -37,11 +37,12 @@ const netErrorStyle: React.CSSProperties = {
 };
 
 export function BookForm() {
-  const { appliance } = useBooking();
+  const { appliance, contactAs } = useBooking();
   const [status, setStatus] = useState<Status>("idle");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState("");
   const applianceRef = useRef<HTMLSelectElement>(null);
+  const contactAsRef = useRef<HTMLSelectElement>(null);
 
   // Preset the appliance <select> when a #repair card was clicked (BookingProvider).
   useEffect(() => {
@@ -49,6 +50,13 @@ export function BookForm() {
       applianceRef.current.value = appliance;
     }
   }, [appliance]);
+
+  // Preset "I'm contacting you as a…" the same way (a commercial CTA's `?as=`, story 51).
+  useEffect(() => {
+    if (contactAs && contactAsRef.current) {
+      contactAsRef.current.value = contactAs;
+    }
+  }, [contactAs]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -147,7 +155,7 @@ export function BookForm() {
           <span style={errorTextStyle}>{fieldErrors.appliance}</span>
         )}
 
-        <select id="contact-as" name="contactAs" defaultValue="" required>
+        <select id="contact-as" name="contactAs" ref={contactAsRef} defaultValue="" required>
           <option value="" disabled>
             I&apos;m contacting you as a…
           </option>

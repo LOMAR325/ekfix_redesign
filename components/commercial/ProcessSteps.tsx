@@ -1,5 +1,6 @@
 import { ProblemCardGrid, type ProblemItem } from "@/components/ui/problem-card-grid";
 import { SectionHead } from "@/components/ui/section-head";
+import { commercialHub } from "@/data/commercial";
 
 // `#process` — "How we work", a numbered `.problem-card` grid (b2b-priority-brief
 // §8 block 4). `section-light-2` so it steps off the #f4f5f2 `#laundry` section
@@ -10,8 +11,8 @@ export function ProcessSteps({ items }: { items: ProblemItem[] }) {
     <section className="section section-light-2" id="process">
       <SectionHead
         tone="light"
-        eyebrow="How we work"
-        h2="From the first call<br>to a photo report."
+        eyebrow={commercialHub.process.eyebrow}
+        h2={commercialHub.process.h2}
         style={{ marginBottom: 30 }}
       />
       <ProblemCardGrid items={items} variant="light" columns={4} />
