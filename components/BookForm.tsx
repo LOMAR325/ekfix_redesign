@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { business } from "@/data/business";
+import { site } from "@/data/site";
 import { applianceFormOptions, contactAsOptions } from "@/lib/book/options";
 import { useBooking } from "./BookingProvider";
 
@@ -116,17 +117,18 @@ export function BookForm() {
 
   const isSubmitting = status === "submitting";
 
+  const copy = site.bookForm;
   return (
     <div className="book-card">
-      <h3>Book your repair</h3>
-      <div className="sub">Takes less than a minute. 10% off online bookings.</div>
+      <h3>{copy.title}</h3>
+      <div className="sub">{copy.sub}</div>
 
       <div
         id="book-thanks"
         className={status === "success" ? "book-thanks" : "book-thanks hidden"}
       >
-        <strong>Thank you! We&apos;ll be in touch shortly.</strong>
-        <p>Need it sooner? Call {business.phone}.</p>
+        <strong>{copy.thanks}</strong>
+        <p>{copy.thanksCall(business.phone)}</p>
       </div>
 
       <form
@@ -174,7 +176,7 @@ export function BookForm() {
         />
 
         <button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Sending…" : "Send My Request →"}
+          {isSubmitting ? copy.submitting : copy.submit}
         </button>
 
         {formError && (
@@ -185,20 +187,16 @@ export function BookForm() {
 
         {status === "netError" && (
           <div style={netErrorStyle} role="alert">
-            Couldn&apos;t send your request — please call {business.phone}.
+            {copy.netError(business.phone)}
           </div>
         )}
 
         <div className="fine-print">
-          <span>
-            <span className="tick">✓</span> No hidden fees
-          </span>
-          <span>
-            <span className="tick">✓</span> Free estimate
-          </span>
-          <span>
-            <span className="tick">✓</span> Same-day slots
-          </span>
+          {copy.finePrint.map((item) => (
+            <span key={item}>
+              <span className="tick">✓</span> {item}
+            </span>
+          ))}
         </div>
       </form>
     </div>

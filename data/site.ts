@@ -50,6 +50,19 @@ export const site = {
     allServiceTowns: "All Service Towns →", // also the last item of the nav "Service Area" group
     commercialHub: "Commercial Appliance Repair",
   },
+  /** Label under the rating number in `.rating-badge` (components/ui/section-head). */
+  ratingBadgeLabel: "Google reviews",
+  /** Booking form copy (components/BookForm). Input placeholders stay in the JSX (field hints). */
+  bookForm: {
+    title: "Book your repair",
+    sub: "Takes less than a minute. 10% off online bookings.",
+    thanks: "Thank you! We'll be in touch shortly.",
+    thanksCall: (phone: string) => `Need it sooner? Call ${phone}.`,
+    submit: "Send My Request →",
+    submitting: "Sending…",
+    netError: (phone: string) => `Couldn't send your request — please call ${phone}.`,
+    finePrint: ["No hidden fees", "Free estimate", "Same-day slots"],
+  },
   /** Shown only in `next dev` on a draft page (components/DraftBanner). */
   draftBanner: "DRAFT — not published",
 } as const;

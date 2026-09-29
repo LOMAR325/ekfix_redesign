@@ -469,13 +469,13 @@ export const services: Service[] = [
 ];
 
 // Commercial equipment cards added to the end of the home #repair grid (b2b §7 block 3).
-// No routes of their own — each links to a section of /for-business. `image` is a placeholder.
+// Cards link through lib/links.commercialCardHref (published child page, else this hub anchor). `image` is a placeholder.
 // TODO: реальные коммерческие фото (below are existing residential webp as stand-ins)
 export const commercialCategories: CommercialCategory[] = [
-  { label: "Commercial Refrigeration", formLabel: "Commercial Refrigeration", image: "/images/Refrigerator.webp", href: "/for-business#horeca" }, // временная замена до реального коммерческого фото
-  { label: "Commercial Dishwasher/Warewasher", formLabel: "Commercial Dishwasher", image: "/images/dishwasher.webp", href: "/for-business#horeca" }, // временная замена до реального коммерческого фото
-  { label: "Commercial Laundry Equipment", formLabel: "Commercial Laundry Equipment", image: "/images/dryer_16.webp", href: "/for-business#laundry" }, // временная замена до реального коммерческого фото
-  { label: "Ice Machine (high-volume)", formLabel: "Ice Machine", image: "/images/ice_maker_under.webp", href: "/for-business#horeca" }, // временная замена до реального коммерческого фото
+  { label: "Commercial Refrigeration", formLabel: "Commercial Refrigeration", image: "/images/Refrigerator.webp", href: "/commercial-appliance-repair#horeca" }, // временная замена до реального коммерческого фото
+  { label: "Commercial Dishwasher/Warewasher", formLabel: "Commercial Dishwasher", image: "/images/dishwasher.webp", href: "/commercial-appliance-repair#horeca" }, // временная замена до реального коммерческого фото
+  { label: "Commercial Laundry Equipment", formLabel: "Commercial Laundry Equipment", image: "/images/dryer_16.webp", href: "/commercial-appliance-repair#laundry" }, // временная замена до реального коммерческого фото
+  { label: "Ice Machine (high-volume)", formLabel: "Ice Machine", image: "/images/ice_maker_under.webp", href: "/commercial-appliance-repair#horeca" }, // временная замена до реального коммерческого фото
 ];
 
 export const serviceSlugs: string[] = services.map((s) => s.slug);

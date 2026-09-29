@@ -4,17 +4,26 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import type { Route } from "next";
 import { usePathname } from "next/navigation";
-import { business } from "@/data/business";
-import { site } from "@/data/site";
 import type { NavEntry } from "@/lib/nav";
 
-// Client half of the header (components/Header computes the menu on the server and passes
-// it in, so the data/ modules behind lib/nav stay out of the client bundle).
+/** Header labels + phone, read from data/ by the server `Header` (no data/ import here). */
+export type HeaderCopy = {
+  brandBadge: string;
+  brandName: string;
+  brandSubtitle: string;
+  menuToggleLabel: string;
+  bookCta: { label: string; href: string };
+  phone: string;
+  phoneHref: string;
+};
+
+// Client half of the header (components/Header computes the menu and the copy on the server
+// and passes them in, so no data/ module ends up in the client bundle).
 // Ported 1:1 from the static <header class="site-header"> + js/main.js:
 // mobile toggle (body.nav-locked / header.nav-open / main-nav.open),
 // click-to-toggle dropdowns (.nav-item.open), close on outside click,
 // close menu when any nav link is clicked. Active item comes from usePathname().
-export function HeaderBar({ nav }: { nav: NavEntry[] }) {
+export function HeaderBar({ nav, copy }: { nav: NavEntry[]; copy: HeaderCopy }) {
   const pathname = usePathname();
   const [navOpen, setNavOpen] = useState(false);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
@@ -48,13 +57,13 @@ export function HeaderBar({ nav }: { nav: NavEntry[] }) {
   const toggleGroup = useCallback(
     (label: string, e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation();
-      // Desktop (>=861px) opens dropdowns on hover / focus-within via CSS. A click
+      // Desktop (>=1025px, the menu breakpoint) opens dropdowns on hover / focus-within via CSS. A click
       // toggle there fights the hover (click closes, hover instantly reopens) and
       // leaves menus stuck open after a pointer click, so it is a no-op; a pointer
       // click still drops focus so the menu isn't pinned by :focus-within.
       const isDesktop =
         typeof window !== "undefined" &&
-        window.matchMedia("(min-width: 861px)").matches;
+        window.matchMedia("(min-width: 1025px)").matches;
       if (isDesktop) {
         if (e.detail > 0) e.currentTarget.blur();
         return;
@@ -71,15 +80,15 @@ export function HeaderBar({ nav }: { nav: NavEntry[] }) {
   return (
     <header className={navOpen ? "site-header nav-open" : "site-header"}>
       <Link href="/" className="brand" onClick={closeMenu}>
-        <span className="brand-badge">{site.brandBadge}</span>
+        <span className="brand-badge">{copy.brandBadge}</span>
         <span className="brand-name">
-          <strong>{business.name}</strong>
-          <span>{site.header.brandSubtitle}</span>
+          <strong>{copy.brandName}</strong>
+          <span>{copy.brandSubtitle}</span>
         </span>
       </Link>
       <button
         className="nav-toggle"
-        aria-label={site.header.menuToggleLabel}
+        aria-label={copy.menuToggleLabel}
         aria-expanded={navOpen}
         onClick={toggleNav}
       >
@@ -133,30 +142,30 @@ export function HeaderBar({ nav }: { nav: NavEntry[] }) {
             the phone + Book reachable without a two-row top bar. */}
         <div className="nav-ctas">
           <a
-            href={business.phoneHref}
+            href={copy.phoneHref}
             className="call-pill"
             onClick={closeMenu}
           >
-            <span className="call-text">{business.phone}</span>
+            <span className="call-text">{copy.phone}</span>
           </a>
           <Link
-            href={site.header.bookCta.href as Route}
+            href={copy.bookCta.href as Route}
             className="btn btn-accent btn-sm"
             onClick={closeMenu}
           >
-            {site.header.bookCta.label}
+            {copy.bookCta.label}
           </Link>
         </div>
       </nav>
       <div className="header-actions">
-        <a href={business.phoneHref} className="call-pill">
-          <span className="call-text">{business.phone}</span>
+        <a href={copy.phoneHref} className="call-pill">
+          <span className="call-text">{copy.phone}</span>
         </a>
         <Link
-          href={site.header.bookCta.href as Route}
+          href={copy.bookCta.href as Route}
           className="btn btn-accent btn-sm"
         >
-          {site.header.bookCta.label}
+          {copy.bookCta.label}
         </Link>
       </div>
     </header>

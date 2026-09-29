@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 import { business } from "@/data/business";
+import { site } from "@/data/site";
 import { richProps } from "./rich-text";
 
 type SectionHeadProps = {
@@ -62,7 +63,7 @@ function RatingBadge({ value }: { value: number }) {
       <div className="num">{value.toFixed(1)}</div>
       <div>
         <span className="stars">★★★★★</span>
-        <small>Google reviews</small>
+        <small>{site.ratingBadgeLabel}</small>
       </div>
     </div>
   );

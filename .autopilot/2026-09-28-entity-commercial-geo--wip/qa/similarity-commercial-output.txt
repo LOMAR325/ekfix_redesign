@@ -1,0 +1,37 @@
+
+> ekfix@0.1.0 check:similarity
+> node --no-warnings scripts/similarity.mjs --base http://localhost:3112 --group commercial
+
+
+check:similarity — group "commercial", 7 page(s), base http://localhost:3112
+masked as ⟨X⟩: Property Management Appliance Repairs, Commercial Laundry Equipment Repairs, Property Management Appliance Repair, Commercial Laundry Equipment Repair, Property Management & Multifamilys, Commercial Dishwasher/Warewashers, Property Management & Multifamily, Commercial Dishwasher/Warewasher, Commercial Refrigerator Repairs, Commercial Oven & Range Repairs, Commercial Refrigerator Repair, Commercial Ice Machine Repairs, Commercial Oven & Range Repair, Commercial Dishwasher Repairs, Commercial Ice Machine Repair, Commercial Laundry Equipments, Commercial Dishwasher Repair, Commercial Laundry Equipment, Restaurant Appliance Repairs, Restaurant Appliance Repair, Commercial Refrigerations, Laundry Equipment Repairs, Commercial Refrigerators, Commercial Refrigeration, Laundry Equipment Repair, Commercial Oven & Ranges, Commercial Refrigerator, Commercial Ice Machines, Commercial Oven & Range, Commercial Dishwashers, Dishwasher/Warewashers, Commercial Ice Machine, Commercial Dishwasher, Dishwasher/Warewasher, Refrigerator Repairs, Oven & Range Repairs, Property Managements, Property managements, Refrigerator Repair, Ice Machine Repairs, Oven & Range Repair, Restaurants & Cafés, Restaurants & cafés, Commercial Kitchens, Property Management, Property management, Dishwasher Repairs, Ice Machine Repair, Laundry Equipments, Commercial Kitchen, Dishwasher Repair, Laundry Equipment, Property Managers, Commercial Ovens, Property Manager, Commercial Oven, Refrigerations, Refrigerators, Refrigeration, Range Repairs, Oven & Ranges, Refrigerator, Ice Machines, Range Repair, Oven & Range, Hospitalitys, Multifamilys, Dishwashers, Warewashers, Ice Machine, Restaurants, Hospitality, Multifamily, Dishwasher, Warewasher, Restaurant, Kitchens, Kitchen, Ranges, Hotels, Range, Cafés, cafés, Cafes, Hotel, Café, Cafe
+
+full text — Jaccard, 3-word shingles
+                                          1    2    3    4    5    6    7
+commercial-refrigerator-repair            — 0.09 0.11 0.09 0.10 0.10 0.09   (1, 597 shingles)
+commercial-dishwasher-repair           0.09    — 0.10 0.11 0.11 0.15 0.10   (2, 566 shingles)
+commercial-ice-machine-repair          0.11 0.10    — 0.10 0.12 0.12 0.10   (3, 545 shingles)
+commercial-laundry-equipment-repair    0.09 0.11 0.10    — 0.11 0.10 0.10   (4, 540 shingles)
+commercial-oven-range-repair           0.10 0.11 0.12 0.11    — 0.12 0.09   (5, 516 shingles)
+restaurant-appliance-repair            0.10 0.15 0.12 0.10 0.12    — 0.09   (6, 518 shingles)
+property-management-appliance-repair   0.09 0.10 0.10 0.10 0.09 0.09    —   (7, 572 shingles)
+
+editorial text — Jaccard, 3-word shingles
+                                          1    2    3    4    5    6    7
+commercial-refrigerator-repair            — 0.07 0.08 0.07 0.07 0.07 0.06   (1, 551 shingles)
+commercial-dishwasher-repair           0.07    — 0.08 0.08 0.09 0.11 0.07   (2, 518 shingles)
+commercial-ice-machine-repair          0.08 0.08    — 0.07 0.09 0.08 0.07   (3, 504 shingles)
+commercial-laundry-equipment-repair    0.07 0.08 0.07    — 0.08 0.08 0.07   (4, 486 shingles)
+commercial-oven-range-repair           0.07 0.09 0.09 0.08    — 0.08 0.07   (5, 476 shingles)
+restaurant-appliance-repair            0.07 0.11 0.08 0.08 0.08    — 0.07   (6, 461 shingles)
+property-management-appliance-repair   0.06 0.07 0.07 0.07 0.07 0.07    —   (7, 524 shingles)
+
+Max per page — decision by EDITORIAL, threshold ≤ 0.30
+page                                   full  editorial
+commercial-refrigerator-repair        0.11       0.08   ok
+commercial-dishwasher-repair          0.15       0.11   ok
+commercial-ice-machine-repair         0.12       0.09   ok
+commercial-laundry-equipment-repair   0.11       0.08   ok
+commercial-oven-range-repair          0.12       0.09   ok
+restaurant-appliance-repair           0.15       0.11   ok
+property-management-appliance-repair  0.10       0.07   ok

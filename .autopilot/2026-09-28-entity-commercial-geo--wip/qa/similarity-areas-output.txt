@@ -1,0 +1,37 @@
+
+> ekfix@0.1.0 check:similarity
+> node --no-warnings scripts/similarity.mjs --base http://localhost:3112 --group areas
+
+
+check:similarity — group "areas", 7 page(s), base http://localhost:3112
+masked as ⟨X⟩: South Charlotte, NC, Indian Trail, NC, South Charlotte, Ballantyne, NC, Charlotte, NC, Rock Hill, SC, Fort Mill, SC, Matthews, NC, Indian Trail, Ballantyne, Charlotte, Rock Hill, Fort Mill, Matthews
+
+full text — Jaccard, 3-word shingles
+                     1    2    3    4    5    6    7
+charlotte            — 0.10 0.06 0.27 0.23 0.27 0.28   (1, 344 shingles)
+south-charlotte   0.10    — 0.07 0.11 0.11 0.12 0.12   (2, 67 shingles)
+ballantyne        0.06 0.07    — 0.06 0.04 0.06 0.05   (3, 479 shingles)
+rock-hill         0.27 0.11 0.06    — 0.38 0.45 0.45   (4, 292 shingles)
+fort-mill         0.23 0.11 0.04 0.38    — 0.38 0.38   (5, 295 shingles)
+matthews          0.27 0.12 0.06 0.45 0.38    — 0.47   (6, 280 shingles)
+indian-trail      0.28 0.12 0.05 0.45 0.38 0.47    —   (7, 283 shingles)
+
+editorial text — Jaccard, 3-word shingles
+                     1    2    3    4    5    6    7
+charlotte            — 0.03 0.04 0.23 0.18 0.23 0.24   (1, 276 shingles)
+south-charlotte   0.03    — 0.01 0.04 0.04 0.04 0.04   (2, 33 shingles)
+ballantyne        0.04 0.01    — 0.03 0.01 0.02 0.02   (3, 437 shingles)
+rock-hill         0.23 0.04 0.03    — 0.30 0.42 0.42   (4, 215 shingles)
+fort-mill         0.18 0.04 0.01 0.30    — 0.33 0.33   (5, 220 shingles)
+matthews          0.23 0.04 0.02 0.42 0.33    — 0.44   (6, 205 shingles)
+indian-trail      0.24 0.04 0.02 0.42 0.33 0.44    —   (7, 207 shingles)
+
+Max per page — decision by EDITORIAL, threshold ≤ 0.30
+page              full  editorial
+charlotte        0.28       0.24   ok
+south-charlotte  0.12       0.04   ok
+ballantyne       0.07       0.04   ok
+rock-hill        0.45       0.42   OVER — keep as draft (vs matthews)
+fort-mill        0.38       0.33   OVER — keep as draft (vs indian-trail)
+matthews         0.47       0.44   OVER — keep as draft (vs indian-trail)
+indian-trail     0.47       0.44   OVER — keep as draft (vs matthews)

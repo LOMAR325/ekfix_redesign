@@ -1,0 +1,20 @@
+900 burger tap {"label":"Commercial ⌄","pos":"static","shown":true,"inFlow":true,"links":8} closedOnSecondTap true
+900 burger tap {"label":"Home Appliances ⌄","pos":"static","shown":true,"inFlow":true,"links":13} closedOnSecondTap true
+900 burger tap {"label":"Service Area ⌄","pos":"static","shown":true,"inFlow":true,"links":7} closedOnSecondTap true
+w | header h | rows | brand | navLeft | nav | actions | padL | hscroll | +Guides h | +Guides rows
+390 | 69 | 2 | 158 | 0 | 0 | 0 | 19.5px | false | 69 | 2
+861 | 69 | 2 | 158 | 0 | 0 | 0 | 32px | false | 69 | 2
+900 | 69 | 2 | 158 | 0 | 0 | 0 | 32px | false | 69 | 2
+1000 | 69 | 2 | 158 | 0 | 0 | 0 | 32px | false | 69 | 2
+1024 | 69 | 2 | 158 | 0 | 0 | 0 | 32px | false | 69 | 2
+1025 | 81 | 3 | 158 | 223 | 435 | 302 | 20px | false | 81 | 3
+1029 | 81 | 3 | 158 | 225 | 435 | 302 | 20.32px | false | 81 | 3
+1030 | 81 | 3 | 158 | 226 | 435 | 302 | 20.4px | false | 81 | 3
+1040 | 81 | 3 | 158 | 231 | 435 | 302 | 21.2px | false | 81 | 3
+1060 | 81 | 3 | 158 | 240 | 437 | 302 | 22.8px | false | 81 | 3
+1080 | 81 | 3 | 158 | 248 | 440 | 302 | 24.4px | false | 81 | 3
+1100 | 81 | 3 | 158 | 257 | 442 | 302 | 26px | false | 81 | 3
+1200 | 81 | 3 | 158 | 301 | 454 | 302 | 34px | false | 81 | 3
+1279 | 81 | 3 | 158 | 336 | 463 | 302 | 40px | false | 81 | 3
+1280 | 81 | 3 | 158 | 336 | 464 | 302 | 40px | false | 81 | 3
+1440 | 81 | 3 | 158 | 412 | 473 | 302 | 40px | false | 81 | 3
