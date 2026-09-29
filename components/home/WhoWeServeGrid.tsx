@@ -1,11 +1,12 @@
 import { SectionHead } from "@/components/ui/section-head";
 import { AudienceGrid } from "@/components/ui/audience-card";
-import { whoWeServe, whoWeServeHead } from "@/data/b2b-segments";
+import { whoWeServeHead } from "@/data/b2b-segments";
+import { whoWeServeCards } from "@/data/home";
 
-// NEW section `#who-we-serve` — sits right after the hero, before `#repair`
-// (spec stories 23 / 30 / 31). 4 `.audience-card`s in a `.card-grid-4`, businesses
-// first (Property Management, Restaurants, Hotels) and Homeowners last. Copy comes
-// from data/b2b-segments (written fresh, not shared with /for-business).
+// `#who-we-serve` — right after the hero (spec story 43). 4 `.audience-card`s in a
+// `.card-grid-4`, businesses first (Property Management, Restaurants, Hotels) and
+// Homeowners last. Business cards link to their published industry page, otherwise to
+// their commercial-hub anchor; Homeowners → /appliance-repair (data/home.whoWeServeCards).
 export function WhoWeServeGrid() {
   return (
     <section id="who-we-serve" className="section section-light-2">
@@ -14,7 +15,7 @@ export function WhoWeServeGrid() {
         eyebrow={whoWeServeHead.eyebrow}
         h2={whoWeServeHead.h2}
       />
-      <AudienceGrid layout="card-grid-4" items={whoWeServe} />
+      <AudienceGrid layout="card-grid-4" items={whoWeServeCards()} />
     </section>
   );
 }

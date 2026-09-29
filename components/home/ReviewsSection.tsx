@@ -1,21 +1,16 @@
 import { SectionHead } from "@/components/ui/section-head";
 import { ReviewsGrid } from "@/components/ui/review-card";
-import { reviews } from "@/data/reviews";
+import { homeReviews } from "@/data/reviews";
+import { home } from "@/data/home";
 
-// `#reviews` — ported 1:1 from index.html. The 6 reviews come from data/reviews in
-// the same order they appear today (Tony Z. — the restaurant dishwasher review —
-// first). The right-hand `.rating-badge` is rendered by SectionHead from
-// data/business.rating (real reviews, not the "5.0 on Google" badge text).
+// `#reviews` — the 6 reviews, business reviews first (data/reviews.homeReviews sorts
+// `segment: "commercial"` ahead of the rest — story 45). The right-hand `.rating-badge`
+// is rendered by SectionHead from data/business.rating (real reviews).
 export function ReviewsSection() {
   return (
     <section id="reviews" className="section section-light">
-      <SectionHead
-        tone="light"
-        eyebrow="04 / Reviews"
-        h2="What our<br>customers say."
-        ratingBadge
-      />
-      <ReviewsGrid reviews={reviews} />
+      <SectionHead tone="light" eyebrow={home.reviews.eyebrow} h2={home.reviews.h2} ratingBadge />
+      <ReviewsGrid reviews={homeReviews()} />
     </section>
   );
 }

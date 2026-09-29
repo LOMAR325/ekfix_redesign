@@ -1,28 +1,23 @@
 "use client";
 
 import { business } from "@/data/business";
-import { services, commercialCategories } from "@/data/services";
+import { services } from "@/data/services";
+import { home } from "@/data/home";
 import { SectionHead } from "@/components/ui/section-head";
 import { RepairGrid } from "@/components/ui/repair-grid";
 import { RepairCard } from "@/components/ui/repair-card";
 import { useBooking } from "@/components/BookingProvider";
 
-// `#repair` — ported 1:1 from index.html: the 12 residential appliance cards from
-// data/services, each linking to `#book` and presetting the booking form's appliance
-// <select> on click (useBooking). The 4 commercial-equipment cards from
-// data/services.commercialCategories are appended (spec story 12), linking into
-// sections of /for-business rather than `#book`. `.not-listed` line is unchanged.
+// `#repair` — the 12 home-appliance cards from data/services, each linking to `#book`
+// and presetting the booking form's appliance <select> on click (useBooking). The
+// commercial cards moved to #commercial-equipment above (spec story 43).
 export function RepairSection() {
   const { setAppliance } = useBooking();
+  const copy = home.repair;
 
   return (
     <section id="repair" className="section section-light">
-      <SectionHead
-        tone="light"
-        eyebrow="02 / What we repair"
-        h2="We get to<br>the core problem."
-        lede="Diagnosed on the spot, fixed with original manufacturer-approved parts. Free estimate before any work begins."
-      />
+      <SectionHead tone="light" eyebrow={copy.eyebrow} h2={copy.h2} lede={copy.lede} />
 
       <RepairGrid>
         {services.map((service) => (
@@ -30,27 +25,17 @@ export function RepairSection() {
             key={service.slug}
             label={service.name}
             href="#book"
-            tag="Repair · Book online"
+            tag={copy.tag}
             image={service.image}
             imageAlt={`${service.name} repair`}
             onSelect={() => setAppliance(service.formLabel)}
           />
         ))}
-        {commercialCategories.map((category) => (
-          <RepairCard
-            key={category.label}
-            label={category.label}
-            href={category.href}
-            tag="Commercial · See services"
-            image={category.image}
-            imageAlt={`${category.label} repair`}
-          />
-        ))}
       </RepairGrid>
 
       <div className="not-listed">
-        <strong>Not on the list?</strong> We service most major and commercial
-        appliances — <a href={business.phoneHref}>just call us</a>.
+        <strong>{copy.notListed.lead}</strong> {copy.notListed.text}{" "}
+        <a href={business.phoneHref}>{copy.notListed.link}</a>.
       </div>
     </section>
   );
