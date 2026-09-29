@@ -72,11 +72,14 @@ for (const v of VIEWS) {
     page.on("response", (r) => { if (r.url().startsWith(base) && r.status() >= 400) bad.push(r.status() + " " + r.url().slice(base.length)); });
     const res = await page.goto(base + p, { waitUntil: "load" });
     await page.evaluate(() => document.fonts.ready);
-    // walk the page so lazy images load, then back to the top
-    await page.evaluate(async () => { for (let y = 0; y < document.documentElement.scrollHeight; y += innerHeight / 2) { scrollTo(0, y); await new Promise((r) => setTimeout(r, 60)); } scrollTo(0, 0); });
-    await page.waitForTimeout(400);
-    await page.evaluate(() => Promise.all([...document.images].map((i) => i.complete ? 0 : new Promise((r) => { i.onload = i.onerror = r; setTimeout(r, 5000); }))));
+    // Walk the page slowly so every loading="lazy" image enters the viewport and starts,
+    // wait for them at the bottom, and only then go back to the top. (A 60ms walk + an
+    // immediate jump back left lazy images below the fold unstarted — 39 false "not loaded".)
+    await page.evaluate(async () => { for (let y = 0; y <= document.documentElement.scrollHeight; y += 300) { scrollTo(0, y); await new Promise((r) => setTimeout(r, 150)); } });
+    await page.evaluate(() => Promise.all([...document.images].map((i) => i.complete ? 0 : new Promise((r) => { i.addEventListener("load", r); i.addEventListener("error", r); setTimeout(r, 8000); }))));
     const imgs = await page.evaluate(() => [...document.images].map((i) => ({ src: i.currentSrc || i.src, ok: i.complete && i.naturalWidth > 0 })));
+    await page.evaluate(() => scrollTo(0, 0));
+    await page.waitForTimeout(400);
     const a = await page.evaluate(audit);
     if (p === "/") {
       home[v.w] = await page.evaluate(() => {
@@ -108,5 +111,10 @@ for (const r of details) {
   for (const b of r.bad) L.push(`- ответ: ${b}`);
   for (const i of r.imgs.filter((i) => !i.ok)) L.push(`- картинка не загрузилась: ${i.src}`);
 }
+// Findings reviewed by hand — stay in the report with the reason they are not fixed here.
+const starFails = tot((r) => r.fails.filter((f) => f.text === "★★★★★").length);
+L.push(``, `## Разбор`, ``);
+L.push(`- **Картинки.** Прежний прогон (13:41) дал 39 «незагруженных» на / (1440, 390) и /about@390 — артефакт проверки, не дефект: скрипт пролистывал страницу за 60 мс на пол-экрана и сразу возвращался наверх, и \`loading="lazy"\`-картинки ниже экрана не успевали стартовать. Теперь шаг 300px/150 мс, ожидание картинок внизу страницы, потом наверх; все \`/_next/image\` отвечают 200.`);
+if (starFails) L.push(`- **\`.stars\` (★★★★★) — ${starFails} срабатываний, 1.3:1** (#c6f24e на белой \`.review-card\`). Декоративные звёзды-акцент над текстом отзыва, дизайн 1:1 со старым сайтом (13px, лаймовый акцент). Не исправлено по решению: дизайн не меняем, выбор — за владельцем (варианты: тёмные звёзды на светлой карточке или \`aria-hidden\` + текстовая оценка). Остальные нарушения контраста — 0.`);
 writeFileSync("pages-report.md", L.join("\n") + "\n");
 console.log(L.slice(-40).join("\n").slice(0, 6000));

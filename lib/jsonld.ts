@@ -39,13 +39,21 @@ export function graph(...nodes: (JsonLdNode | null)[]): JsonLdGraph {
 /**
  * A served place. A plain string is a city ("Charlotte, NC"); a district of a city
  * (data/towns `kind: "area"`) is passed as `{ name, kind: "area" }` and becomes a Place.
+ * `containedIn` — the state's name, for a place the page lists without its state (under a
+ * visible "North Carolina" heading): `name` stays as shown, the state becomes `containedInPlace`.
  */
-export type ServedArea = string | { name: string; kind: Town["kind"] };
+export type ServedArea = string | { name: string; kind: Town["kind"]; containedIn?: string };
 
 const placeNode = (area: ServedArea) =>
   typeof area === "string"
     ? { "@type": "City", name: area }
-    : { "@type": area.kind === "city" ? "City" : "Place", name: area.name };
+    : {
+        "@type": area.kind === "city" ? "City" : "Place",
+        name: area.name,
+        ...(area.containedIn
+          ? { containedInPlace: { "@type": "State", name: area.containedIn } }
+          : {}),
+      };
 
 export type BusinessNodeOptions = {
   /** only where the owner's hero photo is shown (`/`) */

@@ -13,7 +13,9 @@ import { CtaBand } from "@/components/ui/cta-band";
 // /reviews — the site's reviews grouped by topic (stories 76–77). Categories and their
 // rules live in data/reviews.reviewCategories(), which already drops an empty category;
 // a review may appear in several. Review texts are rendered as-is. The page shows every
-// review, so the business node carries the aggregateRating built from them.
+// review, so the business node carries the aggregateRating built from them, and the first
+// section head shows the same `.rating-badge` as the home page with both of its numbers
+// (rating + review count, story 82).
 // Sections alternate light / light-2 after the dark hero; the cta-band closes dark.
 
 const copy = reviewsPageCopy(business.name);
@@ -43,6 +45,7 @@ export default function ReviewsPage() {
             tone="light"
             eyebrow={copy.countLabel(category.reviews.length)}
             h2={category.label}
+            ratingBadge={i === 0 ? "count" : undefined}
           />
           <ReviewsGrid reviews={category.reviews} />
         </section>

@@ -16,8 +16,13 @@ type SectionHeadProps = {
   h2: ReactNode;
   /** Right-hand `.lede` paragraph. Mutually exclusive with `ratingBadge` in practice. */
   lede?: ReactNode;
-  /** Renders the standard right-hand `.rating-badge` (5.0 / ★★★★★ / Google reviews). */
-  ratingBadge?: boolean;
+  /**
+   * Renders the standard right-hand `.rating-badge` (5.0 / ★★★★★ / label). `true` — the
+   * published "Google reviews" label (town pages, which show some of the reviews). `"count"` —
+   * on a page that shows every review and carries the AggregateRating (`/`, `/reviews`): the
+   * label is the review count, so both numbers of the markup are on the page (story 82).
+   */
+  ratingBadge?: boolean | "count";
   /** Existing per-page inline overrides, e.g. `{ marginBottom: 50 }`. */
   style?: CSSProperties;
   /** Existing per-page h2 inline overrides, e.g. `{ fontSize: "clamp(30px, 3.2vw, 44px)" }`. */
@@ -49,7 +54,14 @@ export function SectionHead({
         <p className="lede" style={ledeStyle} {...richProps(lede)} />
       )}
       {ratingBadge && business.rating && (
-        <RatingBadge value={business.rating.value} />
+        <RatingBadge
+          value={business.rating.value}
+          label={
+            ratingBadge === "count"
+              ? site.ratingBadgeCountLabel(business.rating.count)
+              : site.ratingBadgeLabel
+          }
+        />
       )}
     </div>
   );
@@ -57,13 +69,13 @@ export function SectionHead({
 
 // Rendered only when data/business actually carries a rating — no invented number
 // stands in for missing data.
-function RatingBadge({ value }: { value: number }) {
+function RatingBadge({ value, label }: { value: number; label: string }) {
   return (
     <div className="rating-badge">
       <div className="num">{value.toFixed(1)}</div>
       <div>
         <span className="stars">★★★★★</span>
-        <small>{site.ratingBadgeLabel}</small>
+        <small>{label}</small>
       </div>
     </div>
   );

@@ -52,6 +52,11 @@ export const site = {
   },
   /** Label under the rating number in `.rating-badge` (components/ui/section-head). */
   ratingBadgeLabel: "Google reviews",
+  /**
+   * The badge label on a page that shows every review (`/`, `/reviews`): the review count, so the
+   * badge states both numbers of that page's AggregateRating (story 82). Counts data/reviews only.
+   */
+  ratingBadgeCountLabel: (n: number) => `${n} ${n === 1 ? "review" : "reviews"}`,
   /** Booking form copy (components/BookForm). Input placeholders stay in the JSX (field hints). */
   bookForm: {
     title: "Book your repair",

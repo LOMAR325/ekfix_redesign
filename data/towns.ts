@@ -1,4 +1,5 @@
 import type { Town, TownPage } from "./types";
+import type { ServedArea } from "../lib/jsonld";
 import { owner } from "./people";
 import { business } from "./business";
 import { services } from "./services";
@@ -383,12 +384,34 @@ export const publishedDescendants = (town: Town): Town[] =>
     .sort((a, b) => ancestorsOf(a).length - ancestorsOf(b).length);
 
 /** "Also serving" text lists on towns/index.html — derived from the cities without a page. */
+const isAlsoServed = (t: Town): boolean => t.kind === "city" && !t.page;
 export const alsoServedNC: string[] = towns
-  .filter((t) => t.kind === "city" && !t.page && t.state === "NC")
+  .filter((t) => isAlsoServed(t) && t.state === "NC")
   .map((t) => t.name);
 export const alsoServedSC: string[] = towns
-  .filter((t) => t.kind === "city" && !t.page && t.state === "SC")
+  .filter((t) => isAlsoServed(t) && t.state === "SC")
   .map((t) => t.name);
+
+/** Full state names — the "Also serving — …" eyebrows on /towns show them. */
+export const stateNames = { NC: "North Carolina", SC: "South Carolina" } as const;
+
+/**
+ * /towns `areaServed` (stories 17, 82): the places of business.areaServed, each named the way
+ * /towns shows it — a town with a published page by its card label ("Charlotte, NC"), a town
+ * from the "Also serving" lists by its bare name ("Mint Hill"), with the list's state as the
+ * containing place. A place /towns does not show is left out.
+ */
+export function townsIndexAreaServed(): ServedArea[] {
+  return business.areaServed.flatMap((entry): ServedArea[] => {
+    const town = towns.find((t) => `${t.name}, ${t.state}` === entry);
+    if (!town) return [];
+    if (hasPublishedPage(town)) return [entry];
+    if (isAlsoServed(town)) {
+      return [{ name: town.name, kind: town.kind, containedIn: stateNames[town.state] }];
+    }
+    return [];
+  });
+}
 
 // towns/index.html hero + section copy (1:1).
 export const townsIndex = {
@@ -406,9 +429,9 @@ export const townsIndex = {
   cardTag: "Full local page",
   /** Card tag of an area page, listed right under its city. */
   areaCardTag: (city: string) => `Part of ${city}`,
-  alsoServingNCEyebrow: "Also serving — North Carolina",
+  alsoServingNCEyebrow: `Also serving — ${stateNames.NC}`,
   alsoServingNCLabel: "We also cover:",
-  alsoServingSCEyebrow: "Also serving — South Carolina",
+  alsoServingSCEyebrow: `Also serving — ${stateNames.SC}`,
   alsoServingSCLabel: "Just across the state line:",
   alsoServingTail: ", and the towns between them.",
   cta: { h2: "Not sure if you're<br>in range?", body: "Just call — we'll tell you straight away." },

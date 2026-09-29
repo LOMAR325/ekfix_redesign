@@ -104,6 +104,19 @@ describe("businessNode()", () => {
     ]);
   });
 
+  it("keeps a place's name as the page shows it and carries its state as the containing place", () => {
+    const node = businessNode({
+      areaServed: [{ name: "Mint Hill", kind: "city", containedIn: "North Carolina" }],
+    });
+    expect(node.areaServed).toEqual([
+      {
+        "@type": "City",
+        name: "Mint Hill",
+        containedInPlace: { "@type": "State", name: "North Carolina" },
+      },
+    ]);
+  });
+
   it("shows the hero photo only when asked", () => {
     expect(businessNode({ image: true }).image).toBe(
       "https://ekfix.us/images/hero-technician.webp",

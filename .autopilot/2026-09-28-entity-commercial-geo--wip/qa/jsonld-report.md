@@ -1,6 +1,6 @@
 # JSON-LD — story 82 (R96, R23)
 
-Прогон: 2026-09-29T13:42 · `node --no-warnings qa/jsonld.mjs http://localhost:3111` по prod-HTML (`npm start`), 32 опубликованных путей.
+Прогон: 2026-09-29T13:56 · `node --no-warnings qa/jsonld.mjs http://localhost:3111` по prod-HTML (`npm start`), 32 опубликованных путей.
 Проверки: JSON парсится; ровно один `<script type=application/ld+json>` с `@graph`; каждая ссылка `{"@id"}` разрешается внутри графа; один узел `https://ekfix.us/#business`; `Person.name === "Constantin"`; каждое строковое значение (name, alternateName, telephone, jobTitle, serviceType, headline, text, description, knowsAbout, addressLocality, addressRegion, ratingValue, reviewCount, areaServed, email) есть в видимом тексте страницы (регистр/пробелы/тире нормализованы, телефон — по цифрам, reviewCount — рядом со словом review); URL-поля (url, logo, image, sameAs, item) — ресурс есть на странице (ссылка, картинка или сама страница).
 
 | Путь | Узлов | Типы | @id-ссылок | строк сверено | URL сверено |
@@ -8,7 +8,7 @@
 | / | 2 | HomeAndConstructionBusiness, WebSite | 1 | 13 | 7 |
 | /about | 3 | HomeAndConstructionBusiness, Person, BreadcrumbList | 1 | 26 | 9 |
 | /brands | 2 | HomeAndConstructionBusiness, BreadcrumbList | 0 | 6 | 7 |
-| /towns | 2 | HomeAndConstructionBusiness, BreadcrumbList | 0 | 26 | 7 |
+| /towns | 2 | HomeAndConstructionBusiness, BreadcrumbList | 0 | 41 | 7 |
 | /reviews | 2 | HomeAndConstructionBusiness, BreadcrumbList | 0 | 8 | 7 |
 | /appliance-repair | 2 | HomeAndConstructionBusiness, BreadcrumbList | 0 | 6 | 7 |
 | /commercial-appliance-repair | 3 | HomeAndConstructionBusiness, FAQPage, BreadcrumbList | 0 | 22 | 7 |
@@ -38,24 +38,6 @@
 | /towns/matthews | 2 | HomeAndConstructionBusiness, BreadcrumbList | 0 | 8 | 8 |
 | /towns/indian-trail | 2 | HomeAndConstructionBusiness, BreadcrumbList | 0 | 8 | 8 |
 
-## Расхождения (19)
+## Расхождения (0)
 
-- /: reviewCount 6 не виден рядом со словом review
-- /towns: City.name: «Mint Hill, NC» нет в видимом тексте
-- /towns: City.name: «Pineville, NC» нет в видимом тексте
-- /towns: City.name: «Stallings, NC» нет в видимом тексте
-- /towns: City.name: «Waxhaw, NC» нет в видимом тексте
-- /towns: City.name: «Weddington, NC» нет в видимом тексте
-- /towns: City.name: «Marvin, NC» нет в видимом тексте
-- /towns: City.name: «Wesley Chapel, NC» нет в видимом тексте
-- /towns: City.name: «Monroe, NC» нет в видимом тексте
-- /towns: City.name: «Harrisburg, NC» нет в видимом тексте
-- /towns: City.name: «Tega Cay, SC» нет в видимом тексте
-- /towns: City.name: «Indian Land, SC» нет в видимом тексте
-- /towns: City.name: «Lake Wylie, SC» нет в видимом тексте
-- /towns: City.name: «Belmont, NC» нет в видимом тексте
-- /towns: City.name: «Newell, NC» нет в видимом тексте
-- /towns: City.name: «Catawba, SC» нет в видимом тексте
-- /reviews: ratingValue 5 нет в тексте
-- /commercial-appliance-repair: HomeAndConstructionBusiness.knowsAbout: «Preventive Maintenance for Property Managers» нет в видимом тексте
-- /commercial-appliance-repair: HomeAndConstructionBusiness.knowsAbout: «Commercial Kitchen Equipment Repair» нет в видимом тексте
+Нет.

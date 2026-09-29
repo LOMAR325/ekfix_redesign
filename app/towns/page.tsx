@@ -3,13 +3,13 @@ import { JsonLd } from "@/components/JsonLd";
 import { pageMetadata } from "@/lib/seo";
 import { businessNode, graph } from "@/lib/jsonld";
 import { breadcrumbTrail } from "@/lib/breadcrumb";
-import { business } from "@/data/business";
 import {
   townsIndex,
   townsWithPublishedPage,
   publishedAncestors,
   alsoServedNC,
   alsoServedSC,
+  townsIndexAreaServed,
 } from "@/data/towns";
 import { PageHero } from "@/components/ui/page-hero";
 import { SectionHead } from "@/components/ui/section-head";
@@ -40,10 +40,8 @@ export default function TownsPage() {
 
   return (
     <>
-      {/* areaServed: the 20 places of business.areaServed are all listed on this page. */}
-      <JsonLd
-        data={graph(businessNode({ areaServed: business.areaServed }), jsonLd)}
-      />
+      {/* areaServed: the places of business.areaServed, named as this page lists them. */}
+      <JsonLd data={graph(businessNode({ areaServed: townsIndexAreaServed() }), jsonLd)} />
 
       <PageHero
         breadcrumb={crumbs}

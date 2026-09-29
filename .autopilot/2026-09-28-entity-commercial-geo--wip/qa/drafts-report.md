@@ -1,24 +1,24 @@
 # Черновики — недоступность
 
-Прогон: 2026-09-29T13:37 · `node --no-warnings qa/drafts.mjs http://localhost:3111 http://localhost:3112`. Черновые единицы берутся из `data/*` (статус `draft`), проверка — против prod (`npm start`); dev-статус — для контроля превью.
+Прогон: 2026-09-29T14:03 · `node --no-warnings qa/drafts.mjs http://localhost:3111 http://localhost:3112`. Черновые единицы берутся из `data/*` (статус `draft`), проверка — против prod (`npm start`); dev-статус — для контроля превью.
 
 ## Единицы с URL (13)
 
 | Тип | Путь | prod | dev | в sitemap | ссылки с опубл. страниц | в JSON-LD | итог |
 |---|---|---|---|---|---|---|---|
-| район/город | /towns/south-charlotte | 404 | — | нет | нет | нет | ок |
-| статья | /appliance-repair-guide/refrigerator-not-cooling-freezer-works | 404 | — | нет | нет | нет | ок |
-| статья | /appliance-repair-guide/samsung-refrigerator-ice-maker-problems | 404 | — | нет | нет | нет | ок |
-| статья | /appliance-repair-guide/bosch-dishwasher-e15-error | 404 | — | нет | нет | нет | ок |
-| статья | /appliance-repair-guide/dryer-runs-but-does-not-heat | 404 | — | нет | нет | нет | ок |
-| статья | /appliance-repair-guide/oven-wont-heat | 404 | — | нет | нет | нет | ок |
-| статья | /appliance-repair-guide/range-burner-wont-ignite | 404 | — | нет | нет | нет | ок |
-| статья | /appliance-repair-guide/kitchenaid-ice-maker-not-making-ice | 404 | — | нет | нет | нет | ок |
-| статья | /appliance-repair-guide/thermador-dishwasher-e15-error | 404 | — | нет | нет | нет | ок |
-| статья | /appliance-repair-guide/miele-dishwasher-error-codes | 404 | — | нет | нет | нет | ок |
-| статья | /appliance-repair-guide/lg-washer-oe-error | 404 | — | нет | нет | нет | ок |
-| статья | /appliance-repair-guide/samsung-washer-error-codes | 404 | — | нет | нет | нет | ок |
-| хаб гайдов (0 опубликованных статей) | /appliance-repair-guide | 404 | — | нет | нет | нет | ок |
+| район/город | /towns/south-charlotte | 404 | 200 | нет | нет | нет | ок |
+| статья | /appliance-repair-guide/refrigerator-not-cooling-freezer-works | 404 | 200 | нет | нет | нет | ок |
+| статья | /appliance-repair-guide/samsung-refrigerator-ice-maker-problems | 404 | 200 | нет | нет | нет | ок |
+| статья | /appliance-repair-guide/bosch-dishwasher-e15-error | 404 | 200 | нет | нет | нет | ок |
+| статья | /appliance-repair-guide/dryer-runs-but-does-not-heat | 404 | 200 | нет | нет | нет | ок |
+| статья | /appliance-repair-guide/oven-wont-heat | 404 | 200 | нет | нет | нет | ок |
+| статья | /appliance-repair-guide/range-burner-wont-ignite | 404 | 200 | нет | нет | нет | ок |
+| статья | /appliance-repair-guide/kitchenaid-ice-maker-not-making-ice | 404 | 200 | нет | нет | нет | ок |
+| статья | /appliance-repair-guide/thermador-dishwasher-e15-error | 404 | 200 | нет | нет | нет | ок |
+| статья | /appliance-repair-guide/miele-dishwasher-error-codes | 404 | 200 | нет | нет | нет | ок |
+| статья | /appliance-repair-guide/lg-washer-oe-error | 404 | 200 | нет | нет | нет | ок |
+| статья | /appliance-repair-guide/samsung-washer-error-codes | 404 | 200 | нет | нет | нет | ок |
+| хаб гайдов (0 опубликованных статей) | /appliance-repair-guide | 404 | 200 | нет | нет | нет | ок |
 
 ## Черновые блоки без URL (29)
 

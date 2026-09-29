@@ -211,11 +211,16 @@ export const whyCallUs: NumberedCard[] = [
   { num: "05", title: "Vendor-ready paperwork", body: "Certificate of Insurance on request, W-9 on request, licensed and insured — the paperwork your onboarding process needs, without the back-and-forth." },
 ];
 
-// Home JSON-LD — HomeAndConstructionBusiness.knowsAbout (b2b §7 block 8 / §32a).
+// Commercial hub JSON-LD — HomeAndConstructionBusiness.knowsAbout (b2b §7 block 8 / §32a).
+// Each entry is worded exactly as the hub shows it (story 82 — markup only says what the page
+// shows): the H1/breadcrumb, the "Preventive maintenance" service format, and two chips of
+// the "Commercial services" row. (Were "Preventive Maintenance for Property Managers" and
+// "Commercial Kitchen Equipment Repair" — neither phrase is on the page.) If the restaurant or
+// laundry page goes back to draft, its chip disappears — drop it here too.
 export const commercialServices: string[] = [
   "Commercial Appliance Repair",
-  "Preventive Maintenance for Property Managers",
-  "Commercial Kitchen Equipment Repair",
+  "Preventive maintenance",
+  "Restaurant Appliance Repair",
   "Commercial Laundry Equipment Repair",
 ];
 
