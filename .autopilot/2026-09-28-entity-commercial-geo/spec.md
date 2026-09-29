@@ -302,6 +302,11 @@ export function breadcrumbNode(url: string, trail: readonly { name: string; url:
   `towns/Lesslie` — отдельное правило, записанное как в sitemap. Слеш в конце Next
   нормализует сам — проверить `curl`.
 
+> **Поправка D02 (таск 09):** сборка показала, что сопоставление путей в `redirects()` у Next
+> по умолчанию **регистронезависимое** (`caseSensitiveRoutes` выключен) — правило `/towns/Lesslie`
+> ловит и `/towns/lesslie`; код защищён от петель, отличающихся только регистром. Путь со слешем
+> в конце проходит два 308 (нормализация Next, затем наше правило) и заканчивается на живой странице.
+
 ### §6. Коммерческий раздел
 
 - `app/for-business/` → `app/commercial-appliance-repair/page.tsx` (хаб, контент 1:1) +

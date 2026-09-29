@@ -1,226 +1,244 @@
 <!-- autopilot:start -->
 # EK Global — сайт (Next.js)
 
-Сайт ремонта бытовой техники **EK Global** (Charlotte, NC). Перенос статического
-HTML/CSS/JS-сайта на Next.js (App Router + TypeScript strict) с приоритетом контента
-на юрлиц (B2B). Визуально — **1:1 с прежним сайтом, это не редизайн**; исключение — 6 точечных
-UX-правок захода `ux-polish` 2026-09-03 (коммит `6f2ae17`) по фидбеку владельца (`docs/adr/0002`).
-Миграция сдана; заход 2026-09-02 закрыл дефекты аудита — актуальная карта состояния
-`ek-global-site-issues.md` в корне. Старый сайт (`*.html`, `css/`, `js/`, `assets/`,
-`sitemap.xml`) удалён — эталон визуала теперь только в истории git.
+Сайт ремонта бытовой и коммерческой техники **EK Global** (Charlotte, NC; владелец-техник Constantin),
+боевой домен `https://ekfix.us`. Все страницы SSG, динамичен только `POST /api/book`. Визуал перенесён 1:1
+со старого статического сайта (эталон — только история git) плюс точечные UX-правки из `docs/adr/0002`.
+Решения — `docs/adr/0001–0021` (отменённые помечены в заголовке файла). Фон SEO-решений —
+`ek-global-seo-strategy-2026.md`; `ek-global-site-issues.md` — аудит от 2026-09-02.
 
 ## Команды
 
-| Команда | Что делает |
-|---------|------------|
-| `npm install` | Установить зависимости (node_modules на месте) |
-| `npm run dev` | Локально, порт 3000 |
-| `npm run build` | Продакшен-сборка (Turbopack, гоняет `tsc`); ~28 SSG-роутов + `/api/book` (ƒ) |
-| `npm start` | Поднять прод-сборку |
-| `npm test` | Тесты (`vitest run`) · один файл: `npm test -- <path>` |
-| `npm run typecheck` / `npx tsc --noEmit` | Строгая типопроверка |
-
-Последний прогон (заход `ux-polish`, 2026-09-03): `npm test` → 29 passed (5 файлов) ·
-`tsc --noEmit` → 0 · `npm run build` → зелёный (28 SSG + `/api/book`) · редиректы 7/7 → 308.
 Любой `npm`/`npx` в неинтерактивной среде — с `</dev/null`.
 
-Стек: Next.js 16.3.4 · React 19.2.8 · TypeScript strict · zod 4 · vitest 3 · Node 25.
-App Router, без `src/`, без Tailwind. `next.config.ts`: `images.formats:["image/webp"]`,
-`typedRoutes:true`.
+| Команда | Что делает |
+|---------|------------|
+| `npm run dev` | dev на :3000; черновики открываются с плашкой DRAFT |
+| `npm run build` · `npm start` | прод-сборка (Turbopack + `tsc`) · её запуск на :3000; черновиков нет |
+| `npm test` · `npm test -- <path>` | vitest: всё · один файл |
+| `npx tsc --noEmit` (= `npm run typecheck`) | строгая типопроверка |
+| `npm run check:copy` | после `build`: видимый текст `.next/server/app/**/*.html`; код 1 на кириллицу, `#1`, `top-rated`, `best in`, `Globall`; `best`/`most`/`leading`/`premier` — список на ручную вычитку |
+| `npm run check:similarity -- --base <url> --group areas\|commercial` | шаблонность страниц группы на живом сервере (`npm run dev`): Жаккар по 3-словным шинглам, имена сущностей замаскированы; полная и **редакционная** метрики, вердикт по редакционной |
+
+Последний прогон (2026-09-29): `npm test` → 197 passed (16 файлов) · `tsc --noEmit` → 0 · `npm run build` → зелёный.
+
+Стек: Next.js 16.3.4 (App Router) · React 19.2.8 · TypeScript 5.9 strict · zod 4 · vitest 3 · Node 25.
+Без `src/`, алиас `@/*` → корень. `next.config.ts`: `images.formats:["image/webp"]`, `typedRoutes:true`,
+`redirects()` → `lib/redirects`.
 
 ## Структура
 
 ```
 app/
-  layout.tsx              единственный layout: <html lang=en>, Google Fonts (не next/font),
-                          <Header/>{children}<Footer/><Analytics/>, дефолтная metadata
-  page.tsx                главная / (SSG) — 9 секций из components/home/*
-  globals.css             старый css/style.css + .card-grid-4 + .audience-card h3 + правки ux-polish
-                          (2026-09-03) — не заморожен, правится точечно с записью в ADR
-  icon.svg                favicon (авто <link rel=icon>)
-  robots.ts               /robots.txt · sitemap.ts  /sitemap.xml (22 URL)
-  about/ brands/ for-business/ towns/   page.tsx — по одной SSG-странице
-  towns/[slug]/page.tsx            5 городов (SSG, dynamicParams=false)
-  appliance-repair/[slug]/page.tsx 12 страниц техники (SSG, dynamicParams=false)
-  api/book/route.ts       POST заявки — единственный динамический роут (runtime nodejs)
+  layout.tsx                  единственный layout: шрифты через <link> (ADR 0004), Header/Footer/Analytics, дефолтная metadata
+  page.tsx                    главная; порядок секций и их оттенки — в комментарии файла
+  about/ brands/ reviews/ towns/        статические страницы (towns/ — индекс зон)
+  appliance-repair/           хаб + [slug]: 12 услуг (статуса нет — всегда живые)
+  commercial-appliance-repair/          хаб + [slug]: 7 дочерних (equipment | industry)
+  towns/[slug]/               города и районы
+  appliance-repair-guide/     хаб + [slug]: центр знаний
+  repair-cases/[slug]/        кейсы
+  sitemap.ts robots.ts icon.svg globals.css
+  api/book/route.ts           POST заявки (runtime nodejs)
 components/
-  Header Footer Analytics JsonLd BookForm BookingProvider   корневые
-  ui/*        17 презентационных + 2 хелпера (rich-text.ts, image-dimensions.ts) — 1:1 с классами старого CSS
-  home/*      9 секций главной (Hero, WhoWeServeGrid, RepairSection, FamilySection, ReviewsSection,
-              TrustBand, BrandsSection, BusinessCtaBand, BookSection); SideRail удалён — рейла и
-              его scroll-spy (бывш. js/main.js) больше нет
-  for-business/*   ProcessSteps, ServiceFormats
-data/          ЕДИНСТВЕННЫЙ источник контента, извлечён дословно из старых *.html
-  business.ts       NAP + siteUrl-заглушка + areaServed (20) + rating
-  services.ts       12 услуг + commercialCategories (4) + serviceSlugs/getService + applianceFormOptions
-  towns.ts          26 городов (5 isFullPage) + fullPageTowns/townSlugs/getTown + alsoServedNC/SC + townsIndex
-  reviews.ts        6 отзывов + aggregate + reviewsByAuthors()
-  brands.ts         33 бренда + homeBrands/residentialBrands/commercialBrands + brandNote + brandsPage
-  b2b-segments.ts   контент /for-business (+ publicForBusinessSegments = без placeholder) + микрокопия главной (homeHero, …)
-  types.ts          все типы слоя данных, без рантайма
-lib/
-  seo.ts        metadataBase · absoluteUrl(path) · pageMetadata({title,description,path})
-  jsonld.ts     билдеры schema.org (см. Архитектура)
-  breadcrumb.ts breadcrumbTrail(steps) → {crumbs, jsonLd}
-  nav.ts        mainNav — производная от data/services + data/towns
-  book/         options.ts · schema.ts (zod) · sinks.ts (Console/Email/Webhook) · submit.ts (submitLead)
+  Header.tsx → HeaderBar.tsx  server-половина считает меню и копию, client-половина — интерактив
+  JsonLd DraftBanner BookForm BookingProvider Footer Analytics
+  ui/*                        17 общих презентационных блоков + rich-text.ts, image-dimensions.ts
+  home/*                      секции главной
+  commercial/*                блоки коммерческого раздела + booking-link.ts
+data/                         весь контент: 12 модулей + types.ts (ADR 0001, 0014)
+lib/                          publish routes links nav redirects jsonld breadcrumb seo · book/
+scripts/                      check-copy.mjs · similarity.mjs · html-text.mjs (общий экстрактор видимого текста)
 ```
 
 ## Ключевые файлы
 
-- **`app/layout.tsx`** — единственный layout; шрифты, Header/Footer/Analytics, дефолтная
-  `metadata` (страницы переопределяют через `pageMetadata`).
-- **`data/business.ts`** — NAP + `siteUrl: "https://ekfix.us"` (**заглушка** + TODO-домен) +
-  `areaServed` (20, лимит GBP) + `rating` (из `reviews.aggregate`). Хардкод NAP где-либо ещё запрещён.
-- **`data/*.ts`** — единственный источник контента. Правки текста/списков — только здесь.
-- **`lib/jsonld.ts`** — `businessJsonLd()`, `serviceJsonLd(s)`, `faqJsonLd(items)`,
-  `breadcrumbJsonLd(trail)`, `aggregateRatingJsonLd()`. Чистые функции, NAP из `data/business`.
-- **`lib/seo.ts`** — `pageMetadata({title,description,path})` (canonical = `path`), `absoluteUrl(path)`
-  (единственная точка `new URL(path, siteUrl)`), `metadataBase`.
-- **`lib/breadcrumb.ts`** — `breadcrumbTrail(steps)` → видимые крошки для `PageHero` + JSON-LD из одного трейла.
-- **`lib/nav.ts`** — `mainNav`, целиком выведен из `data/services` + `data/towns.fullPageTowns`.
-  `NavGroup` несёт обязательный `basePath` (`/appliance-repair`, `/towns`); `Header` красит
-  `.nav-trigger` активным при `pathname` под `basePath`.
-- **`lib/book/`** — `submitLead(input: unknown)` точка входа; `schema.ts` zod-валидация;
-  `sinks.ts` каналы доставки (общий `deliver(name, run)` — `try/catch` + `console.warn` для Email и
-  Webhook); `options.ts` реэкспорт опций формы из `data/`. `EmailLeadSink` — реальный `POST` на
-  Resend REST API через `fetch` (пакет `resend` не ставится), включается `RESEND_API_KEY` +
-  `BOOK_NOTIFY_EMAIL` в `.env`; `from` = `onboarding@resend.dev` (плейсхолдер + TODO-домен).
-- **`app/sitemap.ts`** — 22 URL, собирается из `data/services` (12) + `data/towns.fullPageTowns` (5) + 5 статических.
-- **`components/ui/*`** — презентационные server-компоненты (кроме `RepairCard` — `'use client'`),
-  данные пропсами, разметка и классы 1:1 со старым HTML.
+- **`lib/publish.ts`** — `isPublished(x)`, `published(xs)`, `routable(x)`, `isDraftPreview(x)`; единственное место,
+  где читается `NODE_ENV` (в момент вызова).
+- **`lib/routes.ts`** — `publishedPaths(): string[]`; `articlePath(slug)` — единственное написание `/appliance-repair-guide/<slug>`.
+- **`lib/links.ts`** — `areaLinksForHome()`, `areaLinksForService(slug)`, `linksForCommercial(slug)`,
+  `serviceLinkForArticle(a)`, `serviceLinkForCase(c)` → `ChipItem[]` для `ChipRow`; `commercialCardHref(category): string`.
+- **`lib/nav.ts`** — `mainNav(): NavEntry[]` (`NavLink | NavGroup{label, basePath, children, wide?}`).
+- **`lib/jsonld.ts`** — `ids`, `graph(...nodes)`, `businessNode(opts?)`, `websiteNode()`, `ownerNode()`,
+  `serviceNode({url, name, areaServed})`, `articleNode(a)`, `faqNode(url, items)`, `breadcrumbNode(url, trail)`;
+  `ServedArea` = строка (→ City) | `{name, kind, containedIn?}` (→ City/Place).
+- **`lib/breadcrumb.ts`** — `breadcrumbTrail(steps)` → `{crumbs, jsonLd}`: видимые крошки для `PageHero` + узел для `graph`;
+  `unlinked` — шаг без ссылки только в видимом трейле.
+- **`lib/redirects.ts`** — `redirectRules(): RedirectRule[]`; старый URL добавляется строкой в `OLD_EKFIX_PATHS`,
+  путь без автоматического соответствия — в `OLD_COMMERCIAL`.
+- **`lib/seo.ts`** — `pageMetadata({title, description, path})` (canonical = `path`); `absoluteUrl(path)` — единственный
+  `new URL(path, siteUrl)`; `metadataBase`.
+- **`lib/book/`** — `submitLead(input: unknown): Promise<LeadResult>`; `schema.ts` (zod `leadSchema`); `sinks.ts` —
+  `ConsoleLeadSink` (всегда), `EmailLeadSink` (Resend REST через `fetch`), `WebhookLeadSink`, общий `deliver()` логирует
+  и глотает сбой канала; `options.ts` — реэкспорт опций формы из `data/`.
+- **`components/commercial/booking-link.ts`** — `bookingHref({contactAs, appliance?})`, `bookingPreset(search)`; имена
+  URL-параметров `as`/`appliance` живут только здесь.
+- **`components/BookingProvider.tsx`** — `useBooking()` → `{appliance, setAppliance, contactAs, setContactAs}`.
+- **`components/DraftBanner.tsx`** — `<DraftBanner item={x}/>`, рендерится только при `isDraftPreview(x)`.
+- **`data/business.ts`** — NAP, `siteUrl` (боевой домен, ADR 0020), `areaServed` (20 зон, ADR 0006), `social`, `gaId`.
+- **`data/people.ts`** — `owner` (`name: "Constantin"`, без фамилии; `role`, `credentials`, `knowsAbout`, `photos`),
+  `aboutPage`, `aboutPendingBlocks()`.
+- **`data/site.ts`** — копия шапки и подвала, подписи меню `site.nav`, общие подписи ссылок, копия формы, `draftBanner`.
+- **`data/towns.ts`** — `towns` (28: 26 городов + 2 района), `hasPublishedPage(t)` (единственный предикат),
+  `townsWithPublishedPage()`, `townSlugs`, `getTown`, `publishedAncestors/Descendants`, `alsoServedNC/SC`,
+  `townsIndexAreaServed()`, копия `townsIndex`/`townPageCopy`/`areaCopy`.
+- **`data/commercial.ts`** — `commercialPages` (7), `publishedCommercialPages()`, `commercialSlugs()`, `getCommercialPage`,
+  `commercialHubPath`, `commercialHub`, `commercialPageCopy`, `commercialCta`, `segmentContactAs`, `commercialDefaultContactAs`.
+- **`data/guides.ts`**, **`data/cases.ts`** — `articles`/`cases`, `publishedArticles()`/`publishedCases()`,
+  `articleSlugs()`/`caseSlugs()`, `getArticle`/`getCase`, `guideHubGroups()`, копия шаблонов (ADR 0019).
+- **`data/services.ts`** — 12 `services`, `commercialCategories`, `applianceFormOptions`, `applianceRepairHub`, `servicePage`.
+- **`data/home.ts`** — `home` (копия главной + seo), `whoWeServeCards()`, `homeWhereWeWork()` → `{chips, areaServed}` —
+  один список и для блока «Where we work», и для `areaServed` главной.
+- **`data/b2b-segments.ts`** — имя историческое: сегменты хаба (`forBusinessSegments`, `publicForBusinessSegments`),
+  блоки хаба, микрокопия главной (`homeHero`, `trustChips`, `businessCta`), `contactAsOptions`.
+- **`data/reviews.ts`** — 6 `reviews`, `aggregate`, `homeReviews()`, `reviewCategories()`, `reviewsByAuthors()`.
 
 ## Архитектура
 
-- **Поток:** `data/*` (контент-константы) → `components/ui/*` (презентация, классы из
-  `globals.css`, данные пропсами) → страницы `app/**` (server components, SSG). `components/home/*`
-  и `components/for-business/*` — сборка секций конкретных страниц из тех же `ui/*`.
-- **JSON-LD:** `<JsonLd data={…}>` (`components/JsonLd.tsx`) сериализует каждый объект в
-  отдельный `<script type="application/ld+json">` с эскейпом `< > &`. Билдеры `lib/jsonld`
-  тянут NAP из `data/business`, рейтинг из `data/reviews.aggregate`, `knowsAbout` из
-  `data/b2b-segments.commercialServices`. Имя бизнеса всегда `business.name` = `"EK Global"`.
-- **Крошки:** `lib/breadcrumb.breadcrumbTrail(steps)` — один трейл даёт и `crumbs` (в `PageHero`),
-  и `jsonLd` (в `<JsonLd>`); `unlinked`-флаг для quirk charlotte («Service Area» без ссылки).
-- **Метаданные:** `lib/seo.pageMetadata` на каждой странице; `metadataBase` из `business.siteUrl`.
-- **Редиректы:** `next.config.ts` `redirects()` — 7 правил `permanent: true` (308) со старых `*.html`
-  на чистые роуты (`docs/adr/0013`).
-- **Форма:** `BookForm` (`'use client'`, uncontrolled) → `POST /api/book` (Route Handler) →
-  `submitLead(unknown)` → zod `leadSchema` → `Promise.allSettled` по `sinks.filter(s=>s.enabled)`.
-  Ошибка валидации → `400 {ok:false,errors}`, sinks не трогаются; успех → `{ok:true}` даже если
-  sink бросил. `BookingProvider`/`useBooking` пресетят `<select appliance>` по клику на карточку главной.
-- **Города:** `/towns/[slug]` генерит только 5 `fullPageTowns` (`generateStaticParams` +
-  `dynamicParams=false`); компонент дублирует guard `if (!town || !town.isFullPage) notFound()`.
-  `/appliance-repair/[slug]` — 12 из `serviceSlugs`, тот же паттерн + guard на `SECTION_H2[slug]`.
+- **Поток:** `data/*` (контент + у каждого модуля одна точка входа к опубликованному) → `lib/*` (производное: пути,
+  ссылки, меню, редиректы, разметка) → server-страницы `app/**` собирают секции из `components/{ui,home,commercial}` → SSG.
+  Client-острова: `HeaderBar`, `BookingProvider`, `BookForm`, `RepairSection`/`RepairCard`, `RequestQuoteButton`.
+- **Публикация (ADR 0015):** `Publishable = {status: "draft" | "published"}` несут страницы городов/районов (`town.page`)
+  и их подблоки, коммерческие страницы и их FAQ/подблоки, статьи, кейсы, сегменты хаба, блоки `/about`.
+  Поисковые слои (sitemap, меню, ссылки, JSON-LD, редиректы) берут только `published`/`isPublished` — черновика там нет
+  даже в dev. Роуты берут `routable` (published или `next dev`): в dev черновик открывается под `<DraftBanner>`,
+  `next build` роута ему не даёт. Опубликовать = сменить один `status` в `data/` и пересобрать — всё остальное подтянется.
+- **Черновые подблоки** опубликованной страницы: города/районы и коммерция фильтруют `isPublished` (не видны и в dev),
+  `/about` — `routable` (видны в dev-превью).
+- **Динамический роут:** `dynamicParams = false` + `generateStaticParams` из `*Slugs()` + guard
+  `if (!x || !routable(x)) notFound()` и в `generateMetadata`, и в странице + `<DraftBanner item={x}/>`.
+- **Живые URL:** `lib/routes.publishedPaths()` — единственный список: 7 статических + 12 услуг + опубликованные коммерческие
+  и города/районы + хаб гайдов при ≥1 статье + статьи + кейсы. `app/sitemap.ts` = этот список (+ priority/changeFrequency).
+- **Перелинковка:** `lib/links` отдаёт только опубликованные цели. Районы: на главной — от общего к частному перед городами,
+  на услуге — от частного к общему. Статья/кейс → своя бытовая услуга или коммерческая страница (пока та черновик — хаб).
+  `commercialCardHref` — дочерняя страница с тем же `applianceFormLabel`, иначе якорь хаба.
+- **Меню (ADR 0021):** `mainNav()` строится в момент вызова: Commercial ⌄ (хаб + опубликованные дочерние) ·
+  Home Appliances ⌄ (хаб + 12 услуг) · Service Area ⌄ (опубликованные города/районы + «All Service Towns →») ·
+  Guides (только при опубликованной статье) · About · Reviews. `Header` (server) считает меню и копию из `data/` и отдаёт
+  пропсами `HeaderBar` (client) — модули `data/` в клиентский бандл шапки не попадают. Группа активна при `pathname`
+  под `basePath`.
+- **JSON-LD (ADR 0018):** на странице ровно один `<JsonLd data={graph(...)}/>` (`graph` отбрасывает `null`). Узлы ссылаются
+  друг на друга через `{"@id"}`; `ids` от `business.siteUrl`: `/#business`, `/#website`, `/about#owner`; узлы страницы —
+  `<url>#service|#faq|#breadcrumb|#article`. Разметка = только видимое на странице:
+  - `businessNode()` на каждой странице (NAP, часы, соцсети — они в шапке/подвале); опции: `image` — только `/`,
+    `aggregateRating` — только `/` и `/reviews`, `areaServed` — места, перечисленные на этой странице
+    (`/` — `homeWhereWeWork().areaServed`, `/towns` — `townsIndexAreaServed()`, город/район — он сам),
+    `knowsAbout` — только хаб коммерции. `priceRange` нигде.
+  - `websiteNode` — только `/`; полный `ownerNode` — только `/about`; `serviceNode` — услуги и коммерческие дочерние.
+  - `faqNode` выкидывает черновые пункты (`null` при нуле); `articleNode` бросает на черновике и на `!reviewedByOwner`.
+- **Крошки:** `breadcrumbTrail(steps)` — один трейл на видимые крошки и узел; у районов цепочка по `parent`,
+  черновой уровень пропускается (`publishedAncestors`).
+- **Города и районы (ADR 0008, 0017):** `Town{kind: "city" | "area", parent?, page?}`; без `page` роута нет (только списки
+  «Also serving» на `/towns`). Районы живут под `/towns/<slug>`: ballantyne → south-charlotte → charlotte.
+- **Редиректы (ADR 0013, 0020):** `next.config.ts` `redirects()` = `redirectRules()`: 7 правил старых `*.html` +
+  `/for-business` → хаб + старый sitemap ekfix.us (`OLD_EKFIX_PATHS`, 43). Назначение считается: путь жив — правила нет;
+  иначе `_`→`-` и нижний регистр; иначе индекс раздела; коммерческие — через `OLD_COMMERCIAL` (дочерняя страница, а пока она
+  черновик — якорь хаба). Всё 308, один хоп; назначения ∈ `publishedPaths()` на момент сборки.
+- **Форма (ADR 0010):** `BookForm` (client, uncontrolled, только в `#book` главной) → `POST /api/book` →
+  `submitLead(unknown)` → zod `leadSchema` → `Promise.allSettled` по включённым sinks. Невалидно или не JSON →
+  `400 {ok:false, errors}`, доставки нет; валидно → `{ok:true}`, даже если sink упал. Опции `<select>` и схема читают
+  одни массивы (`lib/book/options`).
+- **Пресет формы:** `BookingProvider` держит `{appliance, contactAs}`. На главной `RepairCard` ставит `appliance`,
+  `RequestQuoteButton` — `contactAs` и прокручивает к `#book`. С других страниц `CommercialCtas` ведёт на
+  `bookingHref(...)` = `/?as=<contactAs>[&appliance=<formLabel>]#book`; провайдер на монтировании разбирает
+  `location.search` через `bookingPreset()` и берёт только реальные опции формы. `contactAs` коммерческой страницы:
+  industry → опция своего сегмента, equipment → `"Other Business"`.
 
 ## Соглашения кода
 
-- `app/globals.css` — старый `css/style.css` + `.card-grid-4` (копия `.card-grid-3` на 4 колонки) +
-  `.audience-card h3 { color: var(--text-light) }` (фикс контраста) + правки захода `ux-polish`
-  (2026-09-03, коммит `6f2ae17`): уплотнение `.hero-content`/`.hero-ctas`/`.hero-meta`, удаление
-  блока `.side-rail*`, снятие `border-bottom` у акцентных ссылок (`.not-listed a`, `.brand-note a`,
-  `a[style*="--accent"]`) + их hover/`:focus-visible`, `.call-pill` 15px, удаление `.call-dot`,
-  мост `.nav-dropdown::before`. Плюс заход `ux-polish-2` (2026-09-03): секции больше НЕ
-  разделяются волосяной линией — сняты все `border-top` у `.section-dark`/`.section-dark-2`/
-  `.cta-band`; разделение держится на шаге фона + отступах. Добавлен класс `.section-light-2`
-  (`--bg-light-2`); тёмные оттенки разведены сильнее (`--bg-dark-2` `#141613`, `--bg-dark-3`
-  `#1b1d18`, `--bg-dark-4` `#212320`). Правило: соседние секции никогда не одного оттенка
-  (компоненты страниц чередуют light / light-2 / dark / dark-2). `.family-stats` и `.stat-row`
-  из «квадратной 1px-сетки» переделаны в скруглённые карточки (`.family-stats` — 4 мини-карточки
-  `.fstat` с лаймовой иконкой). Все правки — приписками в `docs/adr/0002`. **Больше не заморожен**:
-  точечная UX-правка допустима, но каждая — записью в ADR. Спонтанный рефактор / чистка мёртвых
-  правил / утилиты / Tailwind — по-прежнему `BLOCKED`.
-- Никаких новых CSS-классов / Tailwind / CSS-in-JS / CSS-модулей — исключения только с записью
-  в ADR (`.card-grid-4`, `.section-light-2`, `.fstat*`); в остальном — те же классы, что были
-  в старом HTML (правка и удаление существующих правил допустимы). Ошибки полей формы
-  рисуются инлайн-стилем (класса под ошибку нет).
-- **Разделение секций:** без линий. Каждая `<section className="section …">` несёт оттенок
-  (`section-light` `#f4f5f2` / `section-light-2` `#e7e9e2` / `section-dark` `#0b0c0b` /
-  `section-dark-2` `#141613`); две соседние секции обязаны отличаться оттенком. Добавляя/меняя
-  секцию — проверь соседей (в т.ч. `PageHero` = тёмный и `CtaBand` = `#0b0c0b`).
-- Акцентные текстовые ссылки — без подчёркивания (сигнал: цвет `--accent` + стрелка `→`); hover
-  осветляет цвет, `:focus-visible` даёт outline. Инлайн-ссылки ловит `a[style*="--accent"]`, класса нет.
-- `Header`: `.call-dot` удалён. **Брейкпоинт меню — `1024px`** (было `860`): ≤1024 — компактная
-  строка «лого + бургер», телефон и «Book a Repair» уезжают в открытое меню как `.nav-ctas`
-  (в `Header.tsx` они продублированы внутри `<nav>`, CSS прячет их вне мобильного меню);
-  ≥1025 — полная горизонтальная навигация (`.header-actions` с пилюлей и кнопкой). Фон хедера
-  `rgba(11,12,11,0.92)`, открытое меню — сплошной `--bg-dark`. На десктопе дропдауны по
-  hover/`focus-within` (CSS + мост `.nav-dropdown::before`), `toggleGroup` no-op ≥1025.
-- `.brand-grid` — **flexbox** (`flex-wrap` + `.brand-cell { flex: 1 1 156px }`), не grid: последняя
-  строка растягивается на всю ширину, ragged-дыр нет. Флаг `Brand.wide` / `.brand-cell.wide`
-  удалён (длинные вордмарки типа Middleby просто масштабируются в обычную ячейку). `.brand-cell`
-  фон `--bg-light` — на `section-light` ячейки невидимы (так на `/brands`, это by design;
-  на главной `#brands` = `section-dark-2`, там белые ячейки видны).
-- `next/image` для всех изображений (не `<img>`); размеры из
-  `components/ui/image-dimensions.ts` (`imageDims(src)`); `hero-technician.webp` — `priority`;
-  сохранять текущие `object-fit`/`object-position`.
-- Контент только из `data/*`; хардкод NAP/списков в `app/`/`components/` запрещён. Имя бизнеса
-  строго `"EK Global"` (НЕ `"EK Global Appliance Repair — Charlotte, NC"`).
-- `/for-business` рендерит `data/b2b-segments.publicForBusinessSegments`
-  (= `forBusinessSegments.filter(s => !s.placeholder)`), НЕ `forBusinessSegments`: сегменты с
-  `placeholder: true` не попадают в HTML. Сейчас так скрыт `hoa` — вернуть снятием флага.
-- SSG-only: ни одной страницы с `export const dynamic`/`revalidate`. Динамичен только `app/api/book`.
-- `typedRoutes: true` — `Anchor` кастует `href` как `Route`; все роуты созданы.
-- JSON-LD — только через `<JsonLd>` + билдеры `lib/jsonld`.
-- Не выдумывать факты о бизнесе: если нет в прежнем контенте — видимый плейсхолдер
-  `[TODO: подтвердить у владельца — …]`, а не правдоподобное число.
-- Единоразовая редакционная копия страниц (заголовки секций, проза `/about`) **захардкожена
-  в page-компонентах** — модуля `data/` под неё нет (зона тасков запрещала трогать `data/`):
-  проза/заголовки `/about`; `SECTION_H2: Record<slug,{problems,faq}>` в `/appliance-repair/[slug]`;
-  `TOWN_SEO` + `CHARLOTTE_REPAIR_CHIPS` в `/towns/[slug]`.
-- Тесты — только на 3 швах (ниже).
+- **Контент — только в `data/*`** (ADR 0014): в `app/**` и `components/**` видимый текст приходит из данных; исключения —
+  `placeholder` полей формы и сообщения валидации. Язык сайта — английский; кириллица в видимом тексте роняет `check:copy`.
+- Строки `data/` могут нести доверенный HTML (`<br><span>`, `<strong>`, `&amp;`) — рендер через `richProps()`
+  (`components/ui/rich-text.ts`).
+- Имя бизнеса — только `business.name` (`"EK Global"`), имя владельца — только `owner.name` (`"Constantin"`, без фамилии);
+  NAP и домен — только из `data/business`.
+- **Только подтверждённые факты:** факт о бизнесе берётся из уже опубликованного на сайте. Нет факта — блок
+  `status: "draft"` (заглушка `[TODO: confirm with the owner — …]` видна только в dev). Цифры, отзывы, кейсы, районы, ZIP,
+  сертификаты, фото — только подтверждённые; тон без превосходных степеней (`#1`, `best`, `top-rated`, `leading`, `most …`).
+- **Новая копия — от третьего лица или безлично**; прежняя копия от первого лица сохраняется как есть.
+  `reviews[].text` — байт-в-байт; `business.areaServed` не трогать (ADR 0006).
+- **Шаблонность ≤ 0.30 перед публикацией:** город/район или коммерческая страница переводится в `published`, только если
+  редакционная метрика `check:similarity` ≤ 0.30 против каждой страницы своей группы (сервер — `npm run dev`).
+- Опубликованное вне модуля данных берётся через его точку входа (`publishedCommercialPages()`, `publishedArticles()`,
+  `publishedCases()`, `townsWithPublishedPage()`/`hasPublishedPage`); `published(<сырой массив>)` вызывают только сами `data/*`.
+- SSG-only: страницы без `dynamic`/`revalidate`; параметры URL читаются на клиенте, не через `searchParams`.
+- **Дизайн не меняется** (ADR 0002): новые страницы — из `components/ui/*` и существующих классов `app/globals.css`,
+  разовая мелочь — инлайн-`style`. Новое CSS-правило/класс — только если без него никак, точечно, с припиской в
+  `docs/adr/0002` (так появились `.card-grid-4`, `.section-light-2`, `.fstat*`). Tailwind, CSS-модули, CSS-in-JS,
+  утилиты и спонтанная чистка правил — `BLOCKED`.
+- **Оттенки секций:** каждая `<section className="section …">` несёт `section-light` (#f4f5f2) / `section-light-2`
+  (#e7e9e2) / `section-dark` (#0b0c0b) / `section-dark-2` (#141613); соседние секции всегда разного оттенка — линий-
+  разделителей нет. `PageHero` и `CtaBand` — `--bg-dark` (#0b0c0b) и тоже считаются соседями. Секции переменного числа
+  чередуют `i % 2` light / light-2.
+- Акцентные ссылки без подчёркивания: цвет `--accent` + «→»; инлайн-ссылки стилизует `a[style*="--accent"]`.
+- Шапка: брейкпоинт меню 1024/1025 — `@media` в `globals.css` и `matchMedia("(min-width: 1025px)")` в `HeaderBar`
+  меняются вместе. ≤1024 — бургер, телефон и «Book a Repair» внутри меню (`.nav-ctas`); ≥1025 — `.header-actions`,
+  дропдауны по hover/`focus-within`, клик по группе — no-op.
+- `.brand-grid` — flexbox (`.brand-cell { flex: 1 1 156px }`), последняя строка растягивается на всю ширину.
+- Изображения — `next/image` с размерами из `imageDims(src)` (`components/ui/image-dimensions.ts`);
+  `hero-technician.webp` — `priority`.
+- Внутренние href-строки из `data/` — через `Anchor` (`components/ui/anchor.tsx`, каст к `Route` для `typedRoutes`).
+- Новый блок одного раздела — в `components/<раздел>/`; `components/ui/*` — только общее.
 
 ## Окружение
 
-`.env.example` (все значения пустые → доставка заявки выключена, форма работает как
-**прототип**: принимает + валидирует zod + логирует через `ConsoleLeadSink`):
+`.env.example` — только имена; `.env*`, кроме `.env.example`, в `.gitignore`. Все пусты → работает только
+`ConsoleLeadSink` (форма — прототип, ADR 0010).
 
-- `RESEND_API_KEY` — ключ Resend (вместе с `BOOK_NOTIFY_EMAIL` включает `EmailLeadSink` —
-  реальный `POST` на Resend REST API через `fetch`, без правок кода).
-- `BOOK_NOTIFY_EMAIL` — адрес получателя уведомлений о заявке.
-- `BOOK_WEBHOOK_URL` — URL, куда `WebhookLeadSink` шлёт `POST` с заявкой (реальный `fetch`; off без переменной).
-
-Секреты никогда не коммитить (`.gitignore`: `.env`, `.env.*`, кроме `.env.example`).
+- `RESEND_API_KEY` + `BOOK_NOTIFY_EMAIL` — вместе включают `EmailLeadSink` (отправитель — плейсхолдер
+  `onboarding@resend.dev`, TODO-домен).
+- `BOOK_WEBHOOK_URL` — включает `WebhookLeadSink` (POST лида JSON-ом).
+- `NODE_ENV` — ставит Next; `development` открывает роуты черновикам (`lib/publish`).
 
 ## Тесты
 
-vitest. `npm test` (всё) · `npm test -- <path>` (один файл). 5 файлов, 29 passed:
+vitest (`environment: node`, алиас `@`). Только публичные функции на швах; вёрстку и презентационные компоненты не тестируем.
 
-- `lib/book/submit.test.ts` + `lib/book/sinks.test.ts` + `app/api/book/route.test.ts` — шов 1
-  (доставка `lib/book`): валидный вход → `{ok:true}` + каждый `enabled` sink получил лид; невалидный /
-  битый JSON → `400 {ok:false,errors}`, доставка не вызвана; sink бросил → всё равно `{ok:true}`;
-  `Email`/`Webhook` `.enabled` следуют за `process.env` (мок `fetch` + `vi.stubEnv`).
-- `app/sitemap.test.ts` — шов 2: default export = {5 статических} ∪ {12 услуг} ∪ {5 `isFullPage` городов}, ни больше ни меньше.
-- `lib/jsonld.test.ts` — шов 3: `businessJsonLd().name === "EK Global"`, `telephone`/`areaServed` = `data/business`,
-  `areaServed.length <= 20`, `aggregateRatingJsonLd().reviewCount === reviews.length`.
-
-Вёрстку страниц, presentational-компоненты и данные не тестируем.
+- Шов 1, `lib/book` — `lib/book/submit.test.ts`, `lib/book/sinks.test.ts`, `app/api/book/route.test.ts`: валидный лид →
+  `{ok:true}` и каждый включённый sink; невалидный / не JSON → 400 без доставки; упавший sink не валит лид; `enabled`
+  следует `process.env` (мок `fetch`, `vi.stubEnv`).
+- Шов 2 — `app/sitemap.test.ts`: sitemap = `publishedPaths()`, черновиков нет, смена `status` добавляет/убирает путь.
+- Шов 3 — `lib/jsonld.test.ts`: стабильные `@id`, ссылки на бизнес, Person без фамилии, `articleNode` бросает на
+  непроверенной статье, `businessNode()` без опций — без `areaServed`/`aggregateRating`/`priceRange`.
+- Шов 4 — `lib/redirects.test.ts`: 43 старых URL ekfix.us + 22 старых `*.html` + `/for-business` — одним 308 на путь из
+  `publishedPaths()` (матчер самого Next), без цепочек, не-корневые не на `/`.
+- Шов 5 — `lib/links.test.ts`, `lib/nav.test.ts`, `data/home.test.ts`: черновиков нет; Guides только при опубликованной
+  статье; `areaServed` главной = её чипы.
+- Шов 6, инварианты данных (файл на модуль): `data/people.test.ts` (только «Constantin»; строки узла Person дословно
+  видны на `/about`), `data/commercial.test.ts` (`brandNames` ⊂ бренды сайта), `data/guides.test.ts` (опубликованная ⇒
+  `reviewedByOwner` + `author`; коды ошибок подтверждены `sources`; шаги через « — »), `data/cases.test.ts` (нет полей
+  клиента, `area` ∈ slug'и `data/towns`), `data/services.test.ts` (H1 = что и где, `areaServed` = места из H1, заметки
+  Ballantyne безличны), `data/towns.test.ts` (иерархия, FAQ Ballantyne, ни одного ZIP).
+- `lib/publish.test.ts` — правило видимости: `published` не зависит от `NODE_ENV`, `routable` — зависит.
+- Приёмы: статус-зависимый тест сам выставляет статусы через `scenario(live, run)` и восстанавливает их — от текущих
+  статусов в `data/` не зависит; инвариант доказывает, что краснеет, временно вставленной фикстурой-нарушителем; ожидаемые
+  значения — литералы, а не пересчёт тем же кодом.
 
 ## Подводные камни
 
-- **`create-next-app` интерактивен и зависает в неинтерактивной среде** — каркас собран
-  вручную (`package.json` + `npm install` + конфиги).
-- **Домен — заглушка.** `data/business.siteUrl = "https://ekfix.us"` + `// TODO: подтвердить
-  финальный публичный домен`. Нигде больше домен не хардкодить.
-- `data/towns.ts` = **26 записей** в одном массиве: 5 `isFullPage` (полный контент —
-  `hero.lede`, `prose[]`, `districts[]`, `reviewAuthors[]`, `nearby`/`nearbyProse`, `hasMap`
-  только у charlotte) + 21 не-полных (только `name`/`state`/`slug`). `alsoServedNC`/`alsoServedSC` —
-  производные от не-полных, не отдельные литералы.
-- `data/business.areaServed` = **20** (лимит GBP; срез с 26 по приоритету). Отброшенные 6
-  остаются на `/towns` через `alsoServedNC`/`alsoServedSC`.
-- `data/business.maintenancePlanName` (`"EK Maintenance Plan"`) — **плейсхолдер** + TODO.
-- HOA-сегмент `/for-business` скрыт `placeholder: true` в `data/b2b-segments.ts` (владелец не
-  подтвердил вертикаль); видимого `[TODO: …]` на странице больше нет — вернуть снятием флага.
-- `data/b2b-segments.laundryObjectTypes.types` сейчас кодом не читается (оставлено как контент-данные).
-- `#who-we-serve` — светлая секция (`section-light-2`), но `.audience-card` в `globals.css` тёмная:
-  тёмные карточки на светлом фоне — так предписано spec (заголовки `h3` перекрашены в светлый —
-  фикс контраста, `docs/adr/0002` приписка).
-- Секции на главной: hero(D) · who-we-serve(L2) · repair(L) · family(D) · reviews(L) · trust-b2b(D) ·
-  brands(D2) · business-cta(cta-band D) · book(D2). На `/for-business`: hero(D) · segments(L2) ·
-  laundry(L) · process(L2) · why-call-us(D2) · formats(D) · faq(L) · cta(D). Чередование оттенков —
-  замена снятым линиям-разделителям (`ux-polish` 2026-09-03).
-- `docs/adr/0013` отменяет `0012` (редиректы всё-таки добавлены); `0002` и `0010` получили
-  приписки от захода 2026-09-02; `0002` — ещё две от `ux-polish` 2026-09-03 (разморозка `globals.css`;
-  разделение секций без линий + скругление `.family-stats`/`.stat-row`).
+- `npm run dev` и `npm run build` в одной папке делят `.next`: dev держит `.next/dev/lock` (второй `next dev` в той же
+  папке не стартует), build перезаписывает прод-выход, который читают `npm start` и `check:copy`.
+- Next матчит `source` в `redirects()` без учёта регистра: `/towns/Lesslie` ловит и `/towns/lesslie`, а правило, где
+  источник и назначение отличаются только регистром, зациклится — `redirectRules()` на нём бросает. Старый путь без живого
+  назначения тоже роняет сборку (с именем пути).
+- `next.config.ts` грузит `lib/redirects` → `lib/routes` → `data/*`, а `scripts/similarity.mjs` грузит `data/*` через Node
+  type stripping: в `data/*` и `lib/{publish,routes,links,redirects}` — относительные импорты без `@/` и только стираемый
+  TS (без `enum`/`namespace`/parameter properties).
+- Хаб `/appliance-repair-guide` в проде — 404, пока нет опубликованной статьи; все 11 статей — черновики (ждут технической
+  вычитки владельца). `cases` пуст — роутов `/repair-cases/*` нет.
+- Сейчас черновики: South Charlotte (нет фактов владельца: ZIP, сообщества, сегменты), 11 статей, HOA-сегмент хаба,
+  блоки `/about` Brands/Training/Company history. `publishedPaths()` = 32 пути.
+- `check:similarity` печатает OVER для Rock Hill, Fort Mill, Matthews, Indian Trail (редакционная 0.33–0.44: общие
+  отзывы и абзац про $75) — они опубликованы до правила (ADR 0008); снять их или переписать — решение владельца.
+- Текст Charlotte в `data/towns.ts` ветвится по статусу Ballantyne (`ballantyneLive`, считается при импорте).
+- `/for-business` удалён (308 на хаб, ADR 0016); его контент — в `data/b2b-segments.ts` под старым именем.
+- `business.maintenancePlanName` — плейсхолдер, нигде не рендерится. Фото коммерческих категорий — бытовые webp-заглушки,
+  у стиральной машины — `dryer.webp` (TODO в `data/services.ts`).
+- `#who-we-serve` — светлая секция с тёмными `.audience-card` (так задумано, `h3` перекрашен). `.brand-cell` (фон
+  `--bg-light`) на `section-light` сливается с фоном — на `/brands` так и задумано.
+- Визуальная проверка: Playwright есть в системном npx-кэше, не в зависимостях —
+  `find ~/.npm/_npx -path "*node_modules/playwright/package.json"`, `require` по абсолютному пути из скрипта вне кода
+  проекта. Зависимости — только текущие из `package.json`; новая — по согласию пользователя.
 
 ## Как здесь работает Autopilot
 
@@ -230,13 +248,6 @@ vitest. `npm test` (всё) · `npm test -- <path>` (один файл). 5 фа�
 
 Если работа продолжается — скажи «продолжи автопилот»: состояние поднимется
 из `.autopilot/state.js`, переспрашивать ничего не нужно.
-
-## Источники правды по контенту
-
-- `ek-global-seo-strategy-2026.md` — local SEO 2026 (GBP, schema, CWV, 90-дневный план).
-- `ek-global-site-issues.md` — карта состояния после аудита (что закрыто, что унаследовано).
-
-Три брифа (`website`, `b2b-priority`, `nextjs-master`) удалены — их след в `.autopilot/` и `docs/adr/`.
 <!-- autopilot:end -->
 
 <!-- BEGIN:nextjs-agent-rules -->
