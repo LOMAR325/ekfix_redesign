@@ -1,84 +1,188 @@
 import { business } from "@/data/business";
 import { aggregate } from "@/data/reviews";
 import { commercialServices } from "@/data/b2b-segments";
-import type { Service } from "@/data/types";
+import { owner } from "@/data/people";
+import type { GuideArticle, Publishable, Town } from "@/data/types";
+import { isPublished } from "@/lib/publish";
+import { articlePath } from "@/lib/routes";
 import { absoluteUrl } from "@/lib/seo";
 
-// schema.org JSON-LD builders. Pure functions — every NAP value comes from data/business.ts
-// so the business name, phone, and service area can never drift between pages.
-// The old static HTML used "EK Global Appliance Repair" on the home page and
-// "EK Global Appliance Repair — Charlotte, NC" on town pages; here it is always "EK Global".
+// schema.org JSON-LD as one graph per page (spec §4, stories 16–22). Node builders are
+// pure functions without `@context`; `graph(...)` wraps them for `<JsonLd>`. Nodes refer
+// to each other only by `{ "@id": … }`, and every @id is built from data/business.siteUrl
+// (via lib/seo.absoluteUrl), so the business is one entity on every page.
+//
+// Rule (R23): markup describes only what the page shows. Base business fields are visible
+// in the header/footer of every page; `image`, `areaServed`, `aggregateRating` and
+// `knowsAbout` are opt-in per page. Drafts (spec §1) never reach the markup: `faqNode` drops
+// draft items, `articleNode` refuses a draft article. `priceRange` is not emitted anywhere (no price range is shown).
 
-const CONTEXT = "https://schema.org";
+export type JsonLdNode = { "@type": string; "@id"?: string; [key: string]: unknown };
+export type JsonLdGraph = { "@context": "https://schema.org"; "@graph": JsonLdNode[] };
 
-const postalAddress = () => ({
-  "@type": "PostalAddress",
-  addressLocality: business.address.locality,
-  addressRegion: business.address.region,
-  addressCountry: business.address.country,
-});
+export const ids = {
+  business: absoluteUrl("/#business"),
+  website: absoluteUrl("/#website"),
+  owner: absoluteUrl("/about#owner"),
+} as const;
 
-/** AggregateRating built strictly from data/reviews.ts (real reviews), not the "5.0 on Google" badge. */
-export function aggregateRatingJsonLd() {
+const ref = (id: string) => ({ "@id": id });
+
+/** Skips `null` nodes (e.g. a `faqNode` with nothing published). */
+export function graph(...nodes: (JsonLdNode | null)[]): JsonLdGraph {
   return {
-    "@type": "AggregateRating",
-    ratingValue: aggregate.ratingValue,
-    reviewCount: aggregate.reviewCount,
+    "@context": "https://schema.org",
+    "@graph": nodes.filter((n): n is JsonLdNode => n !== null),
   };
 }
 
-/** HomeAndConstructionBusiness for the home page (and layout-level metadata). */
-export function businessJsonLd() {
-  return {
-    "@context": CONTEXT,
+/**
+ * A served place. A plain string is a city ("Charlotte, NC"); a district of a city
+ * (data/towns `kind: "area"`) is passed as `{ name, kind: "area" }` and becomes a Place.
+ */
+export type ServedArea = string | { name: string; kind: Town["kind"] };
+
+const placeNode = (area: ServedArea) =>
+  typeof area === "string"
+    ? { "@type": "City", name: area }
+    : { "@type": area.kind === "city" ? "City" : "Place", name: area.name };
+
+export type BusinessNodeOptions = {
+  /** only where the owner's hero photo is shown (`/`) */
+  image?: boolean;
+  /** the places listed on this page; omitted when absent or empty */
+  areaServed?: readonly ServedArea[];
+  /** only on pages that show the reviews (`/`, `/reviews`) */
+  aggregateRating?: boolean;
+  /** only on the commercial hub */
+  knowsAbout?: boolean;
+};
+
+export function businessNode(opts: BusinessNodeOptions = {}): JsonLdNode {
+  const node: JsonLdNode = {
     "@type": "HomeAndConstructionBusiness",
+    "@id": ids.business,
     name: business.name,
-    image: absoluteUrl("/images/hero-technician.webp"),
-    telephone: business.phoneE164,
-    priceRange: "$$",
     url: absoluteUrl("/"),
-    address: postalAddress(),
+    logo: absoluteUrl("/icon.svg"),
+    telephone: business.phoneE164,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: business.address.locality,
+      addressRegion: business.address.region,
+      addressCountry: business.address.country,
+    },
     openingHoursSpecification: {
       "@type": "OpeningHoursSpecification",
       dayOfWeek: business.openingHours.days,
       opens: business.openingHours.opens,
       closes: business.openingHours.closes,
     },
-    areaServed: business.areaServed.map((name) => ({ "@type": "City", name })),
-    sameAs: [
-      business.social.instagram,
-      business.social.facebook,
-      business.social.tiktok,
-    ],
-    knowsAbout: commercialServices,
-    aggregateRating: aggregateRatingJsonLd(),
+    sameAs: [business.social.instagram, business.social.facebook, business.social.tiktok],
+  };
+  if (opts.image) node.image = absoluteUrl(owner.photos.hero.src);
+  if (opts.areaServed && opts.areaServed.length > 0) {
+    node.areaServed = opts.areaServed.map(placeNode);
+  }
+  if (opts.aggregateRating) {
+    // Built strictly from data/reviews.ts, not the "5.0 on Google" badge.
+    node.aggregateRating = {
+      "@type": "AggregateRating",
+      ratingValue: aggregate.ratingValue,
+      reviewCount: aggregate.reviewCount,
+    };
+  }
+  if (opts.knowsAbout) node.knowsAbout = commercialServices;
+  return node;
+}
+
+/** The site itself — home page only. */
+export function websiteNode(): JsonLdNode {
+  return {
+    "@type": "WebSite",
+    "@id": ids.website,
+    url: absoluteUrl("/"),
+    name: business.name,
+    publisher: ref(ids.business),
   };
 }
 
-/** Service block for an /appliance-repair/<slug> page. Shape mirrors the old appliance-repair/*.html. */
-export function serviceJsonLd(service: Service) {
+/** The owner as a Person — in full only on /about (other pages refer to `ids.owner`). */
+export function ownerNode(): JsonLdNode {
   return {
-    "@context": CONTEXT,
+    "@type": "Person",
+    "@id": ids.owner,
+    name: owner.name,
+    jobTitle: owner.role,
+    url: absoluteUrl("/about"),
+    image: absoluteUrl(owner.photos.portrait.src),
+    worksFor: ref(ids.business),
+    knowsAbout: owner.knowsAbout,
+    hasCredential: owner.credentials.map((c) => ({
+      "@type": "EducationalOccupationalCredential",
+      credentialCategory: "certification",
+      name: c.name,
+    })),
+  };
+}
+
+/** A repair service page. `areaServed` = the place named in the page's H1. */
+export function serviceNode(input: {
+  url: string;
+  name: string;
+  areaServed: readonly ServedArea[];
+}): JsonLdNode {
+  const url = absoluteUrl(input.url);
+  return {
     "@type": "Service",
-    serviceType: `${service.name} Repair`,
-    provider: {
-      "@type": "HomeAndConstructionBusiness",
-      name: business.name,
-      telephone: business.phoneE164,
-    },
-    areaServed: {
-      "@type": "City",
-      name: `${business.address.locality}, ${business.address.region}`,
-    },
+    "@id": `${url}#service`,
+    name: input.name,
+    serviceType: input.name,
+    url,
+    provider: ref(ids.business),
+    areaServed: input.areaServed.map(placeNode),
   };
 }
 
-/** FAQPage from a list of question/answer pairs (services and /for-business FAQ). */
-export function faqJsonLd(items: readonly { q: string; a: string }[]) {
+/** A knowledge-centre article. Refuses a draft, and an article the owner has not reviewed (R21/R83). */
+export function articleNode(article: GuideArticle): JsonLdNode {
+  if (!isPublished(article)) {
+    throw new Error(`articleNode: "${article.slug}" is a draft — drafts get no markup`);
+  }
+  if (!article.reviewedByOwner) {
+    throw new Error(
+      `articleNode: "${article.slug}" is not reviewedByOwner — it must not be published`,
+    );
+  }
+  const url = absoluteUrl(articlePath(article.slug));
   return {
-    "@context": CONTEXT,
+    "@type": "Article",
+    "@id": `${url}#article`,
+    headline: article.title,
+    description: article.metaDescription,
+    url,
+    mainEntityOfPage: url,
+    author: ref(ids.owner),
+    publisher: ref(ids.business),
+    ...(article.datePublished ? { datePublished: article.datePublished } : {}),
+    ...(article.dateModified ? { dateModified: article.dateModified } : {}),
+  };
+}
+
+/** A FAQ item; one without `status` (service FAQs) counts as published. */
+export type FaqItem = { q: string; a: string } & Partial<Publishable>;
+
+/**
+ * FAQPage for the FAQ shown on the page at `url`. Draft items are dropped; `null` when
+ * nothing is published (no FAQ is shown, so no node — `graph` skips it).
+ */
+export function faqNode(url: string, items: readonly FaqItem[]): JsonLdNode | null {
+  const live = items.filter((item) => !item.status || isPublished({ status: item.status }));
+  if (live.length === 0) return null;
+  return {
     "@type": "FAQPage",
-    mainEntity: items.map((item) => ({
+    "@id": `${absoluteUrl(url)}#faq`,
+    mainEntity: live.map((item) => ({
       "@type": "Question",
       name: item.q,
       acceptedAnswer: { "@type": "Answer", text: item.a },
@@ -86,11 +190,14 @@ export function faqJsonLd(items: readonly { q: string; a: string }[]) {
   };
 }
 
-/** BreadcrumbList from an ordered trail. `url` may be root-relative or absolute; it is absolutised. */
-export function breadcrumbJsonLd(trail: readonly { name: string; url: string }[]) {
+/** BreadcrumbList for the page at `url`. Trail urls may be root-relative; they are absolutised. */
+export function breadcrumbNode(
+  url: string,
+  trail: readonly { name: string; url: string }[],
+): JsonLdNode {
   return {
-    "@context": CONTEXT,
     "@type": "BreadcrumbList",
+    "@id": `${absoluteUrl(url)}#breadcrumb`,
     itemListElement: trail.map((crumb, index) => ({
       "@type": "ListItem",
       position: index + 1,

@@ -11,7 +11,7 @@ window.STATE =
   "memoryFile": "CLAUDE.md",
   "skillDir": "/Users/User/.agents/skills/autopilot",
   "startedAt": "2026-09-28T22:44:34+03:00",
-  "updatedAt": "2026-09-28T23:41:20+03:00",
+  "updatedAt": "2026-09-29T08:33:32+03:00",
   "finishedAt": null,
   "stages": [
     {
@@ -51,12 +51,13 @@ window.STATE =
       "id": "build",
       "status": "active",
       "startedAt": "2026-09-28T23:23:00+03:00",
-      "note": "волна 1: фундамент"
+      "note": "1 из 11 тасков готов; волна 2: единая сущность"
     },
     {
       "id": "review",
       "status": "active",
-      "startedAt": "2026-09-28T23:37:46+03:00"
+      "startedAt": "2026-09-28T23:37:46+03:00",
+      "note": "проверено 1 из 11 (1 дозапрос)"
     },
     {
       "id": "final",
@@ -65,8 +66,8 @@ window.STATE =
   ],
   "requirements": {
     "total": 102,
-    "done": 1,
-    "inTicket": 99,
+    "done": 7,
+    "inTicket": 94,
     "inSpec": 0,
     "placeholder": 0,
     "deferred": 1,
@@ -107,13 +108,35 @@ window.STATE =
         "data/site.ts",
         "scripts/"
       ],
-      "status": "repair",
+      "status": "done",
       "retries": 0,
       "repairs": 1,
       "handoffs": 0,
       "startedAt": "2026-09-28T23:23:00+03:00",
       "repairFindings": [
         "ревью: одна точка входа к опубликованному; тесты швов 2/5 не зависят от статусов в data; очистка фикстур; предикат городов один и на момент вызова; общий экстрактор + D01 редакционная метрика + маски отраслей; типизация contactAs/segmentId, equipment → Other Business; priority в шве 2; ярлыки из data/site"
+      ],
+      "finishedAt": "2026-09-28T23:48:51+03:00",
+      "commit": "6d8c1f0",
+      "tests": {
+        "passed": 47,
+        "failed": 0
+      },
+      "files": [
+        "data/types.ts",
+        "lib/publish.ts",
+        "lib/routes.ts",
+        "lib/links.ts",
+        "app/sitemap.ts",
+        "data/towns.ts",
+        "data/commercial.ts",
+        "data/guides.ts",
+        "data/cases.ts",
+        "data/site.ts",
+        "scripts/"
+      ],
+      "concerns": [
+        "check:similarity: опубликованные города по редакционной метрике 0.33–0.44 (Fort Mill, Rock Hill, Matthews, Indian Trail) — общие отзывы и абзац про $75"
       ]
     },
     {
@@ -146,10 +169,14 @@ window.STATE =
         "data/people.ts",
         "data/business.ts"
       ],
-      "status": "pending",
+      "status": "repair",
       "retries": 0,
-      "repairs": 0,
-      "handoffs": 0
+      "repairs": 1,
+      "handoffs": 0,
+      "startedAt": "2026-09-28T23:48:51+03:00",
+      "repairFindings": [
+        "ревью: faqNode/articleNode отбрасывают черновики; image бизнеса только на / из owner.photos.hero; тест Place + ServedArea.kind из Town; reviewCount vs reviews.length; people.test обходит все data/*.ts; articlePath в одном месте; роль и alt фото владельца на главной из owner"
+      ]
     },
     {
       "id": "03",
@@ -451,7 +478,10 @@ window.STATE =
     }
   ],
   "singlePass": null,
-  "tests": null,
+  "tests": {
+    "passed": 47,
+    "failed": 0
+  },
   "debt": {
     "placeholders": [],
     "assumptions": [],
@@ -468,7 +498,14 @@ window.STATE =
     "extra": 12,
     "actions": "missing: +coverage-блок South Charlotte, +запрет имён/адресов в кейсах; half: правило категорий /reviews, 11 названий статей, состав страницы статьи, areaServed = видимый список на каждой странице + блок «Where we work» на главной, AggregateRating по опубликованным отзывам (правило пользователя), сверка всех полей JSON-LD с видимым текстом, отзывы района через Review.area, запрет первого лица везде, вся копия в data/ (+data/site.ts); extra: dev-превью помечено A01→R81, остальное привязано к родителям (R10.1, R08.1/R93, R23, R45, R44, R31/R87, R56.2, R93.1), 5 доп. статей переведены в самый низкий приоритет (R79 «если останется время»)"
   },
-  "concerns": [],
+  "concerns": [
+    "app/sitemap.test.ts:48-68 и lib/links.test.ts:33-53 — помощник scenario/фикстуры скопирован в два теста; должен жить в одном общем тестовом модуле",
+    "data/towns.ts — townSlugs вычисляется на загрузке, соседи (commercialSlugs/articleSlugs/caseSlugs) — функции; lib/nav строит serviceArea на загрузке (зона таска 09)",
+    "scripts/html-text.mjs:4-23 — полная таблица сущностей HTML 4 + самопроверка, хотя React отдаёт только &amp;/&lt;/&gt;/&quot;/&#x27; (избыточная общность)",
+    "scripts/similarity.mjs:43-46 — INDUSTRY_VARIANTS — второй рукописный список при комментарии «no second list»",
+    "data/types.ts:114 + data/b2b-segments.ts:240 — ContactAsOption и contactAsOptions — два списка; тип не выведен из массива",
+    "находка для отчёта: опубликованные города по редакционной шаблонности 0.33–0.44 (> 0.30)"
+  ],
   "reviewers": {
     "manifestSpec": "a0198322a4ca1a633",
     "craft": "a8a31c0a2128b8bf6"

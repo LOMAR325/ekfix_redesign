@@ -5,6 +5,7 @@ import { hasPublishedPage, towns } from "../data/towns";
 import { commercialPages, publishedCommercialPages } from "../data/commercial";
 import { publishedArticles } from "../data/guides";
 import { site } from "../data/site";
+import { articlePath } from "./routes";
 
 // Cross-linking computed from data (spec story 64 / R70), rendered through ChipRow.
 // Every target comes from a data module's one "published" entry point (hasPublishedPage,
@@ -52,7 +53,7 @@ export function linksForCommercial(slug: string): ChipItem[] {
     ...publishedAreas().map(townLink),
     ...publishedArticles()
       .filter((a) => a.serviceSlug === slug)
-      .map((a) => ({ label: a.title, href: `/appliance-repair-guide/${a.slug}` })),
+      .map((a) => ({ label: a.title, href: articlePath(a.slug) })),
   ];
 }
 

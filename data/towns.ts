@@ -1,4 +1,5 @@
 import type { Town } from "./types";
+import { owner } from "./people";
 import { isPublished, routable } from "../lib/publish";
 
 // Service-area towns and areas. A town/area has a route only if it carries `page`, and in
@@ -21,10 +22,10 @@ const pageTowns: Town[] = [
       },
       hasMap: true,
       hero: {
-        lede: "Konstantin lives in the Ballantyne area and works across Charlotte daily — from historic bungalows in Dilworth to new builds in SouthPark and South End. Same-day slots, most repairs finished in one visit.",
+        lede: `${owner.name} lives in the Ballantyne area and works across Charlotte daily — from historic bungalows in Dilworth to new builds in SouthPark and South End. Same-day slots, most repairs finished in one visit.`,
       },
       prose: [
-        "EK Global is based right here in Charlotte — Konstantin lives in the Ballantyne area and personally handles appliance calls across the metro, not a rotating cast of subcontractors. That matters more than it sounds: a technician who works this market every week knows that <strong>older homes around Dilworth and Plaza Midwood</strong> often carry appliances 10–15+ years old with parts that need sourcing ahead of the visit, while newer construction near <strong>SouthPark, Ballantyne, and South End</strong> is heavier on built-in and panel-ready units from Sub-Zero, Thermador, Bosch, and KitchenAid — which need different tools and a different diagnostic approach entirely.",
+        `EK Global is based right here in Charlotte — ${owner.name} lives in the Ballantyne area and personally handles appliance calls across the metro, not a rotating cast of subcontractors. That matters more than it sounds: a technician who works this market every week knows that <strong>older homes around Dilworth and Plaza Midwood</strong> often carry appliances 10–15+ years old with parts that need sourcing ahead of the visit, while newer construction near <strong>SouthPark, Ballantyne, and South End</strong> is heavier on built-in and panel-ready units from Sub-Zero, Thermador, Bosch, and KitchenAid — which need different tools and a different diagnostic approach entirely.`,
         "Whichever side of town you're on, the visit works the same way: a flat $75 diagnostic (waived if you go ahead with the repair), a clear explanation of what's actually wrong, and — in most cases — the repair finished the same day, using original manufacturer-approved parts.",
       ],
       districts: [
@@ -254,7 +255,7 @@ export const townsIndex = {
     "EK Global covers Charlotte, NC plus about 25 surrounding towns across North and South Carolina — same-day appliance repair, $75 diagnostic waived with repair.",
   heroH1: "Charlotte, NC<br><span>&amp; the towns around it.</span>",
   heroLede:
-    "Konstantin covers Charlotte and roughly 25 surrounding towns across North and South Carolina. If you're not sure whether you're in range, just call — chances are we cover you.",
+    `${owner.name} covers Charlotte and roughly 25 surrounding towns across North and South Carolina. If you're not sure whether you're in range, just call — chances are we cover you.`,
   activeHead: { h2: "Where we're<br>most active.", lede: "These towns get the most call volume, so we've written up what's actually different about each one." },
   alsoServingNCLabel: "We also cover:",
   alsoServingSCLabel: "Just across the state line:",

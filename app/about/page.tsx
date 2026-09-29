@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/JsonLd";
+import { owner } from "@/data/people";
+import { businessNode, graph, ownerNode } from "@/lib/jsonld";
 import { pageMetadata } from "@/lib/seo";
 import { breadcrumbTrail } from "@/lib/breadcrumb";
 import { PageHero } from "@/components/ui/page-hero";
@@ -16,14 +18,14 @@ import { CtaBand } from "@/components/ui/cta-band";
 // data/about module and this page owns its own prose); NAP values still come
 // from data/business via the shared components.
 export const metadata: Metadata = pageMetadata({
-  title: "Our Story — Meet Konstantin | EK Global Appliance Repair",
+  title: `Our Story — Meet ${owner.name} | EK Global Appliance Repair`,
   description:
-    "EK Global is run by Konstantin, a Charlotte-based, EPA Universal certified technician with 10+ years of experience. Family business, not a franchise.",
+    `EK Global is run by ${owner.name}, a Charlotte-based, EPA Universal certified technician with 10+ years of experience. Family business, not a franchise.`,
   path: "/about",
 });
 
-const meetKonstantin = [
-  "Konstantin has spent more than 10 years repairing home and commercial appliances around Charlotte. He's an EPA Universal certified technician and OSHA certified, which means he's qualified to handle everything from a leaking dishwasher to a commercial walk-in compressor — the kind of certification most local outfits don't bother to hold.",
+const meetOwner = [
+  `${owner.name} has spent more than 10 years repairing home and commercial appliances around Charlotte. He's an EPA Universal certified technician and OSHA certified, which means he's qualified to handle everything from a leaking dishwasher to a commercial walk-in compressor — the kind of certification most local outfits don't bother to hold.`,
   "He lives in the Ballantyne area with his family, and EK Global is genuinely a family operation — not a lead-generation site that dispatches whoever's available. When you call, you're talking to the technician who shows up at your door, and the same person who comes back if something isn't right.",
   "That's the whole pitch: real diagnostics, original parts, honest pricing, and a warranty on every job — from a homeowner's refrigerator to a restaurant's walk-in freezer.",
 ];
@@ -54,18 +56,18 @@ export default function AboutPage() {
 
   return (
     <>
-      <JsonLd data={jsonLd} />
+      <JsonLd data={graph(businessNode(), ownerNode(), jsonLd)} />
 
       <PageHero
         breadcrumb={crumbs}
         h1="A family business,<br><span>not a franchise.</span>"
-        lede="EK Global is run by Konstantin — the person who answers the phone, does the diagnostic, and comes back if something isn't right. No call center, no subcontractors, no ticket numbers."
+        lede={`EK Global is run by ${owner.name} — the person who answers the phone, does the diagnostic, and comes back if something isn't right. No call center, no subcontractors, no ticket numbers.`}
         ctas={<BookCallCtas bookLabel="Book a Repair" />}
       />
 
       <section className="section section-light">
         <div className="two-col">
-          <Prose heading="Meet Konstantin" paragraphs={meetKonstantin}>
+          <Prose heading={`Meet ${owner.name}`} paragraphs={meetOwner}>
             <StatRow
               stats={[
                 { k: "10+ yrs", v: "Hands-on repair experience" },
@@ -75,8 +77,8 @@ export default function AboutPage() {
             />
           </Prose>
           <LocalPhoto
-            src="/images/konstantin_thermador.webp"
-            alt="Konstantin, EK Global owner and lead technician"
+            src={owner.photos.portrait.src}
+            alt={owner.photos.portrait.alt}
             imgStyle={{ background: "var(--bg-light-2)" }}
           />
         </div>
@@ -102,14 +104,14 @@ export default function AboutPage() {
           style={{ marginTop: 0 }}
           photos={[
             {
-              src: "/images/kostia_reast.webp",
-              alt: "Konstantin repairing commercial kitchen equipment",
+              src: owner.photos.restaurantKitchen.src,
+              alt: owner.photos.restaurantKitchen.alt,
               caption: "Restaurant kitchen — commercial dishwasher",
               figureStyle: { height: 280 },
             },
             {
-              src: "/images/kostia-laundry.webp",
-              alt: "Konstantin repairing commercial laundry equipment on a rooftop unit",
+              src: owner.photos.rooftopLaundry.src,
+              alt: owner.photos.rooftopLaundry.alt,
               caption: "Commercial laundry — rooftop equipment",
               objectPosition: "30% 75%",
               figureStyle: { height: 280 },
@@ -120,7 +122,7 @@ export default function AboutPage() {
 
       <CtaBand
         h2="Talk to the person<br>doing the repair."
-        body="No dispatch queue. Call Konstantin directly, or book online in under a minute."
+        body={`No dispatch queue. Call ${owner.name} directly, or book online in under a minute.`}
       />
     </>
   );

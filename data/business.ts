@@ -5,7 +5,6 @@ import { aggregate } from "./reviews";
 // Do NOT hardcode any of these values in app/ or components/.
 export const business: Business = {
   name: "EK Global",
-  legalName: "EK Global",
   phone: "(980) 371-4319",
   phoneHref: "tel:+19803714319",
   phoneE164: "+1-980-371-4319",
@@ -29,7 +28,7 @@ export const business: Business = {
     region: "NC",
     country: "US",
   },
-  // TODO: подтвердить финальный публичный домен у владельца
+  // Live domain (R27i) — every absolute URL and JSON-LD @id is built from it (lib/seo.absoluteUrl).
   siteUrl: "https://ekfix.us",
   social: {
     instagram: "https://www.instagram.com/ekglobal_official",

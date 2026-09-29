@@ -5,7 +5,6 @@ export type BusinessRating = { value: number; count: number };
 
 export type Business = {
   name: string;
-  legalName: string;
   phone: string;
   /** href-ready, e.g. "tel:+19803714319" */
   phoneHref: string;

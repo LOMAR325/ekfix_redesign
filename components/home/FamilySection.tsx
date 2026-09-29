@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { business } from "@/data/business";
+import { owner } from "@/data/people";
 import { familyBusinessSentence } from "@/data/b2b-segments";
 import { PhotoPair } from "@/components/ui/photo-pair";
 
@@ -89,7 +90,7 @@ export function FamilySection() {
             not a call center.
           </h2>
           <p>
-            EK Global is run by Konstantin and his family, right here in
+            EK Global is run by {owner.name} and his family, right here in
             Charlotte. You talk to the person who does the repair — no ticket
             numbers, no dispatch queue. We show up at neighborhood fairs, and we
             see our customers again at the grocery store. That&apos;s the reason
@@ -110,7 +111,7 @@ export function FamilySection() {
               Book a Repair
             </a>
             <a href={business.phoneHref} className="btn btn-ghost-dark">
-              Talk to Konstantin
+              Talk to {owner.name}
             </a>
           </div>
         </div>
@@ -128,9 +129,9 @@ export function FamilySection() {
               </span>
             </p>
             <div className="who">
-              <div className="quote-avatar">K</div>
+              <div className="quote-avatar">{owner.name.charAt(0)}</div>
               <div>
-                <strong>Konstantin</strong>
+                <strong>{owner.name}</strong>
                 <span>Owner · EPA 608 &amp; OSHA certified</span>
               </div>
             </div>
@@ -138,13 +139,13 @@ export function FamilySection() {
           <PhotoPair
             photos={[
               {
-                src: "/images/kostia_reast.webp",
-                alt: "Konstantin on a service call in a restaurant kitchen",
+                src: owner.photos.restaurantKitchen.src,
+                alt: owner.photos.restaurantKitchen.alt,
                 caption: "On a service call — restaurant kitchen",
               },
               {
-                src: "/images/kostia-laundry.webp",
-                alt: "Konstantin repairing commercial laundry equipment on a rooftop",
+                src: owner.photos.rooftopLaundry.src,
+                alt: owner.photos.rooftopLaundry.alt,
                 caption: "Commercial laundry repair",
                 objectPosition: "30% 75%",
               },

@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/JsonLd";
 import { pageMetadata } from "@/lib/seo";
+import { businessNode, graph } from "@/lib/jsonld";
 import { breadcrumbTrail } from "@/lib/breadcrumb";
+import { business } from "@/data/business";
 import {
   townsIndex,
   townsWithPublishedPage,
@@ -37,7 +39,10 @@ export default function TownsPage() {
 
   return (
     <>
-      <JsonLd data={jsonLd} />
+      {/* areaServed: the 20 places of business.areaServed are all listed on this page. */}
+      <JsonLd
+        data={graph(businessNode({ areaServed: business.areaServed }), jsonLd)}
+      />
 
       <PageHero
         breadcrumb={crumbs}

@@ -1,4 +1,5 @@
 import type { ContactAsOption, ForBusinessSegment } from "./types";
+import { owner } from "./people";
 import { published } from "../lib/publish";
 
 // B2B content layer — the reorientation of the home page and /for-business toward
@@ -199,7 +200,7 @@ export const businessFaqs: { q: string; a: string }[] = [
 export const whyCallUs: NumberedCard[] = [
   { num: "01", title: "Not on the list? Still call.", body: "EPA Universal and OSHA certification covers a wide range of commercial equipment beyond what's pictured on this site — ask before assuming it's out of scope." },
   { num: "02", title: "Preventive maintenance", body: "Scheduled maintenance extends equipment life and catches small issues before they become an emergency shutdown." },
-  { num: "03", title: "One technician, every visit", body: "Konstantin handles the account personally — no rotating subcontractors relearning your equipment each time." },
+  { num: "03", title: "One technician, every visit", body: `${owner.name} handles the account personally — no rotating subcontractors relearning your equipment each time.` },
   { num: "04", title: "Documented, not just done", body: "Every visit leaves a photo report and a service history for the property, so owners and asset managers can see what was done and when." },
   { num: "05", title: "Vendor-ready paperwork", body: "Certificate of Insurance on request, W-9 on request, licensed and insured — the paperwork your onboarding process needs, without the back-and-forth." },
 ];

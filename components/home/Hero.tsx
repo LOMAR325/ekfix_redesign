@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { business } from "@/data/business";
+import { owner } from "@/data/people";
 import { homeHero } from "@/data/b2b-segments";
 import { Anchor } from "@/components/ui/anchor";
 
@@ -8,7 +9,6 @@ import { Anchor } from "@/components/ui/anchor";
 // `/for-business` sits beside `.hero-ctas`, and `.hero-meta` small names businesses
 // first. The `<h1>` ("We fix it. / You enjoy it.") is untouched. The background
 // photo is the LCP image, so it goes through next/image with `priority`.
-const HERO_PHOTO = "/images/hero-technician.webp";
 
 // Accent text-link: lime colour + trailing arrow are the link signal (the
 // underline was dropped 2026-09-03 per owner feedback — see docs/adr/0002).
@@ -24,8 +24,8 @@ export function Hero() {
     <section id="home" className="hero">
       <Image
         className="hero-photo"
-        src={HERO_PHOTO}
-        alt="Konstantin, EK Global owner and lead technician, next to a washer he's repairing"
+        src={owner.photos.hero.src}
+        alt={owner.photos.hero.alt}
         fill
         priority
         sizes="100vw"
@@ -68,8 +68,8 @@ export function Hero() {
       </div>
 
       <div className="hero-owner-tag">
-        <div className="role">Owner &amp; lead technician</div>
-        <div className="name">Konstantin</div>
+        <div className="role">{owner.role}</div>
+        <div className="name">{owner.name}</div>
       </div>
 
       <div className="hero-trust">

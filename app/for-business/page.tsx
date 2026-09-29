@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
-import { faqJsonLd } from "@/lib/jsonld";
+import { businessNode, faqNode, graph } from "@/lib/jsonld";
 import { breadcrumbTrail } from "@/lib/breadcrumb";
 import { JsonLd } from "@/components/JsonLd";
 import { PageHero } from "@/components/ui/page-hero";
@@ -58,7 +58,14 @@ export default function ForBusinessPage() {
 
   return (
     <>
-      <JsonLd data={[jsonLd, faqJsonLd(businessFaqs)]} />
+      {/* knowsAbout: the commercial services are what this hub shows; the FAQ is on the page. */}
+      <JsonLd
+        data={graph(
+          businessNode({ knowsAbout: true }),
+          faqNode("/for-business", businessFaqs),
+          jsonLd,
+        )}
+      />
 
       <PageHero
         breadcrumb={crumbs}

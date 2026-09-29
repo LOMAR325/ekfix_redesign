@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/JsonLd";
 import { pageMetadata } from "@/lib/seo";
+import { businessNode, graph } from "@/lib/jsonld";
 import { breadcrumbTrail } from "@/lib/breadcrumb";
 import {
   brandsPage,
@@ -31,7 +32,7 @@ export default function BrandsPage() {
 
   return (
     <>
-      <JsonLd data={jsonLd} />
+      <JsonLd data={graph(businessNode(), jsonLd)} />
 
       <PageHero
         breadcrumb={crumbs}

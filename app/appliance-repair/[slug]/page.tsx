@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getService, serviceSlugs } from "@/data/services";
 import { pageMetadata } from "@/lib/seo";
-import { faqJsonLd, serviceJsonLd } from "@/lib/jsonld";
+import { business } from "@/data/business";
+import { businessNode, faqNode, graph, serviceNode } from "@/lib/jsonld";
 import { breadcrumbTrail } from "@/lib/breadcrumb";
 import { JsonLd } from "@/components/JsonLd";
 import { Anchor } from "@/components/ui/anchor";
@@ -112,19 +113,26 @@ export default async function ApplianceRepairPage({
   const heads = SECTION_H2[slug];
   if (!heads) notFound();
 
+  const path = `/appliance-repair/${service.slug}`;
+  const serviceName = `${service.name} Repair`;
   const { crumbs, jsonLd } = breadcrumbTrail([
     { name: "Home", path: "/" },
     { name: "We Repair", path: "/#repair" },
-    {
-      name: `${service.name} Repair`,
-      path: `/appliance-repair/${service.slug}`,
-    },
+    { name: serviceName, path },
   ]);
+  // areaServed = the place in the H1. The H1s carry no place yet, so it is the home
+  // city the whole site names (header/footer) — Charlotte.
+  const h1Area = `${business.address.locality}, ${business.address.region}`;
 
   return (
     <>
       <JsonLd
-        data={[serviceJsonLd(service), faqJsonLd(service.faqs), jsonLd]}
+        data={graph(
+          businessNode(),
+          serviceNode({ url: path, name: serviceName, areaServed: [h1Area] }),
+          faqNode(path, service.faqs),
+          jsonLd,
+        )}
       />
 
       <PageHero

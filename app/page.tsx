@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/JsonLd";
-import { businessJsonLd } from "@/lib/jsonld";
+import { businessNode, graph, websiteNode } from "@/lib/jsonld";
 import { pageMetadata } from "@/lib/seo";
 import { BookingProvider } from "@/components/BookingProvider";
 import { Hero } from "@/components/home/Hero";
@@ -29,7 +29,15 @@ export const metadata: Metadata = pageMetadata({
 export default function HomePage() {
   return (
     <>
-      <JsonLd data={[businessJsonLd()]} />
+      {/* image: the owner's hero photo; aggregateRating: the reviews are shown here.
+          areaServed arrives with the "Where we work" block (ticket 08) — no place
+          list is shown yet. */}
+      <JsonLd
+        data={graph(
+          businessNode({ aggregateRating: true, image: true }),
+          websiteNode(),
+        )}
+      />
       <BookingProvider>
         <Hero />
         <WhoWeServeGrid />

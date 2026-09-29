@@ -1,4 +1,5 @@
 import type { Brand } from "./types";
+import { owner } from "./people";
 
 // All brands from brands.html, in the ON-PAGE ORDER of that page:
 // first the "Residential & premium kitchen" grid, then "Commercial & specialty refrigeration".
@@ -101,7 +102,7 @@ export const brandsPage = {
   },
   dontSeeYourBrand: {
     h2: "Don't see your brand?",
-    body: "This list covers what we repair most often, not everything we're capable of. Konstantin is EPA Universal and OSHA certified, which covers the full range of residential and commercial refrigeration and cooking equipment — if your appliance isn't pictured above, call and we'll tell you straight away whether it's something we handle.",
+    body: `This list covers what we repair most often, not everything we're capable of. ${owner.name} is EPA Universal and OSHA certified, which covers the full range of residential and commercial refrigeration and cooking equipment — if your appliance isn't pictured above, call and we'll tell you straight away whether it's something we handle.`,
   },
   ctaBand: {
     h2: "Whatever brand it is,<br>we'll diagnose it right.",

@@ -22,6 +22,11 @@ const STATIC_PATHS = [
   "/commercial-appliance-repair",
 ] as const;
 
+/** The one place the article URL is spelled (lib/jsonld, lib/links, sitemap). */
+export function articlePath(slug: string): string {
+  return `/appliance-repair-guide/${slug}`;
+}
+
 export function publishedPaths(): string[] {
   const liveArticles = publishedArticles();
   return [
@@ -30,7 +35,7 @@ export function publishedPaths(): string[] {
     ...publishedCommercialPages().map((p) => `/commercial-appliance-repair/${p.slug}`),
     ...towns.filter(hasPublishedPage).map((t) => `/towns/${t.slug}`),
     ...(liveArticles.length > 0 ? ["/appliance-repair-guide"] : []),
-    ...liveArticles.map((a) => `/appliance-repair-guide/${a.slug}`),
+    ...liveArticles.map((a) => articlePath(a.slug)),
     ...publishedCases().map((c) => `/repair-cases/${c.slug}`),
   ];
 }

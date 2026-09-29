@@ -5,7 +5,7 @@ import { reviewsByAuthors } from "@/data/reviews";
 import { services } from "@/data/services";
 import { pageMetadata } from "@/lib/seo";
 import { routable } from "@/lib/publish";
-import { businessJsonLd } from "@/lib/jsonld";
+import { businessNode, graph } from "@/lib/jsonld";
 import { breadcrumbTrail } from "@/lib/breadcrumb";
 import { JsonLd } from "@/components/JsonLd";
 import { DraftBanner } from "@/components/DraftBanner";
@@ -84,7 +84,13 @@ export default async function TownPage({
   return (
     <>
       <DraftBanner item={page} />
-      <JsonLd data={[businessJsonLd(), jsonLd]} />
+      {/* areaServed: this page's own zone, as named in its H1. */}
+      <JsonLd
+        data={graph(
+          businessNode({ areaServed: [{ name: cityState, kind: town.kind }] }),
+          jsonLd,
+        )}
+      />
 
       <PageHero
         breadcrumb={crumbs}
