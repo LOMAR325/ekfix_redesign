@@ -3,8 +3,9 @@ import type { ServedArea } from "../lib/jsonld";
 import { owner } from "./people";
 import { business } from "./business";
 import { services } from "./services";
-import { brandNote, commercialBrands, residentialBrands } from "./brands";
+import { brandNote, residentialBrands } from "./brands";
 import { isPublished, routable } from "../lib/publish";
+import { branchPaths } from "./site";
 
 // Service-area towns and areas. A town/area has a route only if it carries `page`, and in
 // production only if `page.status === "published"` (lib/publish). The 5 city pages carry
@@ -24,7 +25,10 @@ const brandNames = (list: readonly { name: string }[]): string => list.map((b) =
 /** Text of a block that waits for an owner fact. Never rendered: such a block is a draft. */
 const todo = (what: string): string => `[TODO: confirm with the owner — ${what}]`;
 
-// Ballantyne (spec stories 55–59, R59–R65). Published facts only: the owner lives and works
+// Ballantyne (spec stories 55–59, R59–R65) — in the residential branch since two-branch-site
+// (ADR 0022): the page speaks to homes; its commercial wording moved to the commercial home's
+// #service-area block, and the page links there once (areaCopy.commercialLink).
+// Published facts only: the owner lives and works
 // here (/about, the Charlotte page) and the built-in / panel-ready observation for newer
 // construction (the Charlotte page). No ZIP (fact 3 — "28277" is not named anywhere), no
 // communities (fact 4), no businesses served (fact 5): those blocks and FAQ items are drafts.
@@ -32,11 +36,11 @@ const todo = (what: string): string => `[TODO: confirm with the owner — ${what
 const ballantynePage: TownPage = {
   status: "published",
   seo: {
-    title: `Appliance Repair in Ballantyne, NC | Home & Commercial | ${business.name}`,
-    description: `Commercial and in-home appliance repair in Ballantyne, NC — the owner of ${business.name} lives in the area. Built-in Sub-Zero, Thermador, Bosch & KitchenAid; $75 diagnostic waived with the repair.`,
+    title: `Home Appliance Repair in Ballantyne, NC | ${business.name}`,
+    description: `In-home appliance repair in Ballantyne, NC — the owner of ${business.name} lives in the area. Built-in Sub-Zero, Thermador, Bosch & KitchenAid; $75 diagnostic waived with the repair.`,
   },
   hero: {
-    lede: `${business.name} provides commercial and in-home appliance repair throughout Ballantyne and South Charlotte: ${appliancesInProse}.`,
+    lede: `${business.name} provides in-home appliance repair throughout Ballantyne and South Charlotte: ${appliancesInProse}.`,
   },
   prose: [
     `${owner.name}, the owner and lead technician, lives in the Ballantyne area with his family and works out of it. Calls from Ballantyne reach him directly — the person on the phone is the technician who shows up at the door, and the same person who comes back if something isn't right.`,
@@ -89,17 +93,12 @@ const ballantynePage: TownPage = {
     {
       status: "published",
       q: "What appliance brands does EK Global repair?",
-      a: `Residential and premium kitchen brands — ${brandNames(residentialBrands)} — and commercial equipment from ${brandNames(commercialBrands)}.`,
+      a: `Residential and premium kitchen brands — ${brandNames(residentialBrands)}. The full list is on the brands page.`,
     },
     {
       status: "published",
       q: "Does EK Global repair Sub-Zero / Thermador / Bosch / Miele appliances?",
       a: `Sub-Zero, Thermador, and Bosch — yes, all three are on the brand list. Miele is named among the additional brands serviced (${brandNote.brandsPage.text}); call with the model to confirm.`,
-    },
-    {
-      status: "draft", // fact 5
-      q: "Does EK Global repair commercial appliances in South Charlotte?",
-      a: todo("which businesses are served in South Charlotte (fact 5)"),
     },
   ],
 };
@@ -172,20 +171,20 @@ const pageTowns: Town[] = [
       reviewAuthors: ["Tony Z.", "Ally T.", "Michael S."],
       nearbyProse:
         "Beyond Charlotte proper, we regularly cover Matthews, Mint Hill, Pineville, Indian Trail, Waxhaw, Belmont, Monroe, Fort Mill, Rock Hill, and the smaller towns between them. If you're not sure whether you're in range, just call.",
-      // "What we repair" — 11 chips, only Refrigerator deep-links; the rest point at the
-      // home #repair grid, and Stove / Range is a single chip. Other cities list all 12 services.
+      // "What we repair" — 11 chips (Stove / Range is a single chip) → the service pages (they
+      // pointed at the former home #repair grid, which left `/`). Other cities list all 12 services.
       repairChips: [
         { label: "Refrigerator", href: "/appliance-repair/refrigerator" },
-        { label: "Washer", href: "/#repair" },
-        { label: "Dryer", href: "/#repair" },
-        { label: "Dishwasher", href: "/#repair" },
-        { label: "Stove / Range", href: "/#repair" },
-        { label: "Cooktop", href: "/#repair" },
-        { label: "Microwave", href: "/#repair" },
-        { label: "Freezer", href: "/#repair" },
-        { label: "Ice Maker", href: "/#repair" },
-        { label: "Wine Cooler", href: "/#repair" },
-        { label: "Garbage Disposal", href: "/#repair" },
+        { label: "Washer", href: "/appliance-repair/washer" },
+        { label: "Dryer", href: "/appliance-repair/dryer" },
+        { label: "Dishwasher", href: "/appliance-repair/dishwasher" },
+        { label: "Stove / Range", href: "/appliance-repair/stove" },
+        { label: "Cooktop", href: "/appliance-repair/cooktop" },
+        { label: "Microwave", href: "/appliance-repair/microwave" },
+        { label: "Freezer", href: "/appliance-repair/freezer" },
+        { label: "Ice Maker", href: "/appliance-repair/ice-maker" },
+        { label: "Wine Cooler", href: "/appliance-repair/wine-cooler" },
+        { label: "Garbage Disposal", href: "/appliance-repair/garbage-disposal" },
       ],
     },
   },
@@ -224,7 +223,6 @@ const pageTowns: Town[] = [
       },
       prose: [
         "EK Global covers Rock Hill regularly — it's one of the largest markets south of Charlotte, and the housing stock here is genuinely mixed: <strong>Old Town and the streets around White Street</strong> carry older homes with appliances that have usually been through a few owners, while <strong>Riverwalk, Manchester Meadows, and the newer development near India Hook Road</strong> lean toward builder-grade and mid-range kitchen packages installed in the last decade.",
-        "Either way, the visit works the same: a flat $75 diagnostic (waived if you go ahead with the repair), a plain-language explanation of what's actually wrong, and — in most cases — the repair finished the same day with original manufacturer-approved parts.",
       ],
       districts: [
         "Old Town",
@@ -234,7 +232,9 @@ const pageTowns: Town[] = [
         "Cherry Park",
         "Winthrop area",
       ],
-      reviewAuthors: ["Ally T.", "Erin B.", "Michael S."],
+      // brief 7.2: no review names this town — none shown; the $75 / same-day terms are a link
+      reviewAuthors: [],
+      termsLink: true,
       nearby: ["Fort Mill, SC", "Tega Cay, SC", "Indian Land, SC", "Lake Wylie, SC", "Charlotte, NC"],
     },
   },
@@ -255,7 +255,6 @@ const pageTowns: Town[] = [
       },
       prose: [
         "Fort Mill has grown fast, and it shows in the appliances we work on. <strong>Baxter Village and the newer subdivisions</strong> are full of builder-installed and mid-to-premium kitchen packages — think Bosch, KitchenAid, and Samsung — usually still within their expected service life but occasionally hit with an install-related issue. <strong>Downtown Fort Mill and the older streets near Main Street</strong> have a smaller number of longer-owned homes where a unit is more likely due for an honest repair-vs-replace conversation.",
-        "Whichever side of town, the process is the same: a flat $75 diagnostic (waived if you move forward with the repair), a clear explanation of the issue, and — in most cases — same-day completion with original parts.",
       ],
       districts: [
         "Baxter Village",
@@ -264,7 +263,9 @@ const pageTowns: Town[] = [
         "Springfield",
         "Anne Springs Close Greenway",
       ],
-      reviewAuthors: ["Ally T.", "Erin B.", "Michael S."],
+      // brief 7.2: no review names this town — none shown; the $75 / same-day terms are a link
+      reviewAuthors: [],
+      termsLink: true,
       nearby: ["Rock Hill, SC", "Tega Cay, SC", "Indian Land, SC", "Charlotte, NC", "Pineville, NC"],
     },
   },
@@ -285,7 +286,6 @@ const pageTowns: Town[] = [
       },
       prose: [
         "Matthews is one of the more established towns in our service area, and the mix reflects that: <strong>Downtown Matthews and the streets around the historic core</strong> have older homes where appliances have often been replaced piecemeal over the years, while the newer construction closer to <strong>I-485 and Matthews-Mint Hill Road</strong> tends to run higher-end built-in packages needing more specialized parts.",
-        "Either way, the visit works the same: a flat $75 diagnostic (waived if you go ahead with the repair), a clear explanation of what's wrong, and — in most cases — the job finished the same day with original manufacturer-approved parts.",
       ],
       districts: [
         "Downtown Matthews",
@@ -294,7 +294,9 @@ const pageTowns: Town[] = [
         "Sardis Rd",
         "Crestdale",
       ],
-      reviewAuthors: ["Ally T.", "Erin B.", "Michael S."],
+      // brief 7.2: no review names this town — none shown; the $75 / same-day terms are a link
+      reviewAuthors: [],
+      termsLink: true,
       nearby: ["Mint Hill, NC", "Charlotte, NC", "Indian Trail, NC", "Weddington, NC", "Waxhaw, NC"],
     },
   },
@@ -315,7 +317,6 @@ const pageTowns: Town[] = [
       },
       prose: [
         "Indian Trail has grown rapidly along the Independence Blvd / Hwy 74 corridor, and most of the calls we get here are from newer subdivisions with builder-grade appliances still within their expected lifespan — usually a specific component failure rather than a unit ready for replacement. There's also an older, more established pocket of the town where appliances tend to be a bit further into their service life.",
-        "Either way, the visit works the same: a flat $75 diagnostic (waived if you go ahead with the repair), a clear explanation of what's actually wrong, and — in most cases — the repair finished the same day with original manufacturer-approved parts.",
       ],
       districts: [
         "Hwy 74 corridor",
@@ -324,7 +325,9 @@ const pageTowns: Town[] = [
         "Wesley Chapel line",
         "Near Monroe",
       ],
-      reviewAuthors: ["Ally T.", "Erin B.", "Michael S."],
+      // brief 7.2: no review names this town — none shown; the $75 / same-day terms are a link
+      reviewAuthors: [],
+      termsLink: true,
       nearby: ["Monroe, NC", "Wesley Chapel, NC", "Matthews, NC", "Charlotte, NC", "Unionville, NC"],
     },
   },
@@ -443,7 +446,7 @@ export const townsIndex = {
 export const townPageCopy = {
   h1: (place: string) => `Appliance repair<br><span>in ${place}.</span>`,
   charlottePhoto: { src: "/images/charlotte.webp", alt: "Charlotte, NC skyline" },
-  townPhoto: "/images/town.webp",
+  townPhoto: "/images/charlotte-area-town.webp",
   cityProseHeading: "Local, not a dispatch center",
   cityLineupEyebrow: (name: string) => `What we repair in ${name}`,
   areaLineupEyebrow: "All services",
@@ -463,11 +466,18 @@ export const townPageCopy = {
   relatedH2: "Around here.",
   ctaH2: (name: string) => `Same-day repair,<br>right here in ${name}.`,
   ctaBody: "$75 diagnostic, waived if you book the repair.",
+  /** City pages without their own terms paragraph (brief 7.2): one link to the pricing block. */
+  termsLink: { label: "Pricing & terms →", href: branchPaths.home.pricing },
 } as const;
 
 /** Headings of one area page (local type: data/types is read-only for this module). */
-export type AreaCopy = { proseHeading: string; notesH2?: string };
+export type AreaCopy = { proseHeading: string; notesH2?: string; commercialLink?: boolean };
 export const areaCopy: Record<string, AreaCopy> = {
   "south-charlotte": { proseHeading: "The south side of the city" },
-  ballantyne: { proseHeading: "The owner's own neighborhood", notesH2: "Built-in and panel-ready." },
+  ballantyne: {
+    proseHeading: "The owner's own neighborhood",
+    notesH2: "Built-in and panel-ready.",
+    // one link to the commercial branch's service area (brief §4)
+    commercialLink: true,
+  },
 };

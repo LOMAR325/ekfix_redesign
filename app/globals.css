@@ -606,3 +606,100 @@ a[style*="--accent"]:focus-visible { outline: 2px solid var(--accent); outline-o
   .photo-pair { grid-template-columns: 1fr; }
   .two-col { gap: 32px; }
 }
+
+/* ==========================================================================
+   Two-branch site (2026-09-29, docs/adr/0022 + 0002). Everything below uses only the
+   existing tokens (colours, radii 24/999, fonts); new classes carry the `branch-` prefix.
+   No side rail anywhere — the owner's standing decision (ux-polish), kept over the brief.
+   ========================================================================== */
+
+/* ---------------- Branch switch in the header ---------------- */
+.branch-switch {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 16px; border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.22); background: rgba(11,12,11,0.4);
+  color: var(--text-light); font-size: 14px; font-weight: 600; white-space: nowrap;
+  transition: border-color .2s, color .2s;
+}
+.branch-switch:hover { border-color: var(--accent); color: var(--accent); }
+.branch-switch:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+/* 1025–1099px: brand + menu + switch + phone + button are ~26px wider than the bar — the brand
+   subtitle hides and the switch tightens there, so the bar stays one row (81px) from 1025. */
+@media (min-width: 1025px) and (max-width: 1099px) {
+  .branch-has-switch .brand-name span { display: none; }
+  .branch-has-switch .branch-switch { padding: 8px 12px; font-size: 13px; }
+}
+@media (max-width: 1024px) {
+  .branch-has-switch .brand { flex-shrink: 0; }
+  .branch-has-switch .branch-switch { order: 2; margin-left: auto; padding: 8px 13px; font-size: 13px; }
+  .branch-has-switch .nav-toggle { order: 3; margin-left: 10px; }
+  .branch-has-switch .main-nav { order: 4; }
+}
+@media (max-width: 400px) {
+  .branch-has-switch .branch-switch { padding: 7px 10px; font-size: 12px; gap: 4px; }
+  .branch-has-switch .nav-toggle { margin-left: 8px; }
+}
+
+/* ---------------- Entry page: header, footer ---------------- */
+.branch-entry-header { flex-wrap: nowrap; }
+.branch-entry-header .call-pill { order: 2; }
+.branch-entry-footer { padding: 22px var(--pad-x); }
+.branch-entry-footer .footer-bottom { padding-top: 0; justify-content: flex-start; gap: 10px 28px; }
+.branch-entry-footer .phone { color: var(--text-dark); font-weight: 600; }
+.branch-entry-footer a:hover { color: var(--text-dark); }
+
+/* ---------------- Entry page: the two panels ---------------- */
+.branch-entry {
+  min-height: 100vh; min-height: 100svh;
+  display: flex; flex-direction: column;
+  padding: 81px clamp(12px, 1.6vw, 24px) clamp(12px, 1.6vw, 24px);
+  background: var(--bg-dark);
+}
+.branch-entry-h1 {
+  margin: 0; padding: clamp(18px, 2.2vw, 30px) clamp(8px, 1.4vw, 20px);
+  font-size: clamp(22px, 2.2vw, 32px); line-height: 1.1; font-weight: 800; letter-spacing: -0.8px;
+}
+.branch-entry-h1 span { color: var(--accent); }
+.branch-entry-panels { flex: 1; display: grid; gap: clamp(12px, 1.2vw, 18px); }
+.branch-entry--split .branch-entry-panels { grid-template-columns: 3fr 2fr; }
+.branch-panel {
+  position: relative; overflow: hidden; border-radius: 24px;
+  min-height: 460px; display: flex; align-items: flex-end;
+  background: var(--bg-dark-3); border: 1px solid rgba(255,255,255,0.09);
+}
+.branch-panel--business { border-color: rgba(198,242,78,0.35); }
+.branch-panel-photo { object-fit: cover; z-index: 0; }
+.branch-panel--business .branch-panel-photo { object-position: 50% 35%; }
+.branch-panel--home .branch-panel-photo { object-position: 70% 30%; }
+.branch-panel-scrim {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(180deg, rgba(11,12,11,0.2) 0%, rgba(11,12,11,0.55) 40%, rgba(11,12,11,0.94) 78%, #0b0c0b 100%);
+}
+.branch-panel--home .branch-panel-scrim {
+  background: linear-gradient(180deg, rgba(11,12,11,0.45) 0%, rgba(11,12,11,0.72) 40%, rgba(11,12,11,0.95) 75%, #0b0c0b 100%);
+}
+.branch-panel-content { position: relative; z-index: 2; width: 100%; max-width: 600px; padding: clamp(24px, 3vw, 48px); }
+.branch-panel-content h2 {
+  margin: 14px 0 0; font-size: clamp(30px, 3.4vw, 52px);
+  line-height: 1.0; font-weight: 800; letter-spacing: -2px;
+}
+.branch-panel--home .branch-panel-content h2 { font-size: clamp(26px, 2.5vw, 38px); letter-spacing: -1.4px; }
+.branch-panel-text { margin: 14px 0 22px; max-width: 460px; font-size: 16px; line-height: 1.6; color: var(--text-light-60); }
+.branch-panel-links { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin-top: 22px; }
+.branch-panel-links-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; color: var(--text-light-45); flex-basis: 100%; }
+.branch-panel-links a { font-size: 14px; font-weight: 600; color: var(--text-light); border-bottom: 1px solid rgba(255,255,255,0.22); padding-bottom: 2px; }
+.branch-panel-links a:hover { color: var(--accent); border-color: var(--accent); }
+.branch-panel-links a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+@media (max-width: 1024px) {
+  .branch-entry { padding-top: 73px; } /* the entry header is 73px at 481–1024, 69px below */
+}
+@media (max-width: 900px) {
+  .branch-entry--split .branch-entry-panels { grid-template-columns: 1fr; }
+  .branch-panel { min-height: 0; }
+  .branch-panel-content { padding: 110px 22px 26px; }
+  .branch-panel--home .branch-panel-content { padding-top: 90px; }
+  .branch-panel-content h2,
+  .branch-panel--home .branch-panel-content h2 { font-size: clamp(28px, 7.4vw, 40px); letter-spacing: -1.4px; }
+  .branch-panel-text { margin: 12px 0 18px; font-size: 15px; }
+}

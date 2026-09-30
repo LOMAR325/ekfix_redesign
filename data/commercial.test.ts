@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { businessEquipmentOptions, businessTypeOptions } from "@/data/forms";
+import { services } from "@/data/services";
 import { commercialPages } from "@/data/commercial";
 import { brands } from "@/data/brands";
 import { laundryObjectTypes } from "@/data/b2b-segments";
@@ -21,4 +23,22 @@ describe("data/commercial brandNames", () => {
       for (const name of brandNames) expect(siteCommercialBrands).toContain(name);
     },
   );
+});
+
+describe("data/commercial form presets and counterparts (ADR 0023)", () => {
+  it("equipment presets are business-form options; industry pages preset a business type", () => {
+    for (const p of commercialPages) {
+      if (p.kind === "equipment") {
+        expect(businessEquipmentOptions).toContain(p.applianceFormLabel);
+        expect(p.cardImage).toMatch(/^\/images\//);
+      } else {
+        expect(businessTypeOptions as readonly string[]).toContain(p.businessType);
+      }
+    }
+  });
+
+  it("homeCounterparts name real residential services", () => {
+    const slugs = services.map((s) => s.slug);
+    for (const p of commercialPages) for (const slug of p.homeCounterparts ?? []) expect(slugs).toContain(slug);
+  });
 });

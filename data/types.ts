@@ -30,7 +30,7 @@ export type Service = {
   formLabel: string;
   title: string;
   metaDescription: string;
-  /** thumbnail used in the home #repair grid, e.g. "/images/Refrigerator.webp" */
+  /** thumbnail used in the home #repair grid, e.g. "/images/refrigerator-repair.webp" */
   image: string;
   hero: { h1: string; lede: string }; // h1 may contain <br><span>
   /** The places the H1 names, in H1 order — the page's JSON-LD `Service.areaServed` (story 19). */
@@ -72,6 +72,8 @@ export type TownPage = Publishable & {
   districts?: string[];
   /** cities: hand-picked authors from data/reviews; areas take reviews by Review.area */
   reviewAuthors?: string[];
+  /** a city page without its own terms paragraph links to the pricing block instead (brief 7.2) */
+  termsLink?: boolean;
   nearby?: string[]; // "Also serving" chip towns (non-charlotte)
   nearbyProse?: string; // charlotte only — free-text "also serving nearby" paragraph
   hasMap?: boolean; // true only for charlotte
@@ -115,13 +117,8 @@ export type ReviewCategory = { id: string; label: string; reviews: Review[] };
 /** Anchor ids of the hub segments (data/b2b-segments.forBusinessSegments). */
 export type SegmentId = "property-management" | "horeca" | "hotels" | "hoa";
 
-/** Options of the form's "I'm contacting you as a…" select (data/b2b-segments.contactAsOptions). */
-export type ContactAsOption =
-  | "Homeowner"
-  | "Property Manager"
-  | "Restaurant or Café"
-  | "Hotel or Hospitality"
-  | "Other Business";
+/** Business form "Type of business" options (data/forms.businessTypeOptions). */
+export type BusinessTypeOption = "Restaurant" | "Property Management" | "Hotel" | "Laundry" | "Other";
 
 // /for-business (→ /commercial-appliance-repair) segment card — anchor id, <h3>, bullets.
 // Publication via `status` — the single draft/published mechanism (spec story 5).
@@ -143,8 +140,14 @@ export type CommercialPage = Publishable & {
   name: string;
   kind: "equipment" | "industry";
   segmentId?: SegmentId; // industry pages only
-  contactAs: ContactAsOption; // form option preset for the CTA (story 52)
-  applianceFormLabel?: string; // equipment — appliance preset (= commercialCategories.formLabel)
+  /** industry pages: the business form's "Type of business" preset for the page's CTA */
+  businessType?: BusinessTypeOption;
+  /** equipment pages: the business form's equipment preset (= data/forms.businessEquipmentOptions) */
+  applianceFormLabel?: string;
+  /** equipment pages: the residential services (data/services slugs) this equipment has at home */
+  homeCounterparts?: string[];
+  /** equipment pages: the card image on the commercial home */
+  cardImage?: string;
   seo: { title: string; description: string };
   hero: { h1: string; lede: string }; // h1 may contain <br><span>
   equipment: {
@@ -219,13 +222,35 @@ export type Brand = {
   home?: boolean;
 };
 
-export type LeadInput = {
+/** Home-form lead (branch "home"), as accepted by lib/book/schema.ts. */
+export type HomeLeadInput = {
+  branch: "home";
   name: string;
   phone: string;
+  /** one of data/forms homeApplianceOptions */
   appliance: string;
-  contactAs: string;
   message?: string;
 };
+
+/** Business-form lead (branch "business"); blank optional fields are absent. */
+export type BusinessLeadInput = {
+  branch: "business";
+  company: string;
+  contactName: string;
+  phone: string;
+  email?: string;
+  /** one of data/forms businessTypeOptions */
+  businessType: string;
+  /** one of data/forms businessEquipmentOptions */
+  equipment?: string;
+  units?: string;
+  /** one of data/forms urgencyOptions */
+  urgency?: string;
+  message?: string;
+};
+
+/** A validated lead from either form, discriminated by `branch`. */
+export type LeadInput = HomeLeadInput | BusinessLeadInput;
 
 export type LeadResult =
   | { ok: true }

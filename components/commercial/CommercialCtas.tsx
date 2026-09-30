@@ -1,22 +1,21 @@
-import type { ContactAsOption } from "@/data/types";
 import { business } from "@/data/business";
 import { commercialCta } from "@/data/commercial";
 import { Anchor } from "@/components/ui/anchor";
-import { bookingHref } from "./booking-link";
+import { businessRequestHref } from "@/components/booking-link";
 
-// The commercial counterpart of ui/BookCallCtas (story 53): same two buttons and classes,
-// but the primary one reads "Request Service or a Quote" and opens the home form with
-// "I'm contacting you as a…" (and, on equipment pages, the appliance) preselected.
+// The commercial counterpart of ui/BookCallCtas (story 53): same two buttons and classes; the
+// primary one opens the business form on the commercial home with the page's "Type of business"
+// (industry pages) or equipment (equipment pages) preselected (components/booking-link).
 export function CommercialCtas({
-  contactAs,
-  appliance,
+  businessType,
+  equipment,
 }: {
-  contactAs: ContactAsOption;
-  appliance?: string;
+  businessType?: string;
+  equipment?: string;
 }) {
   return (
     <>
-      <Anchor href={bookingHref({ contactAs, appliance })} className="btn btn-accent">
+      <Anchor href={businessRequestHref({ businessType, equipment })} className="btn btn-accent">
         {commercialCta.label}
       </Anchor>
       <a href={business.phoneHref} className="btn btn-ghost-dark">

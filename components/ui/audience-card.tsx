@@ -1,11 +1,16 @@
 import type { CSSProperties, ReactNode } from "react";
-import type {
-  WhoWeServeCard,
-  ForBusinessSegment,
-} from "@/data/b2b-segments";
+import type { ForBusinessSegment } from "@/data/b2b-segments";
 import { Anchor } from "./anchor";
 
-export type AudienceItem = WhoWeServeCard | ForBusinessSegment;
+/** A card without an anchor or bullets (title + text + one link). */
+export type AudienceLinkCard = {
+  title: string;
+  eyebrow: string;
+  text: string;
+  href: string;
+  linkLabel: string;
+};
+export type AudienceItem = AudienceLinkCard | ForBusinessSegment;
 
 const isSegment = (item: AudienceItem): item is ForBusinessSegment =>
   "bullets" in item;
@@ -57,8 +62,8 @@ export function AudienceCard({
 
 type AudienceGridProps = {
   items: AudienceItem[];
-  /** `.two-col` (default, current for-business.html) or `.card-grid-4` (home #who-we-serve). */
-  layout?: "two-col" | "card-grid-4";
+  /** `.two-col` (default), `.card-grid-3` (commercial home #industries) or `.card-grid-4`. */
+  layout?: "two-col" | "card-grid-3" | "card-grid-4";
   children?: ReactNode;
 };
 
@@ -69,7 +74,7 @@ export function AudienceGrid({
   children,
 }: AudienceGridProps) {
   return (
-    <div className={layout === "card-grid-4" ? "card-grid-4" : "two-col"}>
+    <div className={layout}>
       {items.map((item) => (
         <AudienceCard
           key={isSegment(item) ? item.id : item.title}

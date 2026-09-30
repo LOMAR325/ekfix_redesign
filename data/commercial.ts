@@ -1,8 +1,7 @@
-import type { CommercialPage, ContactAsOption, PublishableFaq, SegmentId } from "./types";
+import type { BusinessTypeOption, CommercialPage, PublishableFaq, SegmentId } from "./types";
 import { commercialCategories } from "./services";
 import { business } from "./business";
 import { owner } from "./people";
-import { forBusinessHeroLedeExtra } from "./b2b-segments";
 import { published, routable } from "../lib/publish";
 
 // Commercial section: the hub /commercial-appliance-repair (ex-/for-business) and its 7
@@ -14,8 +13,9 @@ import { published, routable } from "../lib/publish";
 // Failures are general technical knowledge — no figures, no statistics. New copy is third
 // person or impersonal (spec §13). Blocks waiting on owner facts 6/7 are `status: "draft"`
 // and never render (the page renders only published sub-blocks).
-// contactAs (story 52): industry pages preset their segment's option; equipment pages
-// have no single industry, so they preset "Other Business".
+// Form presets (ADR 0023): an industry page opens the business form with its "Type of business",
+// an equipment page with its equipment. `homeCounterparts` — the residential services the same
+// equipment has at home (brief §6); lib/links turns them into the cross-branch links.
 
 export const commercialHubPath = "/commercial-appliance-repair";
 
@@ -27,7 +27,7 @@ function categoryFormLabel(label: string): string {
 }
 
 // ---------------------------------------------------------------------------
-// Commercial CTA (story 53) and the form preset per hub segment (story 52).
+// Commercial CTA (story 53) and the form preset per segment.
 // ---------------------------------------------------------------------------
 export const commercialCta = {
   label: "Request Service or a Quote",
@@ -35,34 +35,49 @@ export const commercialCta = {
   call: `Call ${business.phone}`,
 } as const;
 
-/** The hub as a whole and equipment without an industry. */
-export const commercialDefaultContactAs: ContactAsOption = "Other Business";
-
-export const segmentContactAs: Record<SegmentId, ContactAsOption> = {
-  "property-management": "Property Manager",
-  horeca: "Restaurant or Café",
-  hotels: "Hotel or Hospitality",
-  hoa: "Other Business",
+/** "Type of business" preset of the business form per commercial-home segment card. */
+export const segmentBusinessType: Record<SegmentId, BusinessTypeOption> = {
+  "property-management": "Property Management",
+  horeca: "Restaurant",
+  hotels: "Hotel",
+  hoa: "Other",
 };
 
 // ---------------------------------------------------------------------------
-// Hub copy — ported 1:1 from the former /for-business page component (the segment cards,
-// process, why-call-us, formats and FAQ stay in data/b2b-segments).
+// The commercial home /commercial-appliance-repair (ADR 0022): the former hub and the
+// business half of the former `/`, redistributed. Anchors kept: #property-management, #horeca,
+// #hotels, #laundry, #process, #formats, #faq-business; new: #industries, #equipment,
+// #service-area, #request. New copy is impersonal and built from facts already on the site.
 // ---------------------------------------------------------------------------
 export const commercialHub = {
   seo: {
-    title: `Appliance Repair for Property Managers, Restaurants & Hotels | ${business.name}`,
+    title: `Commercial Appliance Repair in Charlotte, NC | ${business.name}`,
     description:
-      "Commercial appliance repair in Charlotte, NC for property management companies, restaurants and cafés (HoReCa), hotels, and commercial laundry operators. Preventive maintenance and standing service contracts available.",
+      "Commercial appliance repair in Charlotte, NC for restaurants, property managers, hotels, and laundry operators — refrigeration, dish machines, ice machines, laundry, ovens and ranges. Written estimates, photo reports, invoice / ACH billing.",
   },
   hero: {
-    h1: "Commercial appliance<br>repair, <span>done right.</span>",
-    // first two sentences from for-business.html `.page-hero .lede`, then the formats sentence
-    lede: `Property managers, restaurants, cafés, and laundry operators across Charlotte trust ${business.name} to keep tenant and guest-facing equipment running — with the same technician on every call. ${forBusinessHeroLedeExtra}`,
+    eyebrow: "For business",
+    h1: "Commercial appliance repair<br><span>in Charlotte.</span>",
+    lede: "For restaurants, property management companies, hotels, and laundry operators across Charlotte, NC — the same EPA 608 & OSHA certified technician on every visit.",
+    requestLabel: "Request Service",
+    callLabel: `Call ${business.phone}`,
+    // .hero-trust — three steps of the published process (data/b2b-segments.processSteps)
+    trust: [
+      "Written Estimate Before Any Work",
+      "Photo Report After Every Visit",
+      "Same-Day Priority When a Slot Is Open",
+    ],
+    photo: owner.photos.restaurantKitchen,
   },
-  services: {
-    eyebrow: "Commercial services",
-    h2: "By equipment<br>and by industry.",
+  industries: {
+    eyebrow: "Industries",
+    h2: "Kitchens, portfolios,<br>and hotels.",
+  },
+  equipment: {
+    eyebrow: "Equipment",
+    h2: "Equipment kept<br>running.",
+    lede: "Refrigeration, dish machines, ice machines, on-premise laundry, ovens and ranges — for restaurants, hotels, and managed properties.",
+    tag: "Commercial · See service",
   },
   laundry: {
     heading: "Commercial laundry equipment",
@@ -70,17 +85,46 @@ export const commercialHub = {
       "For hotels, laundromats, healthcare facilities, and multi-housing properties, we repair and maintain washers, dryers, ironers, and folding machines — not just the individual unit in a resident's apartment, but full on-premise laundry systems.",
     brandsCaption: "These are the commercial laundry brands we service:",
     photo: {
-      src: "/images/kostia-laundry.webp",
+      src: owner.photos.rooftopLaundry.src,
       alt: "Commercial laundry equipment repair on a rooftop unit",
     },
   },
   process: { eyebrow: "How we work", h2: "From the first call<br>to a photo report." },
   why: { eyebrow: "Why property & kitchen managers call us", h2: "Fewer callbacks, less downtime." },
-  formats: { eyebrow: "Service formats", h2: "Ways to work<br>with us." },
+  formats: {
+    eyebrow: "Service formats",
+    h2: "Ways to work<br>with us.",
+    contractHeading: "Maintenance contracts",
+    contract:
+      "A standing maintenance contract sets recurring preventive visits on a schedule that fits the property or the portfolio, with one point of contact and consolidated invoicing. Scope and visit frequency are agreed up front, in writing.",
+  },
+  brands: {
+    eyebrow: "Commercial brands",
+    h2: "Kitchen, refrigeration<br>and laundry brands.",
+  },
+  reviews: {
+    eyebrow: "From a business customer",
+    h2: "What they say.",
+    allReviews: "All reviews →",
+  },
+  serviceArea: {
+    eyebrow: "Service area",
+    h2: "Charlotte, Ballantyne,<br>and the towns around them.",
+    // the commercial wording moved here from the Ballantyne page (brief §4)
+    body: `${business.name} provides commercial appliance repair throughout Charlotte, NC — Ballantyne and South Charlotte included — and the surrounding towns in North and South Carolina. ${owner.name}, the owner and lead technician, lives in the Ballantyne area and works out of it.`,
+    // named without a page of their own in this branch (no commercial area pages — brief §3)
+    areas: ["South Charlotte", "Ballantyne"],
+  },
   faq: { eyebrow: "FAQ", h2: `Working with ${business.name},<br>answered.` },
-  ctaBand: {
-    h2: "Let's talk about<br>your properties.",
-    body: "Tell us what you manage — a single emergency call, standing maintenance, or a whole portfolio — and we'll put together a straightforward quote.",
+  request: {
+    eyebrow: "Request service",
+    h2: "Equipment down?<br><span>Start here.</span>",
+    body: "Send the company, the address and what is wrong — or call if it can't wait. A written estimate comes before any work.",
+    facts: [
+      { k: "COI", v: "Certificate of Insurance naming your company or property, on request." },
+      { k: "W-9", v: "Available on request for your accounts payable team." },
+      { k: "ACH", v: "Invoice to the business, payment by ACH or on account." },
+    ],
   },
 } as const;
 
@@ -97,7 +141,7 @@ export const commercialPageCopy = {
   call: {
     eyebrow: "How the call works",
     h2: "Four steps,<br>in writing.",
-    body: "Every commercial call follows the same path: the request, access and scheduling, an on-site diagnosis with a written estimate, then the repair with a photo report and an invoice to the business. The full process and the service formats are on the commercial hub.",
+    body: "Every commercial call follows the same path: the request, access and scheduling, an on-site diagnosis with a written estimate, then the repair with a photo report and an invoice to the business. The full process and the service formats are on the main commercial page.",
     processLabel: "How we work →",
     formatsLabel: "Service formats →",
   },
@@ -137,8 +181,9 @@ export const commercialPages: CommercialPageContent[] = [
     slug: "commercial-refrigerator-repair",
     name: "Commercial Refrigerator Repair",
     kind: "equipment",
-    contactAs: "Other Business",
     applianceFormLabel: categoryFormLabel("Commercial Refrigeration"),
+    homeCounterparts: ["refrigerator"],
+    cardImage: "/images/refrigerator-repair.webp",
     seo: {
       title: `Commercial Refrigerator & Walk-In Repair in Charlotte, NC | ${business.name}`,
       description:
@@ -204,8 +249,9 @@ export const commercialPages: CommercialPageContent[] = [
     slug: "commercial-dishwasher-repair",
     name: "Commercial Dishwasher Repair",
     kind: "equipment",
-    contactAs: "Other Business",
     applianceFormLabel: categoryFormLabel("Commercial Dishwasher/Warewasher"),
+    homeCounterparts: ["dishwasher"],
+    cardImage: "/images/dishwasher-repair.webp",
     seo: {
       title: `Commercial Dishwasher & Warewasher Repair in Charlotte, NC | ${business.name}`,
       description:
@@ -268,8 +314,9 @@ export const commercialPages: CommercialPageContent[] = [
     slug: "commercial-ice-machine-repair",
     name: "Commercial Ice Machine Repair",
     kind: "equipment",
-    contactAs: "Other Business",
     applianceFormLabel: categoryFormLabel("Ice Machine (high-volume)"),
+    homeCounterparts: ["ice-maker"],
+    cardImage: "/images/ice-maker-repair.webp",
     seo: {
       title: `Commercial Ice Machine Repair in Charlotte, NC | ${business.name}`,
       description:
@@ -335,8 +382,9 @@ export const commercialPages: CommercialPageContent[] = [
     slug: "commercial-laundry-equipment-repair",
     name: "Commercial Laundry Equipment Repair",
     kind: "equipment",
-    contactAs: "Other Business",
     applianceFormLabel: categoryFormLabel("Commercial Laundry Equipment"),
+    homeCounterparts: ["washer", "dryer"],
+    cardImage: "/images/dryer-repair.webp",
     seo: {
       title: `Commercial Laundry Equipment Repair in Charlotte, NC | ${business.name}`,
       description:
@@ -412,8 +460,9 @@ export const commercialPages: CommercialPageContent[] = [
     slug: "commercial-oven-range-repair",
     name: "Commercial Oven & Range Repair",
     kind: "equipment",
-    contactAs: "Other Business",
-    // no commercialCategories entry for ovens/ranges — no appliance preset
+    applianceFormLabel: "Commercial Oven / Range",
+    homeCounterparts: ["stove", "range", "cooktop"],
+    cardImage: "/images/stove-repair.webp",
     seo: {
       title: `Commercial Oven & Range Repair in Charlotte, NC | ${business.name}`,
       description:
@@ -480,7 +529,7 @@ export const commercialPages: CommercialPageContent[] = [
     name: "Restaurant Appliance Repair",
     kind: "industry",
     segmentId: "horeca",
-    contactAs: "Restaurant or Café",
+    businessType: "Restaurant",
     seo: {
       title: `Restaurant Appliance Repair in Charlotte, NC | ${business.name}`,
       description:
@@ -552,7 +601,7 @@ export const commercialPages: CommercialPageContent[] = [
     name: "Property Management Appliance Repair",
     kind: "industry",
     segmentId: "property-management",
-    contactAs: "Property Manager",
+    businessType: "Property Management",
     seo: {
       title: `Appliance Repair for Property Managers in Charlotte, NC | ${business.name}`,
       description:

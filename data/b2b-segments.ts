@@ -1,74 +1,18 @@
-import type { ContactAsOption, ForBusinessSegment, SegmentId } from "./types";
+import type { ForBusinessSegment } from "./types";
 import { owner } from "./people";
 import { published } from "../lib/publish";
 
-// B2B content layer — the reorientation of the home page and the commercial hub
-// (/commercial-appliance-repair) toward property managers, restaurants, and hotels first
-// (b2b-priority-brief §7–8).
-//
-// Every prose block here is written fresh for its page. Nothing is copied verbatim between
-// `whoWeServe` (home #who-we-serve) and `forBusinessSegments` (the commercial hub) — see spec story 34.
+// B2B content of the commercial home /commercial-appliance-repair (the module name is
+// historical — it began as the /for-business content): segments, process, formats, trust
+// chips, why-call-us, FAQ, knowsAbout, the #laundry lists.
 // No invented trust numbers: COI / W-9 / ACH are phrased as "available on request" / "we can",
 // never as commitments to specifics.
-
-// Home #who-we-serve card — no <h3>, no anchor, no bullets. `href` is the hub anchor;
-// a card with a `segmentId` links to that segment's published industry page instead
-// (resolved in data/home.whoWeServeCards — this module can't import data/commercial).
-export type WhoWeServeCard = {
-  title: string;
-  eyebrow: string;
-  text: string;
-  href: string;
-  linkLabel: string;
-  segmentId?: SegmentId;
-};
 
 // Commercial-hub segment card — the type lives in data/types (publication via `status`,
 // the single draft/published mechanism); re-exported here for existing importers.
 export type { ForBusinessSegment } from "./types";
 
 export type NumberedCard = { num: string; title: string; body: string };
-
-// ---------------------------------------------------------------------------
-// Home page (#who-we-serve), 4 cards — businesses first, homeowners last.
-// ---------------------------------------------------------------------------
-export const whoWeServeHead = {
-  eyebrow: "01 / Who we serve",
-  h2: "Homes, kitchens, and everything you manage.",
-} as const;
-
-export const whoWeServe: WhoWeServeCard[] = [
-  {
-    title: "Property Management & Multifamily",
-    eyebrow: "For portfolios",
-    text: "Portfolio work, handled as portfolio work. We take tenant appliance calls one unit at a time or across every property you manage, with a single point of contact, transparent per-visit pricing, and scheduling that fits lockboxes, leasing offices, and turn deadlines.",
-    href: "/commercial-appliance-repair#property-management",
-    linkLabel: "See property management services →",
-    segmentId: "property-management",
-  },
-  {
-    title: "Restaurants & Commercial Kitchens",
-    eyebrow: "For kitchens",
-    text: "When a walk-in or the dish line goes down mid-service, the clock is the problem. We repair commercial refrigeration, cooking, and warewashing equipment fast, and set up preventive checks so the next breakdown doesn't land in the middle of a Friday rush.",
-    href: "/commercial-appliance-repair#horeca",
-    linkLabel: "See restaurant & kitchen services →",
-    segmentId: "horeca",
-  },
-  {
-    title: "Hotels & Multifamily Laundry",
-    eyebrow: "For hospitality",
-    text: "Guest-facing and back-of-house at once. We keep in-room refrigerators, ice machines, and on-premise laundry running for hotels and multifamily buildings, working around occupancy and event schedules so equipment downtime never reaches your guests or residents.",
-    href: "/commercial-appliance-repair#laundry",
-    linkLabel: "See hotel & laundry services →",
-  },
-  {
-    title: "Homeowners",
-    eyebrow: "For your home",
-    text: "Still the same promise for your own kitchen. Book a refrigerator, washer, dryer, oven, or dishwasher repair online and the owner who diagnoses it is the one who comes back if anything's off. Same-day slots, warranty on every job.",
-    href: "/appliance-repair",
-    linkLabel: "See home appliance repair →",
-  },
-];
 
 // ---------------------------------------------------------------------------
 // Commercial hub — 4 segment cards, each with an anchor id.
@@ -163,7 +107,7 @@ export const serviceFormats: string[] = [
   "Invoice / ACH Billing",
 ];
 
-// Home page — "Built for vendor onboarding." (#trust-b2b), .chip-row.
+// Commercial home — "Built for vendor onboarding." (#trust-b2b), .chip-row.
 export const trustHeading = "Built for vendor onboarding.";
 export const trustChips: string[] = [
   "Licensed & Insured",
@@ -224,14 +168,6 @@ export const commercialServices: string[] = [
   "Commercial Laundry Equipment Repair",
 ];
 
-// Home page — second .cta-band (#business-cta), between #brands and #book. The button is
-// data/commercial.commercialCta.label ("Request Service or a Quote", story 53): it presets
-// the form's "I'm contacting you as a…" to the business default and scrolls to #book.
-export const businessCta = {
-  heading: "Managing a property, restaurant, or hotel?",
-  text: "Request service or a quote for a property, a kitchen, or a hotel — the form below opens with the business option already selected.",
-} as const;
-
 // Commercial hub — commercial-laundry section (#laundry). `types` names the object-type
 // verticals the ported paragraph already lists; `brandChips` feeds the chip row under it.
 export const laundryObjectTypes = {
@@ -247,40 +183,3 @@ export const laundryObjectTypes = {
     "Whirlpool Commercial",
   ],
 } as const;
-
-// Form (#book) — "I'm contacting you as a…" <select> (b2b §7 block 9 / spec story 27).
-// Businesses listed before "Other Business"; feeds LeadInput.contactAs.
-export const contactAsOptions: ContactAsOption[] = [
-  "Homeowner",
-  "Property Manager",
-  "Restaurant or Café",
-  "Hotel or Hospitality",
-  "Other Business",
-];
-
-// Home hero (spec §7, stories 42/46/47). The H1 names what and where in the two-line style
-// with an accent second line; the brief's longer example ("Commercial & home appliance
-// repair / in Charlotte.") takes 6 lines at 1440px, so the H1 is cut to fit 3 lines @1440
-// and 2 @390 (story 47) and the lede carries "commercial & home": businesses first, then
-// homes, then Charlotte / South Charlotte / Ballantyne. No ZIP (owner fact 3 not given).
-// The slogan stays as the secondary line above the H1.
-export const homeHero = {
-  eyebrow: "We fix it. You enjoy it.",
-  h1: "Appliance repair,<br><span>Charlotte.</span>",
-  lede: "For property managers, restaurants, and hotels — and for homes — across Charlotte, South Charlotte, and Ballantyne. EPA 608 & OSHA certified, warranty on every job.",
-  // the two paths (story 42): business is the accent (primary) button, homes the ghost one
-  forBusiness: { label: "For Business", href: "/commercial-appliance-repair" },
-  forHomes: { label: "For Homes", href: "/appliance-repair" },
-  // the phone — a text link in the hero's accent-link style
-  callLabel: "Or call",
-  // .hero-meta small
-  metaSmall: "5.0 on Google · property managers, restaurants & homeowners",
-} as const;
-
-// Extra sentence appended to #family .family-copy on the home page (spec story 26).
-export const familyBusinessSentence =
-  "That's true whether it's a homeowner's kitchen or a restaurant walk-in — same technician, same standard.";
-
-// Third sentence appended to the commercial hub's .page-hero .lede (spec story 28 / b2b §8 block 1).
-export const forBusinessHeroLedeExtra =
-  "Whether it's a single emergency call, a standing maintenance contract, or service across a whole portfolio — we work the way your business already operates.";

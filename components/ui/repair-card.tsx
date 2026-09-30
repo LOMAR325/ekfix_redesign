@@ -10,7 +10,7 @@ export type RepairCardProps = {
   href: string;
   /** `.tag` line — "Repair · Book online" on the home grid, "Full local page" on /towns. */
   tag: string;
-  /** Thumbnail src ("/images/Refrigerator.webp"). Omit for the text-only /towns cards. */
+  /** Thumbnail src ("/images/refrigerator-repair.webp"). Omit for the text-only /towns cards. */
   image?: string;
   imageAlt?: string;
   /**
