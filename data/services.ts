@@ -95,7 +95,7 @@ export const services: Service[] = [
     formLabel: "Refrigerator",
     title: seoTitle("Refrigerator"),
     metaDescription: seoDescription("refrigerator", "not cooling, leaks, ice maker faults"),
-    image: "/images/Refrigerator.webp",
+    image: "/images/refrigerator-repair.webp",
     hero: {
       h1: heroH1("Refrigerator"),
       lede: "Not cooling, leaking, or making noise it shouldn't? Diagnosed on the spot and fixed with manufacturer-approved parts — most jobs finished in one visit.",
@@ -146,7 +146,7 @@ export const services: Service[] = [
     formLabel: "Washer",
     title: seoTitle("Washer"),
     metaDescription: seoDescription("washer", "won't spin, leaks, won't drain"),
-    image: "/images/dryer.webp", // TODO: нужно фото стиральной машины — в public/images его нет
+    image: "/images/washer-dryer-repair.webp", // TODO: нужно фото стиральной машины — в public/images его нет
     hero: {
       h1: heroH1("Washer"),
       lede: "Not spinning, leaking, or stuck mid-cycle? Diagnosed on the spot and fixed with manufacturer-approved parts — most jobs finished in one visit.",
@@ -175,7 +175,7 @@ export const services: Service[] = [
     formLabel: "Dryer",
     title: seoTitle("Dryer"),
     metaDescription: seoDescription("dryer", "no heat, slow drying, won't tumble"),
-    image: "/images/dryer_16.webp",
+    image: "/images/dryer-repair.webp",
     hero: {
       h1: heroH1("Dryer"),
       lede: "Not heating, taking forever to finish a cycle, or making noise it shouldn't? Diagnosed on the spot and fixed with manufacturer-approved parts.",
@@ -204,7 +204,7 @@ export const services: Service[] = [
     formLabel: "Dishwasher",
     title: seoTitle("Dishwasher"),
     metaDescription: seoDescription("dishwasher", "not cleaning, not draining, leaks"),
-    image: "/images/dishwasher.webp",
+    image: "/images/dishwasher-repair.webp",
     hero: {
       h1: heroH1("Dishwasher"),
       lede: "Not cleaning, not draining, or leaking underneath? Diagnosed on the spot and fixed with manufacturer-approved parts — including commercial units.",
@@ -240,7 +240,7 @@ export const services: Service[] = [
     formLabel: "Stove / Range",
     title: seoTitle("Stove"),
     metaDescription: seoDescription("stove", "oven not heating, burners that won't ignite"),
-    image: "/images/stove.webp",
+    image: "/images/stove-repair.webp",
     hero: {
       h1: heroH1("Stove"),
       lede: "Oven not heating, burner won't ignite, or self-clean not working? Diagnosed on the spot and fixed with manufacturer-approved parts.",
@@ -269,7 +269,7 @@ export const services: Service[] = [
     formLabel: "Stove / Range",
     title: seoTitle("Range"),
     metaDescription: seoDescription("range", "burners that won't stay lit, uneven oven heat"),
-    image: "/images/stove.webp", // range ≈ freestanding stove; идеально — отдельное фото плиты. stove и range теперь делят фото
+    image: "/images/stove-repair.webp", // range ≈ freestanding stove; идеально — отдельное фото плиты. stove и range теперь делят фото
     hero: {
       h1: heroH1("Range"),
       lede: "Burner won't stay lit, oven temperature is off, or the griddle zone quit heating? We work on freestanding and professional-grade ranges alike.",
@@ -298,7 +298,7 @@ export const services: Service[] = [
     formLabel: "Cooktop",
     title: seoTitle("Cooktop"),
     metaDescription: seoDescription("cooktop", "dead burners, induction pan detection, touch controls"),
-    image: "/images/cooktop.webp",
+    image: "/images/cooktop-repair.webp",
     hero: {
       h1: heroH1("Cooktop"),
       lede: "Burner won't heat, induction isn't detecting pans, or the touch controls stopped responding? Diagnosed on the spot and fixed right.",
@@ -327,7 +327,7 @@ export const services: Service[] = [
     formLabel: "Microwave",
     title: seoTitle("Microwave"),
     metaDescription: seoDescription("microwave", "no heat, sparking, a stalled turntable"),
-    image: "/images/new_microwave.webp",
+    image: "/images/microwave-repair.webp",
     hero: {
       h1: heroH1("Microwave"),
       lede: "Not heating, sparking inside, or the turntable stopped turning? Diagnosed on the spot and fixed with manufacturer-approved parts.",
@@ -356,7 +356,7 @@ export const services: Service[] = [
     formLabel: "Freezer",
     title: seoTitle("Freezer"),
     metaDescription: seoDescription("freezer", "not freezing, frost buildup, constant running"),
-    image: "/images/freezer_new.webp",
+    image: "/images/freezer-repair.webp",
     hero: {
       h1: heroH1("Freezer"),
       lede: "Not freezing, running constantly, or leaking water? Diagnosed on the spot and fixed with manufacturer-approved parts — upright, chest, or built-in.",
@@ -385,7 +385,7 @@ export const services: Service[] = [
     formLabel: "Ice Maker",
     title: seoTitle("Ice Maker"),
     metaDescription: seoDescription("ice maker", "no ice, hollow cubes, overflowing"),
-    image: "/images/ice_maker_under.webp",
+    image: "/images/ice-maker-repair.webp",
     hero: {
       h1: heroH1("Ice Maker"),
       lede: "Not making ice, dispensing small or hollow cubes, or overflowing? Diagnosed on the spot and fixed — built-in, under-counter, or in-fridge.",
@@ -414,7 +414,7 @@ export const services: Service[] = [
     formLabel: "Wine Cooler",
     title: seoTitle("Wine Cooler"),
     metaDescription: seoDescription("wine cooler", "temperature drift, compressor noise, condensation"),
-    image: "/images/wine_coolers.webp",
+    image: "/images/wine-cooler-repair.webp",
     hero: {
       h1: heroH1("Wine Cooler"),
       lede: "Not holding temperature, fluctuating, or the compressor's too loud? Diagnosed on the spot and fixed with manufacturer-approved parts.",
@@ -443,7 +443,7 @@ export const services: Service[] = [
     formLabel: "Garbage Disposal",
     title: seoTitle("Garbage Disposal"),
     metaDescription: seoDescription("garbage disposal", "jams, leaks, slow draining"),
-    image: "/images/garb_dispo.webp",
+    image: "/images/garbage-disposal-repair.webp",
     hero: {
       h1: heroH1("Garbage Disposal"),
       lede: "Won't turn on, humming but not spinning, or leaking underneath? Diagnosed on the spot and fixed the same visit in almost every case.",
@@ -468,14 +468,15 @@ export const services: Service[] = [
   },
 ];
 
-// Commercial equipment cards added to the end of the home #repair grid (b2b §7 block 3).
-// Cards link through lib/links.commercialCardHref (published child page, else this hub anchor). `image` is a placeholder.
+// The 4 commercial equipment categories (the /about chips; `formLabel` = the equipment preset
+// of the business form). Cards link through lib/links.commercialCardHref (published child page,
+// else this hub anchor). `image` is a placeholder.
 // TODO: реальные коммерческие фото (below are existing residential webp as stand-ins)
 export const commercialCategories: CommercialCategory[] = [
-  { label: "Commercial Refrigeration", formLabel: "Commercial Refrigeration", image: "/images/Refrigerator.webp", href: "/commercial-appliance-repair#horeca" }, // временная замена до реального коммерческого фото
-  { label: "Commercial Dishwasher/Warewasher", formLabel: "Commercial Dishwasher", image: "/images/dishwasher.webp", href: "/commercial-appliance-repair#horeca" }, // временная замена до реального коммерческого фото
-  { label: "Commercial Laundry Equipment", formLabel: "Commercial Laundry Equipment", image: "/images/dryer_16.webp", href: "/commercial-appliance-repair#laundry" }, // временная замена до реального коммерческого фото
-  { label: "Ice Machine (high-volume)", formLabel: "Ice Machine", image: "/images/ice_maker_under.webp", href: "/commercial-appliance-repair#horeca" }, // временная замена до реального коммерческого фото
+  { label: "Commercial Refrigeration", formLabel: "Commercial Refrigeration", image: "/images/refrigerator-repair.webp", href: "/commercial-appliance-repair#horeca" }, // временная замена до реального коммерческого фото
+  { label: "Commercial Dishwasher/Warewasher", formLabel: "Commercial Dishwasher", image: "/images/dishwasher-repair.webp", href: "/commercial-appliance-repair#horeca" }, // временная замена до реального коммерческого фото
+  { label: "Commercial Laundry Equipment", formLabel: "Commercial Laundry Equipment", image: "/images/dryer-repair.webp", href: "/commercial-appliance-repair#laundry" }, // временная замена до реального коммерческого фото
+  { label: "Ice Machine (high-volume)", formLabel: "Ice Machine", image: "/images/ice-maker-repair.webp", href: "/commercial-appliance-repair#horeca" }, // временная замена до реального коммерческого фото
 ];
 
 export const serviceSlugs: string[] = services.map((s) => s.slug);
@@ -508,37 +509,10 @@ export const servicePage = {
   },
 } as const;
 
-// The residential hub /appliance-repair (spec story 41, brief 2.3): the 12 services as the
-// same cards as the home #repair grid. New copy — impersonal, facts already on the site only
-// (§13): diagnosed on the spot, manufacturer-approved parts, one visit, $75 waived with the repair.
+// The residential branch root (ADR 0022). The page itself — the residential home — takes its
+// copy from data/residential; service pages use the path and the crumb name.
 export const applianceRepairHub = {
   path: "/appliance-repair",
-  /** crumb label on the hub and on every service page, and the JSON-LD crumb name */
+  /** crumb label on every service page, and the JSON-LD crumb name */
   name: "Home Appliance Repair",
-  title: `Home Appliance Repair in ${AREAS_TEXT}, NC | ${business.name}`,
-  metaDescription: `Same-day home appliance repair in ${AREAS_TEXT}, NC: refrigerators, washers, dryers, dishwashers, stoves and more. $75 diagnostic, waived with the repair.`,
-  hero: {
-    h1: `Home appliance repair<br><span>in ${AREAS_HTML}.</span>`,
-    lede: "Diagnosed on the spot and fixed with manufacturer-approved parts — most jobs finished in one visit. The $75 diagnostic is waived once the repair is booked.",
-  },
-  grid: {
-    eyebrow: `${services.length} home appliances`,
-    h2: "Pick the appliance<br>that needs fixing.",
-    lede: "Each page covers the common faults, the brands serviced, and straight answers on timing and cost.",
-    /** plain text (RepairCard renders it as a text node) */
-    cardTag: "Repair · Faults & FAQ",
-  },
-  /** `.not-listed` line under the grid (trusted HTML) */
-  notListed: `<strong>Not on the list?</strong> Most major and commercial appliances are serviced — <a href="${business.phoneHref}">call to check</a>.`,
-  cta: servicePage.cta,
 } as const;
-
-// Options for <select id="appliance"> in the booking form (index.html #book).
-// Service form labels (deduped — "Stove / Range" appears once) + commercial categories +
-// the existing "Commercial kitchen" / "Other" entries.
-export const applianceFormOptions: string[] = [
-  ...new Set(services.map((s) => s.formLabel)),
-  ...commercialCategories.map((c) => c.formLabel),
-  "Commercial kitchen",
-  "Other",
-];

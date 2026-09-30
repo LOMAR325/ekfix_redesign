@@ -9,7 +9,9 @@ import { commercialCategories } from "@/data/services";
 import {
   areaLinksForHome,
   areaLinksForService,
+  businessLinkForService,
   commercialCardHref,
+  homeLinksForCommercial,
   linksForCommercial,
   serviceLinkForArticle,
   serviceLinkForCase,
@@ -187,5 +189,47 @@ describe("commercialCardHref", () => {
         "/commercial-appliance-repair/commercial-refrigerator-repair",
       );
     });
+  });
+});
+
+describe("cross-branch links (brief §6)", () => {
+  it("a residential service → its published commercial counterpart, one link", () => {
+    const expected: Record<string, string> = {
+      refrigerator: "/commercial-appliance-repair/commercial-refrigerator-repair",
+      dishwasher: "/commercial-appliance-repair/commercial-dishwasher-repair",
+      "ice-maker": "/commercial-appliance-repair/commercial-ice-machine-repair",
+      washer: "/commercial-appliance-repair/commercial-laundry-equipment-repair",
+      dryer: "/commercial-appliance-repair/commercial-laundry-equipment-repair",
+      stove: "/commercial-appliance-repair/commercial-oven-range-repair",
+      range: "/commercial-appliance-repair/commercial-oven-range-repair",
+      cooktop: "/commercial-appliance-repair/commercial-oven-range-repair",
+    };
+    scenario(commercialPages, () => {
+      for (const [slug, href] of Object.entries(expected)) {
+        expect(businessLinkForService(slug)).toEqual({ label: "Need this for a business? →", href });
+      }
+      for (const slug of ["microwave", "freezer", "wine-cooler", "garbage-disposal"]) {
+        expect(businessLinkForService(slug)).toBeNull();
+      }
+    });
+  });
+
+  it("no link while the commercial page is a draft", () => {
+    scenario([], () => {
+      expect(businessLinkForService("refrigerator")).toBeNull();
+    });
+  });
+
+  it("a commercial equipment page → its residential services", () => {
+    expect(hrefs(homeLinksForCommercial("commercial-laundry-equipment-repair"))).toEqual([
+      "/appliance-repair/washer",
+      "/appliance-repair/dryer",
+    ]);
+    expect(hrefs(homeLinksForCommercial("commercial-oven-range-repair"))).toEqual([
+      "/appliance-repair/stove",
+      "/appliance-repair/range",
+      "/appliance-repair/cooktop",
+    ]);
+    expect(homeLinksForCommercial("restaurant-appliance-repair")).toEqual([]);
   });
 });

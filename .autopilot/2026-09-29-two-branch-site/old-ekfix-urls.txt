@@ -1,0 +1,46 @@
+# Старый ekfix.us — список URL из https://ekfix.us/sitemap.xml
+# Получен 2026-09-28 через WebFetch (прямой curl упирается в Cloudflare challenge 403).
+# 43 адреса. Пути дословно, включая подчёркивания и регистр (towns/Lesslie).
+https://ekfix.us/
+https://ekfix.us/appliance-repair/stove
+https://ekfix.us/appliance-repair/wine-cooler
+https://ekfix.us/appliance-repair/refrigerator
+https://ekfix.us/appliance-repair/washer
+https://ekfix.us/appliance-repair/range
+https://ekfix.us/appliance-repair/garbage_disposal
+https://ekfix.us/appliance-repair/cooktop
+https://ekfix.us/appliance-repair/freezer
+https://ekfix.us/appliance-repair/ice_maker
+https://ekfix.us/appliance-repair/dryer
+https://ekfix.us/appliance-repair/microwave
+https://ekfix.us/appliance-repair/dishwasher
+https://ekfix.us/towns/charlotte
+https://ekfix.us/towns/stallings
+https://ekfix.us/towns/newell
+https://ekfix.us/towns/harrisburg
+https://ekfix.us/towns/allen
+https://ekfix.us/towns/mint_hill
+https://ekfix.us/towns/indian_trail
+https://ekfix.us/towns/wesley_chapel
+https://ekfix.us/towns/monroe
+https://ekfix.us/towns/unionville
+https://ekfix.us/towns/mineral_springs
+https://ekfix.us/towns/pineville
+https://ekfix.us/towns/waxhaw
+https://ekfix.us/towns/belmont
+https://ekfix.us/towns/matthews
+https://ekfix.us/towns/marvin
+https://ekfix.us/towns/weddington
+https://ekfix.us/towns/indian_hook
+https://ekfix.us/towns/indian_land
+https://ekfix.us/towns/catawba
+https://ekfix.us/towns/fort_mill
+https://ekfix.us/towns/Lesslie
+https://ekfix.us/towns/lake_wylie
+https://ekfix.us/towns/spring_valley
+https://ekfix.us/towns/rock_hill
+https://ekfix.us/towns/tega_cay
+https://ekfix.us/brands
+https://ekfix.us/property_management
+https://ekfix.us/property_management_cafe
+https://ekfix.us/laundry_equipment_repair

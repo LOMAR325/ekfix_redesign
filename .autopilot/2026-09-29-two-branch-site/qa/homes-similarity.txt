@@ -1,0 +1,5 @@
+commercial sections: top trust-b2b industries equipment laundry process formats · business-reviews brands service-area faq-business request
+residential sections: top repair family pricing reviews brands areas faq book
+shared section ids: top brands
+full-text Jaccard: 0.023
+main-region Jaccard: 0.013

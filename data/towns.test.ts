@@ -39,7 +39,8 @@ describe("area hierarchy (story 61)", () => {
 });
 
 describe("Ballantyne FAQ (story 59)", () => {
-  // The eight questions of brief 3.3, verbatim.
+  // Brief 3.3's questions, verbatim — minus "commercial appliances in South Charlotte?", which left
+  // the page with the rest of its commercial wording (two-branch brief §4, ADR 0022).
   const BRIEF = [
     "Who repairs appliances in Ballantyne, NC?",
     "Does EK Global serve the 28277 ZIP code?",
@@ -48,13 +49,15 @@ describe("Ballantyne FAQ (story 59)", () => {
     "Does the diagnostic fee apply toward the repair?",
     "What appliance brands does EK Global repair?",
     "Does EK Global repair Sub-Zero / Thermador / Bosch / Miele appliances?",
-    "Does EK Global repair commercial appliances in South Charlotte?",
   ];
 
-  it("asks the brief's eight questions; 28277 and commercial-in-South-Charlotte stay draft", () => {
-    const faqs = town("ballantyne").page!.faqs ?? [];
+  it("asks the brief's questions; 28277 stays draft; nothing commercial is left on the page", () => {
+    const page = town("ballantyne").page!;
+    const faqs = page.faqs ?? [];
     expect(faqs.map((f) => f.q)).toEqual(BRIEF);
-    expect(faqs.filter((f) => f.status === "draft").map((f) => f.q)).toEqual([BRIEF[1], BRIEF[7]]);
+    expect(faqs.filter((f) => f.status === "draft").map((f) => f.q)).toEqual([BRIEF[1]]);
+    const text = [page.seo.title, page.seo.description, page.hero.lede, ...page.prose, ...faqs.flatMap((f) => [f.q, f.a])];
+    expect(text.filter((t) => /commercial/i.test(t))).toEqual([]);
   });
 
   it("no published text on any town page names a ZIP code (fact 3 not given)", () => {

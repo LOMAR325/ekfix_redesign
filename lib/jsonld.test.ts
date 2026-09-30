@@ -119,7 +119,7 @@ describe("businessNode()", () => {
 
   it("shows the hero photo only when asked", () => {
     expect(businessNode({ image: true }).image).toBe(
-      "https://ekfix.us/images/hero-technician.webp",
+      "https://ekfix.us/images/ek-global-technician-washer-repair-charlotte.webp",
     );
   });
 

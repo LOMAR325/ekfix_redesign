@@ -81,19 +81,19 @@ export const owner: Owner = {
   knowsAbout: [...residentialAppliances, ...commercialEquipment],
   photos: {
     portrait: {
-      src: "/images/konstantin_thermador.webp",
+      src: "/images/ek-global-owner-thermador-refrigerator-charlotte.webp",
       alt: `${name}, ${business.name} owner and lead technician`,
     },
     hero: {
-      src: "/images/hero-technician.webp",
+      src: "/images/ek-global-technician-washer-repair-charlotte.webp",
       alt: `${name}, ${business.name} owner and lead technician, next to a washer he's repairing`,
     },
     restaurantKitchen: {
-      src: "/images/kostia_reast.webp",
+      src: "/images/ek-global-technician-restaurant-kitchen-charlotte.webp",
       alt: `${name} repairing commercial kitchen equipment`,
     },
     rooftopLaundry: {
-      src: "/images/kostia-laundry.webp",
+      src: "/images/ek-global-technician-commercial-laundry-charlotte.webp",
       alt: `${name} repairing commercial laundry equipment on a rooftop unit`,
     },
   },
@@ -118,7 +118,7 @@ type ChipGroup = { heading: string; items: readonly string[] };
 export type AboutPage = {
   meta: { title: string; description: string };
   breadcrumb: { home: string; self: string };
-  hero: { h1: string; lede: string; bookLabel: string };
+  hero: { h1: string; lede: string };
   meet: Publishable & { heading: string; paragraphs: string[]; stats: { k: string; v: string }[] };
   appliances: AboutSection & { lede: string; residential: ChipGroup; commercial: ChipGroup };
   approach: AboutSection & { items: { num: string; title: string; body: string }[] };
@@ -138,7 +138,6 @@ export const aboutPage: AboutPage = {
   hero: {
     h1: "A family business,<br><span>not a franchise.</span>",
     lede: `${business.name} is run by ${name} — the person who answers the phone, does the diagnostic, and comes back if something isn't right. No call center, no subcontractors, no ticket numbers.`,
-    bookLabel: "Book a Repair",
   },
   meet: {
     status: "published",

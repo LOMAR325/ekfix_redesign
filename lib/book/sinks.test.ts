@@ -4,13 +4,28 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 // unified channel-failure handling, multi-channel fan-out, and enabled reacting
 // to process.env. fetch and env are mocked — no real network, no real secrets.
 
-const validInput = {
-  name: "Jane Manager",
+const homeInput = {
+  branch: "home",
+  name: "Jane Doe",
   phone: "(980) 555-0134",
   appliance: "Refrigerator",
-  contactAs: "Property Manager",
+  message: "Fridge not cooling",
+};
+
+const businessInput = {
+  branch: "business",
+  company: "Queen City Grill",
+  contactName: "Jane Manager",
+  phone: "(980) 555-0134",
+  email: "",
+  businessType: "Restaurant",
+  equipment: "Commercial Refrigeration",
+  units: "",
+  urgency: "Emergency",
   message: "Walk-in cooler not holding temp",
 };
+
+const validInput = homeInput;
 
 const RESEND_URL = "https://api.resend.com/emails";
 const WEBHOOK_URL = "https://crm.example.com/hook";
@@ -57,6 +72,124 @@ describe("lead delivery", () => {
         "Bearer re_test_fake",
       );
       expect(String(init.body)).toContain("Refrigerator");
+    });
+
+    it("delivers a valid business lead to Resend and to the webhook when both are configured", async () => {
+      vi.stubEnv("RESEND_API_KEY", "re_test_fake");
+      vi.stubEnv("BOOK_NOTIFY_EMAIL", "owner@example.com");
+      vi.stubEnv("BOOK_WEBHOOK_URL", WEBHOOK_URL);
+      const fetchMock = vi.fn().mockResolvedValue(response());
+      vi.stubGlobal("fetch", fetchMock);
+
+      const submitLead = await loadSubmit();
+      const result = await submitLead(businessInput);
+
+      expect(result).toEqual({ ok: true });
+      const urls = fetchMock.mock.calls.map((c) => String(c[0]));
+      expect(urls).toContain(RESEND_URL);
+      expect(urls).toContain(WEBHOOK_URL);
+    });
+
+    it("tags the business email subject with [BUSINESS] and lists its fields, blanks as a dash", async () => {
+      vi.stubEnv("RESEND_API_KEY", "re_test_fake");
+      vi.stubEnv("BOOK_NOTIFY_EMAIL", "owner@example.com");
+      vi.stubEnv("BOOK_WEBHOOK_URL", "");
+      const fetchMock = vi.fn().mockResolvedValue(response());
+      vi.stubGlobal("fetch", fetchMock);
+
+      const submitLead = await loadSubmit();
+      await submitLead(businessInput);
+
+      const body = JSON.parse(String((fetchMock.mock.calls[0][1] as RequestInit).body));
+      expect(body.subject).toBe(
+        "[BUSINESS] Commercial service request — Queen City Grill (Restaurant)",
+      );
+      expect(body.text).toBe(
+        [
+          "Branch: business",
+          "Company: Queen City Grill",
+          "Contact name: Jane Manager",
+          "Phone: (980) 555-0134",
+          "Email: —",
+          "Business type: Restaurant",
+          "Equipment: Commercial Refrigeration",
+          "Units: —",
+          "Urgency: Emergency",
+          "Message: Walk-in cooler not holding temp",
+        ].join("\n"),
+      );
+    });
+
+    it("gives the home email a plain subject without the [BUSINESS] tag", async () => {
+      vi.stubEnv("RESEND_API_KEY", "re_test_fake");
+      vi.stubEnv("BOOK_NOTIFY_EMAIL", "owner@example.com");
+      vi.stubEnv("BOOK_WEBHOOK_URL", "");
+      const fetchMock = vi.fn().mockResolvedValue(response());
+      vi.stubGlobal("fetch", fetchMock);
+
+      const submitLead = await loadSubmit();
+      await submitLead({ ...homeInput, message: "" });
+
+      const body = JSON.parse(String((fetchMock.mock.calls[0][1] as RequestInit).body));
+      expect(body.subject).toBe("New home repair request — Refrigerator");
+      expect(body.subject.startsWith("[BUSINESS]")).toBe(false);
+      expect(body.text).toBe(
+        [
+          "Branch: home",
+          "Name: Jane Doe",
+          "Phone: (980) 555-0134",
+          "Appliance: Refrigerator",
+          "Message: —",
+        ].join("\n"),
+      );
+    });
+
+    it("posts the lead JSON with its branch to the webhook", async () => {
+      vi.stubEnv("RESEND_API_KEY", "");
+      vi.stubEnv("BOOK_NOTIFY_EMAIL", "");
+      vi.stubEnv("BOOK_WEBHOOK_URL", WEBHOOK_URL);
+      const fetchMock = vi.fn().mockResolvedValue(response());
+      vi.stubGlobal("fetch", fetchMock);
+
+      const submitLead = await loadSubmit();
+      await submitLead(businessInput);
+
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      const body = JSON.parse(String((fetchMock.mock.calls[0][1] as RequestInit).body));
+      expect(body).toEqual({
+        branch: "business",
+        company: "Queen City Grill",
+        contactName: "Jane Manager",
+        phone: "(980) 555-0134",
+        businessType: "Restaurant",
+        equipment: "Commercial Refrigeration",
+        units: "",
+        urgency: "Emergency",
+        message: "Walk-in cooler not holding temp",
+      });
+    });
+
+    it("logs every field of the lead, branch included, to the console", async () => {
+      vi.stubEnv("RESEND_API_KEY", "");
+      vi.stubEnv("BOOK_NOTIFY_EMAIL", "");
+      vi.stubEnv("BOOK_WEBHOOK_URL", "");
+      const info = vi.spyOn(console, "info").mockImplementation(() => {});
+
+      const submitLead = await loadSubmit();
+      await submitLead(businessInput);
+
+      expect(info).toHaveBeenCalledWith("[book] new lead", {
+        branch: "business",
+        company: "Queen City Grill",
+        contactName: "Jane Manager",
+        phone: "(980) 555-0134",
+        email: "",
+        businessType: "Restaurant",
+        equipment: "Commercial Refrigeration",
+        units: "",
+        urgency: "Emergency",
+        message: "Walk-in cooler not holding temp",
+      });
     });
 
     it("makes no network call when the input is invalid", async () => {

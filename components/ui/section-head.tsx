@@ -2,6 +2,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { business } from "@/data/business";
 import { site } from "@/data/site";
 import { richProps } from "./rich-text";
+import { Stars } from "./stars";
 
 type SectionHeadProps = {
   /** `.on-light` for light sections, `.on-dark` for dark ones. */
@@ -17,12 +18,11 @@ type SectionHeadProps = {
   /** Right-hand `.lede` paragraph. Mutually exclusive with `ratingBadge` in practice. */
   lede?: ReactNode;
   /**
-   * Renders the standard right-hand `.rating-badge` (5.0 / ★★★★★ / label). `true` — the
-   * published "Google reviews" label (town pages, which show some of the reviews). `"count"` —
-   * on a page that shows every review and carries the AggregateRating (`/`, `/reviews`): the
-   * label is the review count, so both numbers of the markup are on the page (story 82).
+   * Renders the standard right-hand `.rating-badge` (5.0 / ★★★★★ / "6 reviews"): the rating and
+   * the review count as text, so both numbers of an AggregateRating are on the page (story 82).
+   * No "Google" wording until the owner confirms where the reviews are published (brief 7.3).
    */
-  ratingBadge?: boolean | "count";
+  ratingBadge?: boolean;
   /** Existing per-page inline overrides, e.g. `{ marginBottom: 50 }`. */
   style?: CSSProperties;
   /** Existing per-page h2 inline overrides, e.g. `{ fontSize: "clamp(30px, 3.2vw, 44px)" }`. */
@@ -56,11 +56,7 @@ export function SectionHead({
       {ratingBadge && business.rating && (
         <RatingBadge
           value={business.rating.value}
-          label={
-            ratingBadge === "count"
-              ? site.ratingBadgeCountLabel(business.rating.count)
-              : site.ratingBadgeLabel
-          }
+          label={site.ratingBadgeCountLabel(business.rating.count)}
         />
       )}
     </div>
@@ -74,7 +70,7 @@ function RatingBadge({ value, label }: { value: number; label: string }) {
     <div className="rating-badge">
       <div className="num">{value.toFixed(1)}</div>
       <div>
-        <span className="stars">★★★★★</span>
+        <Stars as="span" />
         <small>{label}</small>
       </div>
     </div>

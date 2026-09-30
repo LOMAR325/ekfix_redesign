@@ -72,7 +72,25 @@ export const serviceLinkForArticle = (a: GuideArticle): ChipItem[] => serviceLin
 export const serviceLinkForCase = (c: RepairCase): ChipItem[] => serviceLink(c.serviceSlug);
 
 /**
- * Home commercial card → the published child page for that category (matched by the
+ * Cross-branch links (brief §6), both computed from data/commercial `homeCounterparts`:
+ * a residential service page → the published commercial page with the same equipment
+ * ("Need this for a business? →"), and a commercial equipment page → its residential services.
+ */
+export function businessLinkForService(slug: string): ChipItem | null {
+  const page = publishedCommercialPages().find((p) => p.homeCounterparts?.includes(slug));
+  return page ? { label: site.crossBranch.toBusiness, href: `${COMMERCIAL_HUB}/${page.slug}` } : null;
+}
+
+export function homeLinksForCommercial(slug: string): ChipItem[] {
+  const page = commercialPages.find((p) => p.slug === slug);
+  return (page?.homeCounterparts ?? []).flatMap((serviceSlug) => {
+    const service = services.find((s) => s.slug === serviceSlug);
+    return service ? [{ label: `${service.name} Repair →`, href: `/appliance-repair/${service.slug}` }] : [];
+  });
+}
+
+/**
+ * Commercial card → the published child page for that category (matched by the
  * form preset), otherwise the category's old hub anchor on the new hub path.
  */
 export function commercialCardHref(category: CommercialCategory): string {

@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { Analytics } from "@/components/Analytics";
 import { metadataBase } from "@/lib/seo";
 
-// Defaults ported from the current index.html <head>; individual routes
-// override title/description/canonical via lib/seo pageMetadata().
+// Only what every page shares (ADR 0022): html/body, fonts, analytics, default metadata. The
+// headers and footers belong to the route groups — (entry), (commercial), (residential),
+// (shared). Individual routes override title/description/canonical via lib/seo pageMetadata().
 export const metadata: Metadata = {
   metadataBase,
   title: "EK Global — Same-Day Appliance Repair in Charlotte, NC",
@@ -40,9 +39,7 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <Header />
         {children}
-        <Footer />
         <Analytics />
       </body>
     </html>

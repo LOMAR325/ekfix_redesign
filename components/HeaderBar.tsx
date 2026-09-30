@@ -11,13 +11,17 @@ export type HeaderCopy = {
   brandBadge: string;
   brandName: string;
   brandSubtitle: string;
+  brandHref: string;
   menuToggleLabel: string;
-  bookCta: { label: string; href: string };
+  /** The accent button ("Request Service" / "Book a Repair"); the shared header has none. */
+  cta: { label: string; href: string } | null;
+  /** The switch to the other branch ("For Homes" / "For Business"); none in the shared header. */
+  switchTo: { label: string; href: string } | null;
   phone: string;
   phoneHref: string;
 };
 
-// Client half of the header (components/Header computes the menu and the copy on the server
+// Client half of the branch headers (components/Header computes the menu and the copy on the server
 // and passes them in, so no data/ module ends up in the client bundle).
 // Ported 1:1 from the static <header class="site-header"> + js/main.js:
 // mobile toggle (body.nav-locked / header.nav-open / main-nav.open),
@@ -74,12 +78,21 @@ export function HeaderBar({ nav, copy }: { nav: NavEntry[]; copy: HeaderCopy }) 
   );
 
   const isActive = (href: string) => pathname === href;
-  const groupActive = (basePath: string) =>
-    pathname === basePath || pathname.startsWith(basePath + "/");
+  // A group is active under its route prefix, or — without one — on one of its own pages.
+  const groupActive = (group: { basePath?: string; children: { href: string }[] }) =>
+    group.basePath
+      ? pathname === group.basePath || pathname.startsWith(group.basePath + "/")
+      : group.children.some((c) => c.href === pathname);
 
   return (
-    <header className={navOpen ? "site-header nav-open" : "site-header"}>
-      <Link href="/" className="brand" onClick={closeMenu}>
+    <header
+      className={[
+        "site-header",
+        copy.switchTo ? "branch-has-switch" : "",
+        navOpen ? "nav-open" : "",
+      ].filter(Boolean).join(" ")}
+    >
+      <Link href={copy.brandHref as Route} className="brand" onClick={closeMenu}>
         <span className="brand-badge">{copy.brandBadge}</span>
         <span className="brand-name">
           <strong>{copy.brandName}</strong>
@@ -105,7 +118,7 @@ export function HeaderBar({ nav, copy }: { nav: NavEntry[]; copy: HeaderCopy }) 
             >
               <button
                 className={
-                  groupActive(entry.basePath)
+                  groupActive(entry)
                     ? "nav-trigger active"
                     : "nav-trigger"
                 }
@@ -148,25 +161,36 @@ export function HeaderBar({ nav, copy }: { nav: NavEntry[]; copy: HeaderCopy }) 
           >
             <span className="call-text">{copy.phone}</span>
           </a>
-          <Link
-            href={copy.bookCta.href as Route}
-            className="btn btn-accent btn-sm"
-            onClick={closeMenu}
-          >
-            {copy.bookCta.label}
-          </Link>
+          {copy.cta && (
+            <Link
+              href={copy.cta.href as Route}
+              className="btn btn-accent btn-sm"
+              onClick={closeMenu}
+            >
+              {copy.cta.label}
+            </Link>
+          )}
         </div>
       </nav>
+      {/* The switch to the other branch: in the top bar at every width (ADR 0022). */}
+      {copy.switchTo && (
+        <Link
+          href={copy.switchTo.href as Route}
+          className="branch-switch"
+          onClick={closeMenu}
+        >
+          {copy.switchTo.label} <span aria-hidden="true">→</span>
+        </Link>
+      )}
       <div className="header-actions">
         <a href={copy.phoneHref} className="call-pill">
           <span className="call-text">{copy.phone}</span>
         </a>
-        <Link
-          href={copy.bookCta.href as Route}
-          className="btn btn-accent btn-sm"
-        >
-          {copy.bookCta.label}
-        </Link>
+        {copy.cta && (
+          <Link href={copy.cta.href as Route} className="btn btn-accent btn-sm">
+            {copy.cta.label}
+          </Link>
+        )}
       </div>
     </header>
   );
