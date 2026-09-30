@@ -6,7 +6,8 @@ import { reviews as siteReviews } from "@/data/reviews";
 // GOOGLE_PLACES_API_KEY set, the Google Business Profile's rating, review count and up to 5
 // reviews come from the Places API (New) — Place Details, field mask rating/userRatingCount/
 // reviews — fetched at build time and refreshed once a day (`next.revalidate`, ISR). Without the
-// key, or when Google fails or returns no review, the site's own reviews (data/reviews) are shown.
+// key, or when Google fails or returns no review, the site's own reviews (data/reviews — empty since
+// 2026-09-30, so the pages show only the links to the Google profile).
 // Google's content is never written to the repo and never cached longer than a day.
 
 export type RatingSummary = { value: number; count: number };

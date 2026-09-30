@@ -31,7 +31,7 @@ describe("getReviews", () => {
     const data = await getReviews();
     expect(data.source).toBe("site");
     expect(data.rating).toBeNull(); // no invented count: the real one is on Google
-    expect(data.reviews).toHaveLength(6);
+    expect(data.reviews).toEqual([]); // the old-site quotes were removed — only Google's are real
     expect(fetchMock).not.toHaveBeenCalled();
   });
 

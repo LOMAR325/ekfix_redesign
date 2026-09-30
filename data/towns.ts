@@ -168,7 +168,7 @@ const pageTowns: Town[] = [
         "NoDa",
         "Plaza Midwood",
       ],
-      reviewAuthors: ["Tony Z.", "Ally T.", "Michael S."],
+      reviewAuthors: [], // the old-site quotes were removed (owner, 2026-09-30) — no section
       nearbyProse:
         "Beyond Charlotte proper, we regularly cover Matthews, Mint Hill, Pineville, Indian Trail, Waxhaw, Belmont, Monroe, Fort Mill, Rock Hill, and the smaller towns between them. If you're not sure whether you're in range, just call.",
       // "What we repair" — 11 chips (Stove / Range is a single chip) → the service pages (they

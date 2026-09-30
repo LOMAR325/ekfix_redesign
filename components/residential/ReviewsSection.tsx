@@ -14,8 +14,16 @@ export function ReviewsSection({ data }: { data: ReviewsData }) {
   return (
     <section id="reviews" className="section section-light">
       <SectionHead tone="light" eyebrow={copy.eyebrow} h2={copy.h2} ratingBadge={data} />
-      <ReviewsGrid reviews={reviews} />
-      <ChipRow items={[{ label: copy.allReviews, href: "/reviews" }]} style={{ marginTop: 24 }} />
+      {reviews.length > 0 ? (
+        <>
+          <ReviewsGrid reviews={reviews} />
+          <ChipRow items={[{ label: copy.allReviews, href: "/reviews" }]} style={{ marginTop: 24 }} />
+        </>
+      ) : (
+        <p style={{ margin: 0, maxWidth: 620, fontSize: 17, lineHeight: 1.6, color: "var(--text-dark-60)" }}>
+          {copy.onGoogle}
+        </p>
+      )}
       <GoogleReviewLinks data={data} style={{ marginTop: 12 }} />
     </section>
   );

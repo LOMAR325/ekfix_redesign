@@ -106,7 +106,7 @@ scripts/                      check-copy.mjs · similarity.mjs · html-text.mjs 
 - **`data/services.ts`** — 12 `services`, `commercialCategories`, `applianceRepairHub` (`path`, `name`), `servicePage`.
 - **`data/b2b-segments.ts`** — имя историческое: сегменты (`forBusinessSegments`, `publicForBusinessSegments`),
   `processSteps`, `serviceFormats`, `trustChips`, `businessFaqs`, `whyCallUs`, `commercialServices`, `laundryObjectTypes`.
-- **`data/reviews.ts`** — 6 `reviews` (запасной вариант, пока нет ключа Google), `reviewsByAuthors()`, `reviewsPageCopy()`.
+- **`data/reviews.ts`** — `reviews` **пуст** (старые 6 цитат удалены — не подтверждены; только отзывы Google), `reviewsByAuthors()`, `reviewsPageCopy()`.
 
 ## Архитектура
 

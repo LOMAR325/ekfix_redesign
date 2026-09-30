@@ -105,7 +105,7 @@ export type Review = {
   text: string;
   appliance?: string;
   town?: string;
-  /** set only where the review itself says so (Tony Z. — "Restaurant") */
+  /** set only where the review itself says so (a restaurant review) */
   segment?: "commercial";
   /** slug of an area from data/towns — only when known (none yet) */
   area?: string;

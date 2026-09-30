@@ -256,7 +256,7 @@ export const commercialPages: CommercialPageContent[] = [
     },
     hero: {
       h1: "Commercial dishwasher<br><span>and warewasher repair.</span>",
-      lede: `A dish machine that quits mid-service backs up the whole line. ${business.name} repairs commercial dishwashers and warewashers for restaurants and cafés in Charlotte, NC — the kind of job described in the restaurant review further down this page.`,
+      lede: `A dish machine that quits mid-service backs up the whole line. ${business.name} repairs commercial dishwashers and warewashers for restaurants and cafés in Charlotte, NC.`,
     },
     equipmentIntro:
       "Dish machines are named in the kitchen work published on this site — commercial dishwashers, warewashers and the dish line built around them.",
@@ -302,7 +302,7 @@ export const commercialPages: CommercialPageContent[] = [
       ),
       draftFaq("Do you take dish machine calls after 8PM?", "Awaiting owner fact 7."),
     ],
-    reviewAuthors: ["Tony Z."],
+    reviewAuthors: [],
     photo: owner.photos.restaurantKitchen,
   },
   {
@@ -574,7 +574,7 @@ export const commercialPages: CommercialPageContent[] = [
       ),
       draftFaq("Do you answer emergency calls after the kitchen closes?", "Awaiting owner fact 7."),
     ],
-    reviewAuthors: ["Tony Z."],
+    reviewAuthors: [],
     photo: owner.photos.restaurantKitchen,
   },
   {
