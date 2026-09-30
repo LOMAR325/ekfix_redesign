@@ -30,7 +30,7 @@ describe("getReviews", () => {
     vi.stubGlobal("fetch", fetchMock);
     const data = await getReviews();
     expect(data.source).toBe("site");
-    expect(data.rating).toEqual({ value: 5, count: 6 });
+    expect(data.rating).toBeNull(); // no invented count: the real one is on Google
     expect(data.reviews).toHaveLength(6);
     expect(fetchMock).not.toHaveBeenCalled();
   });

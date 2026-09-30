@@ -76,11 +76,11 @@ export default async function CommercialHomePage() {
 
   return (
     <>
-      {/* knowsAbout: the commercial services this page shows; aggregateRating: the hero states
-          both numbers; areaServed: the #service-area chips; the FAQ is on the page. */}
+      {/* knowsAbout: the commercial services this page shows; no aggregateRating (ADR 0024);
+          areaServed: the #service-area chips; the FAQ is on the page. */}
       <JsonLd
         data={graph(
-          businessNode({ knowsAbout: true, aggregateRating: reviewsData.source === "site", areaServed: area.areaServed }),
+          businessNode({ knowsAbout: true, areaServed: area.areaServed }),
           faqNode(commercialHubPath, businessFaqs),
         )}
       />

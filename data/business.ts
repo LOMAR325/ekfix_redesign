@@ -1,5 +1,4 @@
 import type { Business } from "./types";
-import { aggregate } from "./reviews";
 
 // Single source of truth for NAP and business-wide constants.
 // Do NOT hardcode any of these values in app/ or components/.
@@ -70,6 +69,4 @@ export const business: Business = {
     "Newell, NC",
     "Catawba, SC",
   ],
-  // Derived from data/reviews.ts aggregate (real reviews), not the "5.0 on Google" badge.
-  rating: { value: aggregate.ratingValue, count: aggregate.reviewCount },
 };

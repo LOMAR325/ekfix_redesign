@@ -1,7 +1,6 @@
 // Shared content types for the data/ layer. Pure types — no runtime, no imports.
 // Shapes come from spec.md §"Слой данных" and interfaces.md §"Ключевые типы".
 
-export type BusinessRating = { value: number; count: number };
 
 export type Business = {
   name: string;
@@ -23,7 +22,6 @@ export type Business = {
   /** GBP allows <= 20 zones; finalised in ticket 02, synced with sitemap */
   areaServed: string[];
   /** derived from data/reviews.ts; finalised in ticket 02 */
-  rating: BusinessRating | null;
 };
 
 export type Service = {
@@ -117,8 +115,6 @@ export type Review = {
   relativeTime?: string;
 };
 
-/** A /reviews section: label + the reviews its rule selects (see data/reviews). */
-export type ReviewCategory = { id: string; label: string; reviews: Review[] };
 
 /** Anchor ids of the hub segments (data/b2b-segments.forBusinessSegments). */
 export type SegmentId = "property-management" | "horeca" | "hotels" | "hoa";

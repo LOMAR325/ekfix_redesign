@@ -1,6 +1,6 @@
 import type { Review } from "@/data/types";
 import { business } from "@/data/business";
-import { aggregate, reviews as siteReviews } from "@/data/reviews";
+import { reviews as siteReviews } from "@/data/reviews";
 
 // The reviews a page shows (owner, 2026-09-30: "real reviews from Google"). With
 // GOOGLE_PLACES_API_KEY set, the Google Business Profile's rating, review count and up to 5
@@ -12,7 +12,8 @@ import { aggregate, reviews as siteReviews } from "@/data/reviews";
 export type RatingSummary = { value: number; count: number };
 export type ReviewsData = {
   source: "google" | "site";
-  rating: RatingSummary;
+  /** the real rating and review count — only from Google; the site never states its own */
+  rating: RatingSummary | null;
   reviews: Review[];
 };
 
@@ -30,7 +31,7 @@ type PlaceDetails = { rating?: number; userRatingCount?: number; reviews?: Place
 
 export const siteReviewsData = (): ReviewsData => ({
   source: "site",
-  rating: { value: aggregate.ratingValue, count: aggregate.reviewCount },
+  rating: null,
   reviews: siteReviews,
 });
 

@@ -34,12 +34,11 @@ export default async function ResidentialHomePage() {
   const guides = publishedArticles();
   return (
     <>
-      {/* image: the owner's hero photo; aggregateRating: only the site's own reviews (Google's
-          may not be marked up on the site — they stay Google's);
+      {/* image: the owner's hero photo; no aggregateRating (the reviews are Google's, ADR 0024);
           areaServed: exactly the places #areas links to; the FAQ is on the page. */}
       <JsonLd
         data={graph(
-          businessNode({ image: true, aggregateRating: reviews.source === "site", areaServed: whereWeWork.areaServed }),
+          businessNode({ image: true, areaServed: whereWeWork.areaServed }),
           faqNode(home.path, home.faq.items),
         )}
       />

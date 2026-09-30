@@ -106,7 +106,7 @@ scripts/                      check-copy.mjs · similarity.mjs · html-text.mjs 
 - **`data/services.ts`** — 12 `services`, `commercialCategories`, `applianceRepairHub` (`path`, `name`), `servicePage`.
 - **`data/b2b-segments.ts`** — имя историческое: сегменты (`forBusinessSegments`, `publicForBusinessSegments`),
   `processSteps`, `serviceFormats`, `trustChips`, `businessFaqs`, `whyCallUs`, `commercialServices`, `laundryObjectTypes`.
-- **`data/reviews.ts`** — 6 `reviews`, `aggregate`, `homeReviews()`, `reviewCategories()`, `reviewsByAuthors()`.
+- **`data/reviews.ts`** — 6 `reviews` (запасной вариант, пока нет ключа Google), `reviewsByAuthors()`, `reviewsPageCopy()`.
 
 ## Архитектура
 
@@ -140,8 +140,8 @@ scripts/                      check-copy.mjs · similarity.mjs · html-text.mjs 
   друг на друга через `{"@id"}`; `ids` от `business.siteUrl`: `/#business`, `/#website`, `/about#owner`; узлы страницы —
   `<url>#service|#faq|#breadcrumb|#article`. Разметка = только видимое на странице:
   - `businessNode()` на каждой странице (NAP, часы, соцсети — они в шапке/подвале, у `/` — в тонком подвале); опции:
-    `image` — `/` и обе главные веток (фото владельца), `aggregateRating` — обе главные (hero: «5.0 · 6 reviews») и
-    `/reviews`, `areaServed` — места, перечисленные на этой странице (бытовая главная — `homeWhereWeWork().areaServed`,
+    `image` — `/` и обе главные веток (фото владельца), `aggregateRating` — нигде (отзывы на Google, ADR 0024),
+    `areaServed` — места, перечисленные на этой странице (бытовая главная — `homeWhereWeWork().areaServed`,
     коммерческая — чипы `#service-area`, `/towns` — `townsIndexAreaServed()`, город/район — он сам), `knowsAbout` —
     только коммерческая главная. `priceRange` нигде. У главных веток нет BreadcrumbList (крошек на них не видно).
   - `websiteNode` — только `/`; полный `ownerNode` — только `/about`; `serviceNode` — услуги и коммерческие дочерние.
@@ -160,7 +160,8 @@ scripts/                      check-copy.mjs · similarity.mjs · html-text.mjs 
   `400 {ok:false, errors}`, доставки нет; валидно → `{ok:true}`, даже если sink упал. Кнопки со страниц без формы ведут
   на `branchPaths.home.book` / `branchPaths.business.request`; `/about`, `/reviews`, `/brands` — обе (`BranchCtas`).
 - **Отзывы (ADR 0024):** страница с отзывами — `async`, берёт `getReviews()` и отдаёт его в `Hero`, `SectionHead
-  ratingBadge`, `GoogleReviewLinks`. `aggregateRating` — только при `source === "site"` (отзывы Google не размечаем).
+  ratingBadge`, `GoogleReviewLinks`. Число отзывов и оценка — **только живые из Google** (`rating` = `null` у отзывов
+  сайта: никакого «6 reviews»); `aggregateRating` в JSON-LD нет нигде. `/reviews` — вокруг профиля Google.
 
 ## Соглашения кода
 
@@ -225,7 +226,7 @@ vitest (`environment: node`, алиас `@`). Только публичные ф
   `lib/google-reviews.test.ts` — без ключа свои отзывы, ответ Google разбирается, любой сбой → свои отзывы.
 - Шов 2 — `app/sitemap.test.ts`: sitemap = `publishedPaths()`, черновиков нет, смена `status` добавляет/убирает путь.
 - Шов 3 — `lib/jsonld.test.ts`: стабильные `@id`, ссылки на бизнес, Person без фамилии, `articleNode` бросает на
-  непроверенной статье, `businessNode()` без опций — без `areaServed`/`aggregateRating`/`priceRange`.
+  непроверенной статье, `businessNode()` без `areaServed`/`priceRange` без опций и без `aggregateRating` вовсе.
 - Шов 4 — `lib/redirects.test.ts`: 43 старых URL ekfix.us + 22 старых `*.html` + `/for-business` — одним 308 на путь из
   `publishedPaths()` (матчер самого Next), без цепочек, не-корневые не на `/`.
 - Шов 5 — `lib/links.test.ts` (+ кросс-ссылки веток), `lib/nav.test.ts` (три меню), `data/residential.test.ts`,

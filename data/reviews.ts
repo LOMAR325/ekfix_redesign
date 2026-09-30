@@ -1,4 +1,4 @@
-import type { Review, ReviewCategory } from "./types";
+import type { Review } from "./types";
 
 // The 6 reviews shown in index.html #reviews, verbatim.
 // `author` + `detail` = the <strong> / <span> pair under each quote; `text` = the quote.
@@ -45,12 +45,6 @@ export const reviews: Review[] = [
   },
 ];
 
-// AggregateRating source — derived from the reviews above, NOT from the "5.0 on Google" badge.
-export const aggregate = {
-  ratingValue: 5.0,
-  reviewCount: reviews.length, // 6
-} as const;
-
 /** Look up reviews by author (used by town pages via Town.reviewAuthors). */
 export function reviewsByAuthors(authors: string[]): Review[] {
   return authors
@@ -58,61 +52,37 @@ export function reviewsByAuthors(authors: string[]): Review[] {
     .filter((r): r is Review => r !== undefined);
 }
 
-/** Home #reviews order: commercial reviews first, then the rest in their original order. */
-export function homeReviews(): Review[] {
-  return [
-    ...reviews.filter((r) => r.segment === "commercial"),
-    ...reviews.filter((r) => r.segment !== "commercial"),
-  ];
-}
-
-// /reviews sections (spec story 76). A review may land in several; an empty one is dropped.
-const reviewCategoryRules: { id: string; label: string; match: (r: Review) => boolean }[] = [
-  {
-    id: "refrigerators-freezers",
-    label: "Refrigerators & Freezers",
-    match: (r) => r.appliance === "Refrigerator" || r.appliance === "Freezer",
-  },
-  { id: "dishwashers", label: "Dishwashers", match: (r) => r.appliance === "Dishwasher" },
-  {
-    id: "washers-dryers",
-    label: "Washers & Dryers",
-    match: (r) => r.appliance === "Washer" || r.appliance === "Dryer",
-  },
-  { id: "commercial", label: "Commercial", match: (r) => r.segment === "commercial" },
-  {
-    id: "south-charlotte-ballantyne",
-    label: "South Charlotte & Ballantyne",
-    match: (r) => r.area === "south-charlotte" || r.area === "ballantyne",
-  },
-];
-
-export function reviewCategories(): ReviewCategory[] {
-  return reviewCategoryRules
-    .map(({ id, label, match }) => ({ id, label, reviews: reviews.filter(match) }))
-    .filter((c) => c.reviews.length > 0);
-}
-
 /**
- * /reviews copy. Takes the business name as an argument instead of importing data/business:
- * that module imports this one (`aggregate`), and importing it back would be a cycle.
+ * /reviews copy (redesigned 2026-09-30: the page is built around the Google Business Profile; no
+ * count or rating is shown unless it comes live from Google). Takes the business name as an argument.
  */
 export function reviewsPageCopy(businessName: string) {
   return {
     meta: {
       title: `Customer Reviews — Appliance Repair in Charlotte, NC | ${businessName}`,
-      description: `What customers say about ${businessName} appliance repair in Charlotte, NC — reviews grouped by the appliance repaired and by commercial work.`,
+      description: `What customers say about ${businessName} appliance repair in Charlotte, NC — the reviews on its Google Business Profile, and where to leave one.`,
     },
     breadcrumb: { home: "Home", self: "Reviews" },
     hero: {
-      h1: "What customers say,<br><span>by appliance.</span>",
-      lede: `Reviews from ${businessName} customers, grouped by the appliance repaired and by commercial work. A review can appear in more than one group.`,
-      /** when the reviews come from Google (lib/google-reviews) — they can't be grouped */
-      googleLede: `The latest reviews from the ${businessName} Google Business Profile, refreshed daily. Every review is on Google.`,
+      h1: "Reviews,<br><span>straight from Google.</span>",
+      /** Google reviews live (lib/google-reviews) */
+      googleLede: `The latest reviews from the ${businessName} Google Business Profile, refreshed daily. Every review — and the full count — is on Google.`,
+      /** the site's own selection — no count or rating is shown, the full list is on Google */
+      siteLede: `${businessName}'s reviews live on its Google Business Profile — read them all there. A few customer reviews are below.`,
+      readAll: "Read All Reviews on Google",
+      leave: "Leave a Review",
     },
-    googleSection: { eyebrow: "Google reviews", h2: "What customers say." },
-    /** Eyebrow over each category section. */
-    countLabel: (n: number) => `${n} ${n === 1 ? "review" : "reviews"}`,
+    list: {
+      googleEyebrow: "Latest on Google",
+      siteEyebrow: "A few of them",
+      h2: "What customers say.",
+    },
+    leave: {
+      eyebrow: "After a repair",
+      h2: "Had a repair done?<br>Leave a review.",
+      body: "A short review on Google helps the next neighbor, property manager or restaurant owner decide. It takes a minute.",
+      button: "Leave a Review on Google →",
+    },
     cta: {
       h2: "Need a repair?<br>Book it in a minute.",
       body: "Same-day service across Charlotte and the surrounding towns, with a warranty on every repair.",

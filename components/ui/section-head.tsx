@@ -18,9 +18,8 @@ type SectionHeadProps = {
   /** Right-hand `.lede` paragraph. Mutually exclusive with `ratingBadge` in practice. */
   lede?: ReactNode;
   /**
-   * Renders the standard right-hand `.rating-badge` (5.0 / ★★★★★ / "6 reviews"): the rating and
-   * the review count as text, from the page's reviews (lib/google-reviews — "27 Google reviews"
-   * when they came from Google, the site's own count otherwise).
+   * Renders the standard right-hand `.rating-badge` (4.9 / ★★★★★ / "27 Google reviews") — only with
+   * live Google numbers (lib/google-reviews); without them there is no badge (the site states no count).
    */
   ratingBadge?: ReviewsData;
   /** Existing per-page inline overrides, e.g. `{ marginBottom: 50 }`. */
@@ -53,10 +52,10 @@ export function SectionHead({
       {lede != null && (
         <p className="lede" style={ledeStyle} {...richProps(lede)} />
       )}
-      {ratingBadge && (
+      {ratingBadge?.rating && (
         <RatingBadge
           value={ratingBadge.rating.value}
-          label={site.ratingBadgeCountLabel(ratingBadge.rating.count, ratingBadge.source === "google")}
+          label={site.ratingBadgeCountLabel(ratingBadge.rating.count)}
         />
       )}
     </div>

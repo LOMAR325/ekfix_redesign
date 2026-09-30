@@ -1,6 +1,6 @@
 # QA страниц — story 81 (R95)
 
-Прогон: 2026-09-30T16:20 · `node --no-warnings qa/pages.mjs http://localhost:3111` против `npm start` · 32 опубликованных путей (`publishedPaths()`) × 1440×900 и 390×844.
+Прогон: 2026-09-30T17:29 · `node --no-warnings qa/pages.mjs http://localhost:3111` против `npm start` · 32 опубликованных путей (`publishedPaths()`) × 1440×900 и 390×844.
 Контраст — WCAG 2.x по вычисленным цветам (альфа и opacity наложены на фон предков); порог 4.5:1, крупный текст (≥24px или ≥18.66px bold) 3:1. Текст на фоне-картинке/градиенте не считается автоматически (колонка «на картинке»).
 
 | Путь | Ширина | HTTP | Текстов | <4.5 | на картинке | Гориз. скролл | Ошибки консоли | Картинки ок/всего | 4xx/5xx |
@@ -9,9 +9,9 @@
 | /about | 1440 | 200 | 84 | 0 | 3 | нет | 0 | 4/4 | 0 |
 | /brands | 1440 | 200 | 50 | 0 | 0 | нет | 0 | 33/33 | 0 |
 | /towns | 1440 | 200 | 79 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /reviews | 1440 | 200 | 73 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /appliance-repair | 1440 | 200 | 195 | 0 | 0 | нет | 0 | 36/36 | 0 |
-| /commercial-appliance-repair | 1440 | 200 | 232 | 0 | 0 | нет | 0 | 18/18 | 0 |
+| /reviews | 1440 | 200 | 66 | 0 | 0 | нет | 0 | 0/0 | 0 |
+| /appliance-repair | 1440 | 200 | 193 | 0 | 0 | нет | 0 | 36/36 | 0 |
+| /commercial-appliance-repair | 1440 | 200 | 230 | 0 | 0 | нет | 0 | 18/18 | 0 |
 | /appliance-repair/refrigerator | 1440 | 200 | 115 | 0 | 0 | нет | 0 | 0/0 | 0 |
 | /appliance-repair/washer | 1440 | 200 | 119 | 0 | 0 | нет | 0 | 0/0 | 0 |
 | /appliance-repair/dryer | 1440 | 200 | 118 | 0 | 0 | нет | 0 | 0/0 | 0 |
@@ -31,7 +31,7 @@
 | /commercial-appliance-repair/commercial-oven-range-repair | 1440 | 200 | 105 | 0 | 0 | нет | 0 | 0/0 | 0 |
 | /commercial-appliance-repair/restaurant-appliance-repair | 1440 | 200 | 106 | 0 | 0 | нет | 0 | 1/1 | 0 |
 | /commercial-appliance-repair/property-management-appliance-repair | 1440 | 200 | 103 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /towns/charlotte | 1440 | 200 | 95 | 0 | 0 | нет | 0 | 1/1 | 0 |
+| /towns/charlotte | 1440 | 200 | 93 | 0 | 0 | нет | 0 | 1/1 | 0 |
 | /towns/ballantyne | 1440 | 200 | 100 | 0 | 0 | нет | 0 | 1/1 | 0 |
 | /towns/rock-hill | 1440 | 200 | 85 | 0 | 0 | нет | 0 | 1/1 | 0 |
 | /towns/fort-mill | 1440 | 200 | 84 | 0 | 0 | нет | 0 | 1/1 | 0 |
@@ -41,15 +41,15 @@
 | /about | 390 | 200 | 79 | 0 | 3 | нет | 0 | 4/4 | 0 |
 | /brands | 390 | 200 | 45 | 0 | 0 | нет | 0 | 33/33 | 0 |
 | /towns | 390 | 200 | 65 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /reviews | 390 | 200 | 68 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /appliance-repair | 390 | 200 | 173 | 0 | 0 | нет | 0 | 36/36 | 0 |
-| /commercial-appliance-repair | 390 | 200 | 217 | 0 | 0 | нет | 0 | 18/18 | 0 |
+| /reviews | 390 | 200 | 61 | 0 | 0 | нет | 0 | 0/0 | 0 |
+| /appliance-repair | 390 | 200 | 171 | 0 | 0 | нет | 0 | 36/36 | 0 |
+| /commercial-appliance-repair | 390 | 200 | 215 | 0 | 0 | нет | 0 | 18/18 | 0 |
 | /appliance-repair/refrigerator | 390 | 200 | 107 | 0 | 0 | нет | 0 | 0/0 | 0 |
 | /appliance-repair/washer | 390 | 200 | 111 | 0 | 0 | нет | 0 | 0/0 | 0 |
 | /appliance-repair/dryer | 390 | 200 | 110 | 0 | 0 | нет | 0 | 0/0 | 0 |
 | /appliance-repair/dishwasher | 390 | 200 | 112 | 0 | 0 | нет | 0 | 0/0 | 0 |
 | /appliance-repair/stove | 390 | 200 | 110 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /appliance-repair/range | 390 | 200 | 110 | 0 | 0 | нет | 0 | 0/0 | 0 |
+| /appliance-repair/range | 390 | 200 | 110 | 0 | 0 | нет | 2 | 0/0 | 0 |
 | /appliance-repair/cooktop | 390 | 200 | 110 | 0 | 0 | нет | 0 | 0/0 | 0 |
 | /appliance-repair/microwave | 390 | 200 | 107 | 0 | 0 | нет | 0 | 0/0 | 0 |
 | /appliance-repair/freezer | 390 | 200 | 109 | 0 | 0 | нет | 0 | 0/0 | 0 |
@@ -63,14 +63,14 @@
 | /commercial-appliance-repair/commercial-oven-range-repair | 390 | 200 | 97 | 0 | 0 | нет | 0 | 0/0 | 0 |
 | /commercial-appliance-repair/restaurant-appliance-repair | 390 | 200 | 98 | 0 | 0 | нет | 0 | 1/1 | 0 |
 | /commercial-appliance-repair/property-management-appliance-repair | 390 | 200 | 95 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /towns/charlotte | 390 | 200 | 87 | 0 | 0 | нет | 0 | 1/1 | 0 |
+| /towns/charlotte | 390 | 200 | 85 | 0 | 0 | нет | 0 | 1/1 | 0 |
 | /towns/ballantyne | 390 | 200 | 92 | 0 | 0 | нет | 0 | 1/1 | 0 |
 | /towns/rock-hill | 390 | 200 | 77 | 0 | 0 | нет | 0 | 1/1 | 0 |
 | /towns/fort-mill | 390 | 200 | 76 | 0 | 0 | нет | 0 | 1/1 | 0 |
 | /towns/matthews | 390 | 200 | 76 | 0 | 0 | нет | 0 | 1/1 | 0 |
 | /towns/indian-trail | 390 | 200 | 74 | 0 | 0 | нет | 0 | 1/1 | 0 |
 
-**Итого:** 64 прогонов; контраст-нарушений 0; гориз. скролл 0; ошибок консоли 0; незагруженных картинок 0; ответов ≥400 0.
+**Итого:** 64 прогонов; контраст-нарушений 0; гориз. скролл 0; ошибок консоли 2; незагруженных картинок 0; ответов ≥400 0.
 
 ## Главная: H1 и первые кнопки hero
 
@@ -79,4 +79,6 @@
 
 ## Находки
 
-Нет.
+### /appliance-repair/range @390
+- консоль: Failed to load resource: net::ERR_NETWORK_CHANGED
+- консоль: Failed to load resource: net::ERR_NETWORK_CHANGED

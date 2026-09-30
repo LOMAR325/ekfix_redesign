@@ -59,7 +59,15 @@ export function Hero({
         <div className="hero-meta">
           <div>
             <Stars />
-            <small>{site.ratingText(reviews.rating.value, reviews.rating.count, reviews.source === "google")}</small>
+            <small>
+              {reviews.rating ? (
+                site.ratingText(reviews.rating.value, reviews.rating.count)
+              ) : (
+                <a href={business.social.google} target="_blank" rel="noopener">
+                  {site.googleReviews.heroLink}
+                </a>
+              )}
+            </small>
           </div>
           <div className="hero-divider" />
           <div className="hero-hours">

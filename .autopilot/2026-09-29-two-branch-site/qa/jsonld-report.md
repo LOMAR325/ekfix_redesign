@@ -1,6 +1,6 @@
 # JSON-LD — story 82 (R96, R23)
 
-Прогон: 2026-09-30T16:12 · `node --no-warnings qa/jsonld.mjs http://localhost:3111` по prod-HTML (`npm start`), 32 опубликованных путей.
+Прогон: 2026-09-30T17:29 · `node --no-warnings qa/jsonld.mjs http://localhost:3111` по prod-HTML (`npm start`), 32 опубликованных путей.
 Проверки: JSON парсится; ровно один `<script type=application/ld+json>` с `@graph`; каждая ссылка `{"@id"}` разрешается внутри графа; один узел `https://ekfix.us/#business`; `Person.name === "Constantin"`; каждое строковое значение (name, alternateName, telephone, jobTitle, serviceType, headline, text, description, knowsAbout, addressLocality, addressRegion, ratingValue, reviewCount, areaServed, email) есть в видимом тексте страницы (регистр/пробелы/тире нормализованы, телефон — по цифрам, reviewCount — рядом со словом review); URL-поля (url, logo, image, sameAs, item) — ресурс есть на странице (ссылка, картинка или сама страница).
 
 | Путь | Узлов | Типы | @id-ссылок | строк сверено | URL сверено |
@@ -9,9 +9,9 @@
 | /about | 3 | HomeAndConstructionBusiness, Person, BreadcrumbList | 1 | 26 | 10 |
 | /brands | 2 | HomeAndConstructionBusiness, BreadcrumbList | 0 | 6 | 8 |
 | /towns | 2 | HomeAndConstructionBusiness, BreadcrumbList | 0 | 41 | 8 |
-| /reviews | 2 | HomeAndConstructionBusiness, BreadcrumbList | 0 | 8 | 8 |
-| /appliance-repair | 2 | HomeAndConstructionBusiness, FAQPage | 0 | 22 | 7 |
-| /commercial-appliance-repair | 2 | HomeAndConstructionBusiness, FAQPage | 0 | 44 | 6 |
+| /reviews | 2 | HomeAndConstructionBusiness, BreadcrumbList | 0 | 6 | 8 |
+| /appliance-repair | 2 | HomeAndConstructionBusiness, FAQPage | 0 | 20 | 7 |
+| /commercial-appliance-repair | 2 | HomeAndConstructionBusiness, FAQPage | 0 | 42 | 6 |
 | /appliance-repair/refrigerator | 4 | HomeAndConstructionBusiness, Service, FAQPage, BreadcrumbList | 1 | 21 | 10 |
 | /appliance-repair/washer | 4 | HomeAndConstructionBusiness, Service, FAQPage, BreadcrumbList | 1 | 21 | 10 |
 | /appliance-repair/dryer | 4 | HomeAndConstructionBusiness, Service, FAQPage, BreadcrumbList | 1 | 21 | 10 |
