@@ -4,7 +4,7 @@ import type { ReviewsData } from "@/lib/google-reviews";
 import { ChipRow } from "./chip-row";
 
 // Under a reviews section: "All reviews on Google →" (the Business Profile) and "Leave a review →",
-// plus the Google Maps attribution when the reviews shown came from Google (Places API policy).
+// plus the Google Maps attribution under the reviews (all of them are Google's — live or copied).
 export function GoogleReviewLinks({ data, style }: { data: ReviewsData; style?: React.CSSProperties }) {
   const copy = site.googleReviews;
   return (
@@ -15,7 +15,7 @@ export function GoogleReviewLinks({ data, style }: { data: ReviewsData; style?: 
           { label: copy.leave, href: business.google.writeReviewUrl },
         ]}
       />
-      {data.source === "google" && (
+      {data.reviews.length > 0 && (
         <p style={{ margin: "14px 0 0", fontSize: 13, color: "var(--text-dark-60)" }}>{copy.attribution}</p>
       )}
     </div>

@@ -30,8 +30,8 @@ describe("getReviews", () => {
     vi.stubGlobal("fetch", fetchMock);
     const data = await getReviews();
     expect(data.source).toBe("site");
-    expect(data.rating).toBeNull(); // no invented count: the real one is on Google
-    expect(data.reviews).toEqual([]); // the old-site quotes were removed — only Google's are real
+    expect(data.rating).toEqual({ value: 5, count: 98 }); // the profile's snapshot, 2026-09-30
+    expect(data.reviews.map((r) => r.author)).toEqual(["Jimmy W.", "Jan L.", "Vladimir B.", "Raksha S."]);
     expect(fetchMock).not.toHaveBeenCalled();
   });
 

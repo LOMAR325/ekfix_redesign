@@ -1,19 +1,19 @@
 import type { Review } from "@/data/types";
 import { business } from "@/data/business";
-import { reviews as siteReviews } from "@/data/reviews";
+import { googleSnapshot, reviews as siteReviews } from "@/data/reviews";
 
 // The reviews a page shows (owner, 2026-09-30: "real reviews from Google"). With
 // GOOGLE_PLACES_API_KEY set, the Google Business Profile's rating, review count and up to 5
 // reviews come from the Places API (New) — Place Details, field mask rating/userRatingCount/
 // reviews — fetched at build time and refreshed once a day (`next.revalidate`, ISR). Without the
-// key, or when Google fails or returns no review, the site's own reviews (data/reviews — empty since
-// 2026-09-30, so the pages show only the links to the Google profile).
+// key, or when Google fails or returns no review: the Google reviews copied into data/reviews and the
+// profile's rating/count snapshot (data/reviews.googleSnapshot).
 // Google's content is never written to the repo and never cached longer than a day.
 
 export type RatingSummary = { value: number; count: number };
 export type ReviewsData = {
   source: "google" | "site";
-  /** the real rating and review count — only from Google; the site never states its own */
+  /** the real rating and review count — live from Google, or the dated snapshot of the profile */
   rating: RatingSummary | null;
   reviews: Review[];
 };
@@ -32,7 +32,7 @@ type PlaceDetails = { rating?: number; userRatingCount?: number; reviews?: Place
 
 export const siteReviewsData = (): ReviewsData => ({
   source: "site",
-  rating: null,
+  rating: { value: googleSnapshot.value, count: googleSnapshot.count },
   reviews: siteReviews,
 });
 

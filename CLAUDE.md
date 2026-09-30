@@ -106,7 +106,8 @@ scripts/                      check-copy.mjs · similarity.mjs · html-text.mjs 
 - **`data/services.ts`** — 12 `services`, `commercialCategories`, `applianceRepairHub` (`path`, `name`), `servicePage`.
 - **`data/b2b-segments.ts`** — имя историческое: сегменты (`forBusinessSegments`, `publicForBusinessSegments`),
   `processSteps`, `serviceFormats`, `trustChips`, `businessFaqs`, `whyCallUs`, `commercialServices`, `laundryObjectTypes`.
-- **`data/reviews.ts`** — `reviews` **пуст** (старые 6 цитат удалены — не подтверждены; только отзывы Google), `reviewsByAuthors()`, `reviewsPageCopy()`.
+- **`data/reviews.ts`** — `reviews`: 4 реальных отзыва Google, дословно (старые 6 цитат удалены — не подтверждены),
+  `googleSnapshot` (5.0 / 98 на 2026-09-30 — обновлять вместе), `reviewsByAuthors()`, `reviewsPageCopy()`.
 
 ## Архитектура
 
@@ -160,8 +161,8 @@ scripts/                      check-copy.mjs · similarity.mjs · html-text.mjs 
   `400 {ok:false, errors}`, доставки нет; валидно → `{ok:true}`, даже если sink упал. Кнопки со страниц без формы ведут
   на `branchPaths.home.book` / `branchPaths.business.request`; `/about`, `/reviews`, `/brands` — обе (`BranchCtas`).
 - **Отзывы (ADR 0024):** страница с отзывами — `async`, берёт `getReviews()` и отдаёт его в `Hero`, `SectionHead
-  ratingBadge`, `GoogleReviewLinks`. Число отзывов и оценка — **только живые из Google** (`rating` = `null` у отзывов
-  сайта: никакого «6 reviews»); `aggregateRating` в JSON-LD нет нигде. `/reviews` — вокруг профиля Google.
+  ratingBadge`, `GoogleReviewLinks`. Число отзывов и оценка — только Google: живые (ключ) или датированный
+  снимок `googleSnapshot`; своих чисел сайт не называет; `aggregateRating` в JSON-LD нет нигде. `/reviews` — вокруг профиля Google.
 
 ## Соглашения кода
 
