@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
-import { business } from "@/data/business";
+import type { ReviewsData } from "@/lib/google-reviews";
 import { site } from "@/data/site";
 import { richProps } from "./rich-text";
 import { Stars } from "./stars";
@@ -19,10 +19,10 @@ type SectionHeadProps = {
   lede?: ReactNode;
   /**
    * Renders the standard right-hand `.rating-badge` (5.0 / ★★★★★ / "6 reviews"): the rating and
-   * the review count as text, so both numbers of an AggregateRating are on the page (story 82).
-   * No "Google" wording until the owner confirms where the reviews are published (brief 7.3).
+   * the review count as text, from the page's reviews (lib/google-reviews — "27 Google reviews"
+   * when they came from Google, the site's own count otherwise).
    */
-  ratingBadge?: boolean;
+  ratingBadge?: ReviewsData;
   /** Existing per-page inline overrides, e.g. `{ marginBottom: 50 }`. */
   style?: CSSProperties;
   /** Existing per-page h2 inline overrides, e.g. `{ fontSize: "clamp(30px, 3.2vw, 44px)" }`. */
@@ -53,10 +53,10 @@ export function SectionHead({
       {lede != null && (
         <p className="lede" style={ledeStyle} {...richProps(lede)} />
       )}
-      {ratingBadge && business.rating && (
+      {ratingBadge && (
         <RatingBadge
-          value={business.rating.value}
-          label={site.ratingBadgeCountLabel(business.rating.count)}
+          value={ratingBadge.rating.value}
+          label={site.ratingBadgeCountLabel(ratingBadge.rating.count, ratingBadge.source === "google")}
         />
       )}
     </div>

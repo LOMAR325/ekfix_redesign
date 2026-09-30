@@ -1,4 +1,4 @@
-import type { BusinessTypeOption, CommercialPage, PublishableFaq, SegmentId } from "./types";
+import type { CommercialPage, PublishableFaq } from "./types";
 import { commercialCategories } from "./services";
 import { business } from "./business";
 import { owner } from "./people";
@@ -13,9 +13,9 @@ import { published, routable } from "../lib/publish";
 // Failures are general technical knowledge — no figures, no statistics. New copy is third
 // person or impersonal (spec §13). Blocks waiting on owner facts 6/7 are `status: "draft"`
 // and never render (the page renders only published sub-blocks).
-// Form presets (ADR 0023): an industry page opens the business form with its "Type of business",
-// an equipment page with its equipment. `homeCounterparts` — the residential services the same
-// equipment has at home (brief §6); lib/links turns them into the cross-branch links.
+// `applianceFormLabel` ties an equipment page to its commercialCategories card (lib/links.commercialCardHref);
+// `homeCounterparts` — the residential services the same equipment has at home (brief §6); lib/links
+// turns them into the cross-branch links.
 
 export const commercialHubPath = "/commercial-appliance-repair";
 
@@ -35,13 +35,6 @@ export const commercialCta = {
   call: `Call ${business.phone}`,
 } as const;
 
-/** "Type of business" preset of the business form per commercial-home segment card. */
-export const segmentBusinessType: Record<SegmentId, BusinessTypeOption> = {
-  "property-management": "Property Management",
-  horeca: "Restaurant",
-  hotels: "Hotel",
-  hoa: "Other",
-};
 
 // ---------------------------------------------------------------------------
 // The commercial home /commercial-appliance-repair (ADR 0022): the former hub and the
@@ -104,6 +97,7 @@ export const commercialHub = {
   },
   reviews: {
     eyebrow: "From a business customer",
+    googleEyebrow: "Google reviews",
     h2: "What they say.",
     allReviews: "All reviews →",
   },
@@ -132,7 +126,11 @@ export const commercialHub = {
 // Child-page section copy shared by all 7 pages (headings only — the content is per page).
 // ---------------------------------------------------------------------------
 export const commercialPageCopy = {
-  equipment: { eyebrow: "Equipment & brands", h2: "What gets serviced." },
+  equipment: {
+    eyebrow: "Equipment & brands",
+    /** Brands are not listed per page — every brand is serviced (owner, 2026-09-30); one link to /brands. */
+    allBrands: { label: "All major brands serviced — see the full list →", href: "/brands" },
+    h2: "What gets serviced." },
   failures: {
     eyebrow: "Common failures",
     h2: "What breaks, and<br>what it costs the business.",
@@ -194,10 +192,9 @@ export const commercialPages: CommercialPageContent[] = [
       lede: `When a walk-in or a commercial refrigerator stops holding temperature, the stock inside is on a clock. ${business.name} diagnoses the refrigeration system on site in Charlotte, NC, handles the refrigerant side under EPA Universal certification, and puts the estimate in writing before any work starts.`,
     },
     equipmentIntro:
-      "The refrigeration covered here is the part of the commercial work already shown on this site: restaurant walk-ins and walk-in freezers, the compressor that drives them, and the refrigerators in hotel rooms. Copeland makes compressors rather than cabinets; it is listed because a walk-in's cooling depends on one.",
+      "The refrigeration covered here is the part of the commercial work already shown on this site: restaurant walk-ins and walk-in freezers, the compressors that drive them, and the refrigerators in hotel rooms.",
     equipment: {
       types: ["Commercial refrigerators", "Walk-ins", "Walk-in freezers", "Walk-in compressors", "In-room refrigerators"],
-      brandNames: ["True", "Beverage-Air", "Perlick", "U-Line", "Copeland"],
       moreEquipment: moreEquipmentDraft,
     },
     failures: [
@@ -262,10 +259,9 @@ export const commercialPages: CommercialPageContent[] = [
       lede: `A dish machine that quits mid-service backs up the whole line. ${business.name} repairs commercial dishwashers and warewashers for restaurants and cafés in Charlotte, NC — the kind of job described in the restaurant review further down this page.`,
     },
     equipmentIntro:
-      "Dish machines are named in the kitchen work published on this site — commercial dishwashers, warewashers and the dish line built around them. Hobart is the warewashing manufacturer on the site's commercial brand list.",
+      "Dish machines are named in the kitchen work published on this site — commercial dishwashers, warewashers and the dish line built around them.",
     equipment: {
       types: ["Commercial dishwashers", "Warewashers", "Dish line equipment"],
-      brandNames: ["Hobart"],
       moreEquipment: moreEquipmentDraft,
     },
     failures: [
@@ -327,10 +323,9 @@ export const commercialPages: CommercialPageContent[] = [
       lede: `An ice machine is a small refrigeration plant with a water system attached, and it can fail on either side. ${business.name} services high-volume ice machines for restaurants, cafés and hotels in Charlotte, NC — from the lobby unit guests walk past to the banquet machine that has to keep pace with an event.`,
     },
     equipmentIntro:
-      "Ice machines show up twice in the commercial work on this site: in restaurant and café kitchens, and in hotels, where lobby and banquet units run in front of guests. Scotsman and U-Line, both on the site's commercial brand list, build ice machines.",
+      "Ice machines show up twice in the commercial work on this site: in restaurant and café kitchens, and in hotels, where lobby and banquet units run in front of guests.",
     equipment: {
       types: ["High-volume ice machines", "Lobby ice machines", "Banquet ice machines"],
-      brandNames: ["Scotsman", "U-Line"],
       moreEquipment: moreEquipmentDraft,
     },
     failures: [
@@ -395,19 +390,9 @@ export const commercialPages: CommercialPageContent[] = [
       lede: `Hotels, laundromats, healthcare facilities and multi-housing properties run laundry as a system rather than a single machine. ${business.name} repairs and maintains the whole on-premise setup in Charlotte, NC — washers, dryers, ironers and folding machines, rooftop installations included.`,
     },
     equipmentIntro:
-      "The brands for this page are the commercial laundry list published on the commercial hub. Speed Queen and Girbau also appear with their logos on the brands page.",
+      "Laundry here means the whole on-premise setup — commercial washers and dryers, ironers and folding machines, rooftop installations included — for hotels, laundromats, healthcare facilities and multi-housing properties.",
     equipment: {
       types: ["Commercial washers", "Commercial dryers", "Ironers", "Folding machines", "On-premise laundry systems"],
-      brandNames: [
-        "Speed Queen",
-        "Girbau",
-        "Unimac",
-        "Dexter",
-        "Huebsch",
-        "Maytag Commercial",
-        "Wascomat",
-        "Whirlpool Commercial",
-      ],
       moreEquipment: moreEquipmentDraft,
     },
     failures: [
@@ -473,10 +458,9 @@ export const commercialPages: CommercialPageContent[] = [
       lede: `The cook line is where a breakdown shows up on the menu: an oven that won't heat or a range that won't light takes dishes off the board. ${business.name} repairs commercial ovens, ranges, fryers and grills for restaurant, café and hotel kitchens in Charlotte, NC.`,
     },
     equipmentIntro:
-      "Cooking equipment is named in the restaurant and hotel work on this site — ovens and ranges, fryers, grills, and banquet and catering equipment. Blodgett and Middleby, both on the site's commercial brand list, build this kind of cooking equipment.",
+      "Cooking equipment is named in the restaurant and hotel work on this site — ovens and ranges, fryers, grills, and banquet and catering equipment.",
     equipment: {
       types: ["Commercial ovens", "Ranges", "Fryers", "Grills", "Banquet and catering equipment"],
-      brandNames: ["Blodgett", "Middleby"],
       moreEquipment: moreEquipmentDraft,
     },
     failures: [
@@ -529,7 +513,6 @@ export const commercialPages: CommercialPageContent[] = [
     name: "Restaurant Appliance Repair",
     kind: "industry",
     segmentId: "horeca",
-    businessType: "Restaurant",
     seo: {
       title: `Restaurant Appliance Repair in Charlotte, NC | ${business.name}`,
       description:
@@ -540,7 +523,7 @@ export const commercialPages: CommercialPageContent[] = [
       lede: `In a restaurant, every piece of equipment is tied to a service window. ${business.name} works with restaurants and cafés in Charlotte, NC on the whole kitchen — cold storage, the dish pit, the cook line and the ice machine — with one technician who learns the equipment instead of a new face on every call.`,
     },
     equipmentIntro:
-      "The whole kitchen, grouped the way the line is laid out. The brands are the commercial brands published on this site; Hobart, Blodgett and Middleby are also the names on the restaurant card of the commercial hub.",
+      "The whole kitchen, grouped the way the line is laid out — from the walk-in and the reach-ins to the dish line, the cook line and the ice machine.",
     equipment: {
       types: [
         "Walk-ins",
@@ -551,7 +534,6 @@ export const commercialPages: CommercialPageContent[] = [
         "Grills",
         "High-volume ice machines",
       ],
-      brandNames: ["Hobart", "Blodgett", "Middleby", "True", "Beverage-Air", "Scotsman", "Copeland"],
       moreEquipment: moreEquipmentDraft,
     },
     failures: [
@@ -601,7 +583,6 @@ export const commercialPages: CommercialPageContent[] = [
     name: "Property Management Appliance Repair",
     kind: "industry",
     segmentId: "property-management",
-    businessType: "Property Management",
     seo: {
       title: `Appliance Repair for Property Managers in Charlotte, NC | ${business.name}`,
       description:
@@ -612,10 +593,9 @@ export const commercialPages: CommercialPageContent[] = [
       lede: `For a property manager, a broken appliance is a tenant ticket, an access question and an invoice to approve at once. ${business.name} takes those calls for single buildings and whole portfolios in Charlotte, NC, and works the way leasing offices already do: lockboxes, key pickup, turn deadlines and paperwork for the owner.`,
     },
     equipmentIntro:
-      "In a rental portfolio the equipment is mostly residential — the refrigerator, stove, washer and dryer in each unit — plus the laundry rooms of multi-housing buildings. The brands listed are the hub's commercial laundry names that apply to those shared rooms.",
+      "In a rental portfolio the equipment is mostly residential — the refrigerator, stove, washer and dryer in each unit — plus the laundry rooms of multi-housing buildings.",
     equipment: {
       types: ["Refrigerators", "Stoves", "Washers", "Dryers", "Multi-housing laundry rooms"],
-      brandNames: ["Speed Queen", "Maytag Commercial", "Whirlpool Commercial"],
       moreEquipment: moreEquipmentDraft,
     },
     failures: [

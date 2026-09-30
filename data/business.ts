@@ -34,6 +34,13 @@ export const business: Business = {
     instagram: "https://www.instagram.com/ekglobal_official",
     facebook: "https://www.facebook.com/profile.php?id=61572447657230",
     tiktok: "https://www.tiktok.com/@constantin_ekfix",
+    // the Google Business Profile — the owner's review link (2026-09-30)
+    google: "https://g.page/r/CQzbpOh98VJ2EAE",
+  },
+  // Place ID resolved from the owner's g.page review link (search.google.com/local/writereview?placeid=…)
+  google: {
+    placeId: "ChIJ8zG7gctrMWQRDNuk6H3xUnY",
+    writeReviewUrl: "https://g.page/r/CQzbpOh98VJ2EAE/review",
   },
   gaId: "G-LFM6MSKBQ7",
   // TODO: имя утверждает владелец

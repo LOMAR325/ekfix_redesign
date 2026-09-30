@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { JsonLd } from "@/components/JsonLd";
 import { EntryLink } from "@/components/EntryLink";
+import { EntryPanelsFx } from "@/components/EntryPanelsFx";
 import { businessNode, graph, websiteNode } from "@/lib/jsonld";
 import { pageMetadata } from "@/lib/seo";
 import { entryPage, entryPanels } from "@/data/entry";
@@ -21,7 +22,7 @@ export default function EntryPage() {
       <JsonLd data={graph(businessNode({ image: true }), websiteNode())} />
       <main className="branch-entry branch-entry--split">
         <h1 className="branch-entry-h1" {...richProps(entryPage.h1)} />
-        <div className="branch-entry-panels">
+        <EntryPanelsFx>
           {entryPanels().map((panel, i) => (
             <section
               key={panel.branch}
@@ -48,7 +49,7 @@ export default function EntryPage() {
                   href={panel.cta.href}
                   className={panel.branch === "business" ? "btn btn-accent" : "btn btn-ghost-dark"}
                 >
-                  {panel.cta.label} <span aria-hidden="true">→</span>
+                  {panel.cta.label} <span className="branch-arrow" aria-hidden="true">→</span>
                 </EntryLink>
                 <div className="branch-panel-links">
                   <span className="branch-panel-links-label">{entryPage.linksLabel}</span>
@@ -61,7 +62,7 @@ export default function EntryPage() {
               </div>
             </section>
           ))}
-        </div>
+        </EntryPanelsFx>
       </main>
     </>
   );

@@ -107,7 +107,10 @@ export function reviewsPageCopy(businessName: string) {
     hero: {
       h1: "What customers say,<br><span>by appliance.</span>",
       lede: `Reviews from ${businessName} customers, grouped by the appliance repaired and by commercial work. A review can appear in more than one group.`,
+      /** when the reviews come from Google (lib/google-reviews) — they can't be grouped */
+      googleLede: `The latest reviews from the ${businessName} Google Business Profile, refreshed daily. Every review is on Google.`,
     },
+    googleSection: { eyebrow: "Google reviews", h2: "What customers say." },
     /** Eyebrow over each category section. */
     countLabel: (n: number) => `${n} ${n === 1 ? "review" : "reviews"}`,
     cta: {

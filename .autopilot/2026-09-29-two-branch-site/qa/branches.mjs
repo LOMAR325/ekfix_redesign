@@ -54,12 +54,12 @@ await b.close();
 L.push("## /api/book", "", "| Запрос | HTTP | ответ | итог |", "|---|---|---|---|");
 const post = async (body) => { const r = await fetch(base + "/api/book", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) }); return [r.status, await r.text()]; };
 for (const [name, body, code, key] of [
-  ["home валидный", { branch: "home", name: "QA", phone: "000", appliance: "Dryer", message: "QA test — ignore" }, 200],
-  ["home без appliance", { branch: "home", name: "QA", phone: "000" }, 400, "appliance"],
-  ["business валидный", { branch: "business", company: "QA Co", contactName: "QA", phone: "000", businessType: "Restaurant", email: "", equipment: "Ice Machine", units: "2", urgency: "Quote", message: "QA test — ignore" }, 200],
-  ["business без company", { branch: "business", contactName: "QA", phone: "000", businessType: "Hotel" }, 400, "company"],
-  ["business плохой email", { branch: "business", company: "QA", contactName: "QA", phone: "000", businessType: "Hotel", email: "nope" }, 400, "email"],
-  ["без branch", { name: "QA", phone: "000", appliance: "Dryer" }, 400, "branch"],
+  ["home валидный", { branch: "home", name: "QA", phone: "000", address: "1 QA St, Charlotte", message: "QA test — ignore" }, 200],
+  ["home без address", { branch: "home", name: "QA", phone: "000" }, 400, "address"],
+  ["business валидный", { branch: "business", name: "QA", phone: "000", address: "2 QA Ave, Charlotte", message: "" }, 200],
+  ["business без name", { branch: "business", phone: "000", address: "2 QA Ave" }, 400, "name"],
+  ["business без phone", { branch: "business", name: "QA", address: "2 QA Ave" }, 400, "phone"],
+  ["без branch", { name: "QA", phone: "000", address: "x" }, 400, "branch"],
 ]) {
   const [s, t] = await post(body);
   const ok = s === code && (!key || JSON.parse(t).errors?.[key]);

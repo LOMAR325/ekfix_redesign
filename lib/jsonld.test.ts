@@ -60,6 +60,7 @@ describe("businessNode()", () => {
       "https://www.instagram.com/ekglobal_official",
       "https://www.facebook.com/profile.php?id=61572447657230",
       "https://www.tiktok.com/@constantin_ekfix",
+      "https://g.page/r/CQzbpOh98VJ2EAE",
     ]);
   });
 

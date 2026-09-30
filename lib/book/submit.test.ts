@@ -6,20 +6,15 @@ const homeInput = {
   branch: "home",
   name: "Jane Doe",
   phone: "(980) 555-0134",
-  appliance: "Refrigerator",
+  address: "123 Main St, Charlotte, NC",
   message: "Fridge not cooling",
 };
 
 const businessInput = {
   branch: "business",
-  company: "Queen City Grill",
-  contactName: "Jane Manager",
+  name: "Jane Manager",
   phone: "(980) 555-0134",
-  email: "jane@example.com",
-  businessType: "Restaurant",
-  equipment: "Commercial Refrigeration",
-  units: "2 walk-in coolers",
-  urgency: "Emergency",
+  address: "500 Trade St, Charlotte, NC",
   message: "Walk-in cooler not holding temp",
 };
 
@@ -70,29 +65,33 @@ describe("submitLead", () => {
     });
   });
 
-  describe("home", () => {
-    it("accepts a valid home lead and passes the parsed lead to the console sink", async () => {
+  describe.each([
+    ["home", homeInput],
+    ["business", businessInput],
+  ] as const)("%s", (_branch, input) => {
+    it("accepts a valid lead and passes the parsed lead to the console sink", async () => {
       const send = vi.spyOn(ConsoleLeadSink.prototype, "send").mockResolvedValue();
-      const result = await submitLead({ ...homeInput, phone: "  (980)   555-0134 " });
+      const result = await submitLead({ ...input, phone: "  (980)   555-0134 " });
       expect(result).toEqual({ ok: true });
       expect(send).toHaveBeenCalledTimes(1);
-      expect(send).toHaveBeenCalledWith({
-        branch: "home",
-        name: "Jane Doe",
-        phone: "(980) 555-0134",
-        appliance: "Refrigerator",
-        message: "Fridge not cooling",
-      });
+      expect(send).toHaveBeenCalledWith(input);
     });
 
-    it("accepts \"Other\" as the appliance", async () => {
+    it("accepts a lead without a message", async () => {
+      const send = vi.spyOn(ConsoleLeadSink.prototype, "send").mockResolvedValue();
+      const { message: _omit, ...noMessage } = input;
+      expect(await submitLead(noMessage)).toEqual({ ok: true });
+      expect(send.mock.calls[0][0].message).toBeUndefined();
+    });
+
+    it("accepts an empty message", async () => {
       spyAllSinks();
-      expect(await submitLead({ ...homeInput, appliance: "Other" })).toEqual({ ok: true });
+      expect(await submitLead({ ...input, message: "" })).toEqual({ ok: true });
     });
 
     it("rejects an empty name and calls no sink", async () => {
       const send = spyAllSinks();
-      expect(await errorsFor({ ...homeInput, name: "" })).toEqual({
+      expect(await errorsFor({ ...input, name: "" })).toEqual({
         name: "Please enter your name",
       });
       expect(send.console).not.toHaveBeenCalled();
@@ -100,149 +99,51 @@ describe("submitLead", () => {
       expect(send.webhook).not.toHaveBeenCalled();
     });
 
+    it("rejects a missing name", async () => {
+      const { name: _omit, ...rest } = input;
+      expect(await errorsFor(rest)).toEqual({ name: "Please enter your name" });
+    });
+
+    it("rejects a missing phone", async () => {
+      const { phone: _omit, ...rest } = input;
+      expect(await errorsFor(rest)).toEqual({ phone: "Please enter a phone number" });
+    });
+
     it("rejects a blank phone", async () => {
-      expect(await errorsFor({ ...homeInput, phone: "   " })).toEqual({
+      expect(await errorsFor({ ...input, phone: "   " })).toEqual({
         phone: "Please enter a phone number",
       });
     });
 
-    it("rejects a missing appliance", async () => {
-      const { appliance: _omit, ...noAppliance } = homeInput;
-      expect(await errorsFor(noAppliance)).toEqual({
-        appliance: "Please choose the appliance",
+    it("rejects a missing address", async () => {
+      const { address: _omit, ...rest } = input;
+      expect(await errorsFor(rest)).toEqual({ address: "Please enter the address" });
+    });
+
+    it("rejects a whitespace-only address", async () => {
+      expect(await errorsFor({ ...input, address: "   " })).toEqual({
+        address: "Please enter the address",
       });
     });
 
-    it("rejects an appliance that is not in the option list", async () => {
-      expect(await errorsFor({ ...homeInput, appliance: "Toaster" })).toEqual({
-        appliance: "Please choose the appliance",
+    it("rejects an address longer than 300 characters", async () => {
+      expect(await errorsFor({ ...input, address: "x".repeat(301) })).toEqual({
+        address: "Please keep the address under 300 characters",
       });
     });
 
-    it("rejects a commercial appliance on the home branch", async () => {
-      expect(
-        await errorsFor({ ...homeInput, appliance: "Commercial Refrigeration" }),
-      ).toEqual({ appliance: "Please choose the appliance" });
-    });
-  });
-
-  describe("business", () => {
-    it("accepts a valid business lead and passes the parsed lead to the console sink", async () => {
-      const send = vi.spyOn(ConsoleLeadSink.prototype, "send").mockResolvedValue();
-      const result = await submitLead(businessInput);
-      expect(result).toEqual({ ok: true });
-      expect(send).toHaveBeenCalledWith({
-        branch: "business",
-        company: "Queen City Grill",
-        contactName: "Jane Manager",
-        phone: "(980) 555-0134",
-        email: "jane@example.com",
-        businessType: "Restaurant",
-        equipment: "Commercial Refrigeration",
-        units: "2 walk-in coolers",
-        urgency: "Emergency",
-        message: "Walk-in cooler not holding temp",
-      });
-    });
-
-    it("accepts empty-string optional fields and treats them as absent", async () => {
-      const send = vi.spyOn(ConsoleLeadSink.prototype, "send").mockResolvedValue();
-      const result = await submitLead({
-        branch: "business",
-        company: "Queen City Grill",
-        contactName: "Jane Manager",
-        phone: "980-555-0134",
-        email: "",
-        businessType: "Hotel",
-        equipment: "",
-        units: "",
-        urgency: "",
-        message: "",
-      });
-      expect(result).toEqual({ ok: true });
-      const lead = send.mock.calls[0][0];
-      expect(lead).toMatchObject({
-        branch: "business",
-        company: "Queen City Grill",
-        businessType: "Hotel",
-      });
-      expect((lead as { email?: string }).email).toBeUndefined();
-      expect((lead as { equipment?: string }).equipment).toBeUndefined();
-      expect((lead as { urgency?: string }).urgency).toBeUndefined();
-    });
-
-    it("accepts a lead with the optional fields omitted", async () => {
-      spyAllSinks();
-      const result = await submitLead({
-        branch: "business",
-        company: "Queen City Grill",
-        contactName: "Jane Manager",
-        phone: "980-555-0134",
-        businessType: "Other",
-      });
-      expect(result).toEqual({ ok: true });
-    });
-
-    it("rejects a missing company", async () => {
-      const { company: _omit, ...rest } = businessInput;
-      expect(await errorsFor(rest)).toEqual({
-        company: "Please enter the company name",
-      });
-    });
-
-    it("rejects a missing contactName", async () => {
-      const { contactName: _omit, ...rest } = businessInput;
-      expect(await errorsFor(rest)).toEqual({ contactName: "Please enter your name" });
-    });
-
-    it("rejects a missing businessType", async () => {
-      const { businessType: _omit, ...rest } = businessInput;
-      expect(await errorsFor(rest)).toEqual({
-        businessType: "Please choose the type of business",
-      });
-    });
-
-    it("rejects a businessType that is not in the option list", async () => {
-      expect(await errorsFor({ ...businessInput, businessType: "School" })).toEqual({
-        businessType: "Please choose the type of business",
+    it("rejects a message longer than 2000 characters", async () => {
+      expect(await errorsFor({ ...input, message: "x".repeat(2001) })).toEqual({
+        message: "Please keep the notes under 2000 characters",
       });
     });
 
     it("keys each missing required field separately", async () => {
-      expect(
-        await errorsFor({ branch: "business", phone: "", email: "", equipment: "" }),
-      ).toEqual({
-        company: "Please enter the company name",
-        contactName: "Please enter your name",
+      expect(await errorsFor({ branch: input.branch, phone: "" })).toEqual({
+        name: "Please enter your name",
         phone: "Please enter a phone number",
-        businessType: "Please choose the type of business",
+        address: "Please enter the address",
       });
-    });
-
-    it("rejects a malformed email", async () => {
-      expect(await errorsFor({ ...businessInput, email: "jane@" })).toEqual({
-        email: "Please enter a valid email",
-      });
-    });
-
-    it("rejects equipment and urgency outside their option lists", async () => {
-      const errors = await errorsFor({
-        ...businessInput,
-        equipment: "Refrigerator",
-        urgency: "Tomorrow",
-      });
-      expect(Object.keys(errors).sort()).toEqual(["equipment", "urgency"]);
-    });
-
-    it("rejects units longer than 200 characters", async () => {
-      const errors = await errorsFor({ ...businessInput, units: "x".repeat(201) });
-      expect(Object.keys(errors)).toEqual(["units"]);
-    });
-
-    it("does not accept home fields on the business branch", async () => {
-      const { company: _c, contactName: _n, businessType: _t, ...rest } = businessInput;
-      const errors = await errorsFor({ ...rest, name: "Jane", appliance: "Refrigerator" });
-      expect(Object.keys(errors).sort()).toEqual(["businessType", "company", "contactName"]);
     });
   });
 

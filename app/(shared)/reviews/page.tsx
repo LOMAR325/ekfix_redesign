@@ -4,6 +4,8 @@ import { business } from "@/data/business";
 import { reviewCategories, reviewsPageCopy } from "@/data/reviews";
 import { businessNode, graph } from "@/lib/jsonld";
 import { pageMetadata } from "@/lib/seo";
+import { getReviews } from "@/lib/google-reviews";
+import { GoogleReviewLinks } from "@/components/ui/google-review-links";
 import { breadcrumbTrail } from "@/lib/breadcrumb";
 import { PageHero } from "@/components/ui/page-hero";
 import { SectionHead } from "@/components/ui/section-head";
@@ -23,8 +25,13 @@ const copy = reviewsPageCopy(business.name);
 
 export const metadata: Metadata = pageMetadata({ ...copy.meta, path: "/reviews" });
 
-export default function ReviewsPage() {
-  const categories = reviewCategories();
+export default async function ReviewsPage() {
+  const data = await getReviews();
+  const google = data.source === "google";
+  // Google reviews come as one list; the site's own are grouped by appliance / commercial work.
+  const categories = google
+    ? [{ id: "google", label: copy.googleSection.h2, reviews: data.reviews }]
+    : reviewCategories();
   const { crumbs, jsonLd } = breadcrumbTrail([
     { name: copy.breadcrumb.home, path: "/" },
     { name: copy.breadcrumb.self, path: "/reviews" },
@@ -32,9 +39,14 @@ export default function ReviewsPage() {
 
   return (
     <>
-      <JsonLd data={graph(businessNode({ aggregateRating: true }), jsonLd)} />
+      <JsonLd data={graph(businessNode({ aggregateRating: !google }), jsonLd)} />
 
-      <PageHero breadcrumb={crumbs} h1={copy.hero.h1} lede={copy.hero.lede} ctas={<BranchCtas />} />
+      <PageHero
+        breadcrumb={crumbs}
+        h1={copy.hero.h1}
+        lede={google ? copy.hero.googleLede : copy.hero.lede}
+        ctas={<BranchCtas />}
+      />
 
       {categories.map((category, i) => (
         <section
@@ -44,11 +56,12 @@ export default function ReviewsPage() {
         >
           <SectionHead
             tone="light"
-            eyebrow={copy.countLabel(category.reviews.length)}
+            eyebrow={google ? copy.googleSection.eyebrow : copy.countLabel(category.reviews.length)}
             h2={category.label}
-            ratingBadge={i === 0}
+            ratingBadge={i === 0 ? data : undefined}
           />
           <ReviewsGrid reviews={category.reviews} />
+          {i === categories.length - 1 && <GoogleReviewLinks data={data} />}
         </section>
       ))}
 

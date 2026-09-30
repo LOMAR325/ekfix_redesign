@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { business } from "@/data/business";
 import { owner } from "@/data/people";
 import { site } from "@/data/site";
+import type { ReviewsData } from "@/lib/google-reviews";
 import { richProps } from "./rich-text";
 import { Stars } from "./stars";
 
@@ -19,6 +20,7 @@ export function Hero({
   lede,
   ctas,
   trust,
+  reviews,
 }: {
   id?: string;
   photo: { src: string; alt: string };
@@ -29,6 +31,8 @@ export function Hero({
   lede: string;
   ctas: ReactNode;
   trust: readonly string[];
+  /** the page's reviews (lib/google-reviews) — the rating shown as text next to the stars */
+  reviews: ReviewsData;
 }) {
   return (
     <section id={id} className="hero">
@@ -53,15 +57,11 @@ export function Hero({
         <p className="lede">{lede}</p>
         <div className="hero-ctas">{ctas}</div>
         <div className="hero-meta">
-          {business.rating && (
-            <>
-              <div>
-                <Stars />
-                <small>{site.ratingText(business.rating.value, business.rating.count)}</small>
-              </div>
-              <div className="hero-divider" />
-            </>
-          )}
+          <div>
+            <Stars />
+            <small>{site.ratingText(reviews.rating.value, reviews.rating.count, reviews.source === "google")}</small>
+          </div>
+          <div className="hero-divider" />
           <div className="hero-hours">
             <strong>{business.hours}</strong>
             <small>{business.hoursNote}</small>

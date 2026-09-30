@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
+import { getReviews } from "@/lib/google-reviews";
+import { GoogleReviewLinks } from "@/components/ui/google-review-links";
 import { businessNode, faqNode, graph, type ServedArea } from "@/lib/jsonld";
 import { JsonLd } from "@/components/JsonLd";
 import { Hero } from "@/components/ui/hero";
@@ -17,11 +19,9 @@ import { BookSection } from "@/components/ui/book-section";
 import { ProcessSteps } from "@/components/commercial/ProcessSteps";
 import { ServiceFormats } from "@/components/commercial/ServiceFormats";
 import { TrustBand } from "@/components/commercial/TrustBand";
-import { BusinessRequestForm } from "@/components/BusinessRequestForm";
-import { businessRequestHref } from "@/components/booking-link";
+import { LeadForm } from "@/components/LeadForm";
 import { business } from "@/data/business";
 import { commercialBrands, brandNote } from "@/data/brands";
-import { reviews } from "@/data/reviews";
 import {
   publicForBusinessSegments,
   laundryObjectTypes,
@@ -35,7 +35,6 @@ import {
   commercialHub as hub,
   commercialHubPath,
   publishedCommercialPages,
-  segmentBusinessType,
 } from "@/data/commercial";
 
 // The commercial home (ADR 0022): the former hub (every section and anchor — #property-management,
@@ -57,20 +56,22 @@ function serviceArea(): { chips: string[]; areaServed: ServedArea[] } {
   };
 }
 
-export default function CommercialHomePage() {
+export default async function CommercialHomePage() {
+  const reviewsData = await getReviews();
   const pages = publishedCommercialPages();
   const industryPage = (segmentId: string) =>
     pages.find((p) => p.kind === "industry" && p.segmentId === segmentId);
-  // A segment card leads to its industry page when one is published, else to the form below
-  // with the segment's "Type of business" preset.
+  // A segment card leads to its industry page when one is published, else to the form below.
   const segmentCards = publicForBusinessSegments.map((s) => {
     const page = industryPage(s.id);
     return page
       ? { ...s, href: `${commercialHubPath}/${page.slug}`, linkLabel: `${page.name} →` }
-      : { ...s, href: businessRequestHref({ businessType: segmentBusinessType[s.id] }), linkLabel: commercialCta.cardLink };
+      : { ...s, href: "#request", linkLabel: commercialCta.cardLink };
   });
   const equipment = pages.filter((p) => p.kind === "equipment");
-  const businessReviews = reviews.filter((r) => r.segment === "commercial");
+  // Google reviews when live; else the site's business review(s).
+  const businessReviews =
+    reviewsData.source === "google" ? reviewsData.reviews : reviewsData.reviews.filter((r) => r.segment === "commercial");
   const area = serviceArea();
 
   return (
@@ -79,7 +80,7 @@ export default function CommercialHomePage() {
           both numbers; areaServed: the #service-area chips; the FAQ is on the page. */}
       <JsonLd
         data={graph(
-          businessNode({ knowsAbout: true, aggregateRating: true, areaServed: area.areaServed }),
+          businessNode({ knowsAbout: true, aggregateRating: reviewsData.source === "site", areaServed: area.areaServed }),
           faqNode(commercialHubPath, businessFaqs),
         )}
       />
@@ -91,6 +92,7 @@ export default function CommercialHomePage() {
         h1={hub.hero.h1}
         lede={hub.hero.lede}
         trust={hub.hero.trust}
+        reviews={reviewsData}
         ctas={
           <>
             <a href="#request" className="btn btn-accent">
@@ -150,9 +152,10 @@ export default function CommercialHomePage() {
 
       {businessReviews.length > 0 && (
         <section id="business-reviews" className="section section-light">
-          <SectionHead tone="light" eyebrow={hub.reviews.eyebrow} h2={hub.reviews.h2} ratingBadge />
+          <SectionHead tone="light" eyebrow={reviewsData.source === "google" ? hub.reviews.googleEyebrow : hub.reviews.eyebrow} h2={hub.reviews.h2} ratingBadge={reviewsData} />
           <ReviewsGrid reviews={businessReviews} />
-          <ChipRow items={[{ label: hub.reviews.allReviews, href: "/reviews#commercial" }]} style={{ marginTop: 24 }} />
+          <ChipRow items={[{ label: hub.reviews.allReviews, href: "/reviews" }]} style={{ marginTop: 24 }} />
+          <GoogleReviewLinks data={reviewsData} style={{ marginTop: 12 }} />
         </section>
       )}
 
@@ -175,7 +178,7 @@ export default function CommercialHomePage() {
       </section>
 
       <BookSection id="request" eyebrow={hub.request.eyebrow} h2={hub.request.h2} body={hub.request.body} facts={hub.request.facts}>
-        <BusinessRequestForm phone={business.phone} />
+        <LeadForm branch="business" phone={business.phone} />
       </BookSection>
     </>
   );

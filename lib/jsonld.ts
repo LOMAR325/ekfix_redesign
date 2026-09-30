@@ -86,7 +86,7 @@ export function businessNode(opts: BusinessNodeOptions = {}): JsonLdNode {
       opens: business.openingHours.opens,
       closes: business.openingHours.closes,
     },
-    sameAs: [business.social.instagram, business.social.facebook, business.social.tiktok],
+    sameAs: [business.social.instagram, business.social.facebook, business.social.tiktok, business.social.google],
   };
   if (opts.image) node.image = absoluteUrl(owner.photos.hero.src);
   if (opts.areaServed && opts.areaServed.length > 0) {

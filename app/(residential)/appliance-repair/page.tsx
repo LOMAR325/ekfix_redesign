@@ -4,6 +4,7 @@ import { owner } from "@/data/people";
 import { publishedArticles } from "@/data/guides";
 import { homeWhereWeWork, residentialHome as home } from "@/data/residential";
 import { pageMetadata } from "@/lib/seo";
+import { getReviews } from "@/lib/google-reviews";
 import { articlePath } from "@/lib/routes";
 import { businessNode, faqNode, graph } from "@/lib/jsonld";
 import { JsonLd } from "@/components/JsonLd";
@@ -13,7 +14,7 @@ import { ProblemCardGrid } from "@/components/ui/problem-card-grid";
 import { ChipRow } from "@/components/ui/chip-row";
 import { FaqAccordion } from "@/components/ui/faq-accordion";
 import { BookSection } from "@/components/ui/book-section";
-import { HomeBookForm } from "@/components/HomeBookForm";
+import { LeadForm } from "@/components/LeadForm";
 import { RepairSection } from "@/components/residential/RepairSection";
 import { FamilySection } from "@/components/residential/FamilySection";
 import { ReviewsSection } from "@/components/residential/ReviewsSection";
@@ -24,19 +25,21 @@ export const metadata: Metadata = pageMetadata({ ...home.seo, path: home.path })
 const H2_CLAMP = { fontSize: "clamp(30px, 3.2vw, 44px)", letterSpacing: "-1.8px" } as const;
 
 // The residential home (ADR 0022) — the household half of the former `/` and the former
-// residential hub. Static (SSG); the form reads `?appliance=` on the client. Tones alternate:
+// residential hub. Static (SSG). Tones alternate:
 // hero D → #repair L → #family D → #pricing L2 → #reviews L → #brands D2 → #areas L →
 // [#guides L2] → #faq L2|L → #book D2.
-export default function ResidentialHomePage() {
+export default async function ResidentialHomePage() {
+  const reviews = await getReviews();
   const whereWeWork = homeWhereWeWork();
   const guides = publishedArticles();
   return (
     <>
-      {/* image: the owner's hero photo; aggregateRating: the reviews and both numbers are shown;
+      {/* image: the owner's hero photo; aggregateRating: only the site's own reviews (Google's
+          may not be marked up on the site — they stay Google's);
           areaServed: exactly the places #areas links to; the FAQ is on the page. */}
       <JsonLd
         data={graph(
-          businessNode({ image: true, aggregateRating: true, areaServed: whereWeWork.areaServed }),
+          businessNode({ image: true, aggregateRating: reviews.source === "site", areaServed: whereWeWork.areaServed }),
           faqNode(home.path, home.faq.items),
         )}
       />
@@ -47,6 +50,7 @@ export default function ResidentialHomePage() {
         h1={home.hero.h1}
         lede={home.hero.lede}
         trust={home.hero.trust}
+        reviews={reviews}
         ctas={
           <>
             <a href="#book" className="btn btn-accent">
@@ -66,7 +70,7 @@ export default function ResidentialHomePage() {
         <ProblemCardGrid variant="light" items={[...home.pricing.items]} />
       </section>
 
-      <ReviewsSection />
+      <ReviewsSection data={reviews} />
       <BrandsSection />
 
       <section id="areas" className="section section-light">
@@ -87,7 +91,7 @@ export default function ResidentialHomePage() {
       </section>
 
       <BookSection id="book" eyebrow={home.book.eyebrow} h2={home.book.h2} body={home.book.body} facts={home.book.facts}>
-        <HomeBookForm phone={business.phone} />
+        <LeadForm branch="home" phone={business.phone} />
       </BookSection>
     </>
   );
