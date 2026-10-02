@@ -4,8 +4,8 @@
 
 export type AnalyticsEvent =
   | { name: "branch_select"; params: { branch: "business" | "home" } }
-  | { name: "commercial_form_submit"; params: { business_type: string } }
-  | { name: "residential_form_submit"; params: { appliance: string } };
+  | { name: "commercial_form_submit"; params?: undefined }
+  | { name: "residential_form_submit"; params?: undefined };
 
 type Gtag = (command: "event", name: string, params: Record<string, string>) => void;
 
@@ -13,5 +13,5 @@ export function track(event: AnalyticsEvent): void {
   if (typeof window === "undefined") return;
   const gtag = (window as unknown as { gtag?: Gtag }).gtag;
   // transport_type beacon: the event survives the page navigating away (entry-page links).
-  if (typeof gtag === "function") gtag("event", event.name, { ...event.params, transport_type: "beacon" });
+  if (typeof gtag === "function") gtag("event", event.name, { ...(event.params ?? {}), transport_type: "beacon" });
 }

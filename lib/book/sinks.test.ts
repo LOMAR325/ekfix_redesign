@@ -8,20 +8,15 @@ const homeInput = {
   branch: "home",
   name: "Jane Doe",
   phone: "(980) 555-0134",
-  appliance: "Refrigerator",
+  address: "123 Main St, Charlotte, NC",
   message: "Fridge not cooling",
 };
 
 const businessInput = {
   branch: "business",
-  company: "Queen City Grill",
-  contactName: "Jane Manager",
+  name: "Jane Manager",
   phone: "(980) 555-0134",
-  email: "",
-  businessType: "Restaurant",
-  equipment: "Commercial Refrigeration",
-  units: "",
-  urgency: "Emergency",
+  address: "500 Trade St, Charlotte, NC",
   message: "Walk-in cooler not holding temp",
 };
 
@@ -71,7 +66,7 @@ describe("lead delivery", () => {
       expect((init.headers as Record<string, string>).Authorization).toBe(
         "Bearer re_test_fake",
       );
-      expect(String(init.body)).toContain("Refrigerator");
+      expect(String(init.body)).toContain("123 Main St, Charlotte, NC");
     });
 
     it("delivers a valid business lead to Resend and to the webhook when both are configured", async () => {
@@ -90,7 +85,7 @@ describe("lead delivery", () => {
       expect(urls).toContain(WEBHOOK_URL);
     });
 
-    it("tags the business email subject with [BUSINESS] and lists its fields, blanks as a dash", async () => {
+    it("tags the business email subject with [BUSINESS], name and address, and lists its fields", async () => {
       vi.stubEnv("RESEND_API_KEY", "re_test_fake");
       vi.stubEnv("BOOK_NOTIFY_EMAIL", "owner@example.com");
       vi.stubEnv("BOOK_WEBHOOK_URL", "");
@@ -102,25 +97,20 @@ describe("lead delivery", () => {
 
       const body = JSON.parse(String((fetchMock.mock.calls[0][1] as RequestInit).body));
       expect(body.subject).toBe(
-        "[BUSINESS] Commercial service request — Queen City Grill (Restaurant)",
+        "[BUSINESS] Commercial service request — Jane Manager, 500 Trade St, Charlotte, NC",
       );
       expect(body.text).toBe(
         [
           "Branch: business",
-          "Company: Queen City Grill",
-          "Contact name: Jane Manager",
+          "Name: Jane Manager",
           "Phone: (980) 555-0134",
-          "Email: —",
-          "Business type: Restaurant",
-          "Equipment: Commercial Refrigeration",
-          "Units: —",
-          "Urgency: Emergency",
+          "Address: 500 Trade St, Charlotte, NC",
           "Message: Walk-in cooler not holding temp",
         ].join("\n"),
       );
     });
 
-    it("gives the home email a plain subject without the [BUSINESS] tag", async () => {
+    it("gives the home email a plain subject with name and address, empty message as a dash", async () => {
       vi.stubEnv("RESEND_API_KEY", "re_test_fake");
       vi.stubEnv("BOOK_NOTIFY_EMAIL", "owner@example.com");
       vi.stubEnv("BOOK_WEBHOOK_URL", "");
@@ -131,14 +121,16 @@ describe("lead delivery", () => {
       await submitLead({ ...homeInput, message: "" });
 
       const body = JSON.parse(String((fetchMock.mock.calls[0][1] as RequestInit).body));
-      expect(body.subject).toBe("New home repair request — Refrigerator");
+      expect(body.subject).toBe(
+        "New home repair request — Jane Doe, 123 Main St, Charlotte, NC",
+      );
       expect(body.subject.startsWith("[BUSINESS]")).toBe(false);
       expect(body.text).toBe(
         [
           "Branch: home",
           "Name: Jane Doe",
           "Phone: (980) 555-0134",
-          "Appliance: Refrigerator",
+          "Address: 123 Main St, Charlotte, NC",
           "Message: —",
         ].join("\n"),
       );
@@ -158,37 +150,29 @@ describe("lead delivery", () => {
       const body = JSON.parse(String((fetchMock.mock.calls[0][1] as RequestInit).body));
       expect(body).toEqual({
         branch: "business",
-        company: "Queen City Grill",
-        contactName: "Jane Manager",
+        name: "Jane Manager",
         phone: "(980) 555-0134",
-        businessType: "Restaurant",
-        equipment: "Commercial Refrigeration",
-        units: "",
-        urgency: "Emergency",
+        address: "500 Trade St, Charlotte, NC",
         message: "Walk-in cooler not holding temp",
       });
     });
 
-    it("logs every field of the lead, branch included, to the console", async () => {
+    it("logs every field of the lead, branch included, absent message as empty", async () => {
       vi.stubEnv("RESEND_API_KEY", "");
       vi.stubEnv("BOOK_NOTIFY_EMAIL", "");
       vi.stubEnv("BOOK_WEBHOOK_URL", "");
       const info = vi.spyOn(console, "info").mockImplementation(() => {});
 
       const submitLead = await loadSubmit();
-      await submitLead(businessInput);
+      const { message: _omit, ...noMessage } = businessInput;
+      await submitLead(noMessage);
 
       expect(info).toHaveBeenCalledWith("[book] new lead", {
         branch: "business",
-        company: "Queen City Grill",
-        contactName: "Jane Manager",
+        name: "Jane Manager",
         phone: "(980) 555-0134",
-        email: "",
-        businessType: "Restaurant",
-        equipment: "Commercial Refrigeration",
-        units: "",
-        urgency: "Emergency",
-        message: "Walk-in cooler not holding temp",
+        address: "500 Trade St, Charlotte, NC",
+        message: "",
       });
     });
 

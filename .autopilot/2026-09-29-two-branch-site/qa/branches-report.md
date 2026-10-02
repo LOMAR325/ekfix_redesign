@@ -53,10 +53,10 @@
 | Запрос | HTTP | ответ | итог |
 |---|---|---|---|
 | home валидный | 200 | {"ok":true} | ок |
-| home без appliance | 400 | {"ok":false,"errors":{"appliance":"Please choose the appliance"}} | ок |
+| home без address | 400 | {"ok":false,"errors":{"address":"Please enter the address"}} | ок |
 | business валидный | 200 | {"ok":true} | ок |
-| business без company | 400 | {"ok":false,"errors":{"company":"Please enter the company name"}} | ок |
-| business плохой email | 400 | {"ok":false,"errors":{"email":"Please enter a valid email"}} | ок |
+| business без name | 400 | {"ok":false,"errors":{"name":"Please enter your name"}} | ок |
+| business без phone | 400 | {"ok":false,"errors":{"phone":"Please enter a phone number"}} | ок |
 | без branch | 400 | {"ok":false,"errors":{"branch":"Please choose home or business"}} | ок |
 
 **Дефектов:** 0

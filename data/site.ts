@@ -24,6 +24,7 @@ const social = [
   { label: "Instagram", href: business.social.instagram },
   { label: "Facebook", href: business.social.facebook },
   { label: "TikTok", href: business.social.tiktok },
+  { label: "Google", href: business.social.google },
 ];
 
 export const site = {
@@ -136,13 +137,21 @@ export const site = {
     business: { label: "Request Business Service", href: branchPaths.business.request },
     home: { label: "Book a Home Repair", href: branchPaths.home.book },
   },
-  /** Text next to every `.stars` row (they are decorative, aria-hidden): "5.0 · 6 reviews". */
-  ratingText: (value: number, count: number) =>
-    `${value.toFixed(1)} · ${count} ${count === 1 ? "review" : "reviews"}`,
-  /** Label under the rating number in `.rating-badge` (components/ui/section-head): the review count. */
-  ratingBadgeCountLabel: (n: number) => `${n} ${n === 1 ? "review" : "reviews"}`,
+  /** Text next to every `.stars` row (they are decorative, aria-hidden): "4.9 · 27 Google reviews". */
+  // Only live Google numbers are ever shown (ADR 0024) — the site never states a count of its own.
+  ratingText: (value: number, count: number) => `${value.toFixed(1)} · ${site.ratingBadgeCountLabel(count)}`,
+  /** Label under the rating number in `.rating-badge`: "27 Google reviews". */
+  ratingBadgeCountLabel: (n: number) => `${n} Google ${n === 1 ? "review" : "reviews"}`,
   /** Screen-reader text of one review's decorative stars. */
-  reviewStarsLabel: "Rated 5 out of 5",
+  reviewStarsLabel: (n: number) => `Rated ${n} out of 5`,
+  /** Links under a reviews section — the owner's Google Business Profile (2026-09-30). */
+  googleReviews: {
+    all: "All reviews on Google →",
+    /** the hero's text next to the stars while no live Google numbers are available */
+    heroLink: "Our reviews on Google →",
+    leave: "Leave a review →",
+    attribution: "Reviews from Google Maps",
+  },
   /** Shown only in `next dev` on a draft page (components/DraftBanner). */
   draftBanner: "DRAFT — not published",
 } as const;

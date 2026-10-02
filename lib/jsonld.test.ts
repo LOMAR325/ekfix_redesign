@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import { business } from "@/data/business";
-import { aggregate, reviews } from "@/data/reviews";
 import type { GuideArticle } from "@/data/types";
 import {
   articleNode,
@@ -60,6 +59,7 @@ describe("businessNode()", () => {
       "https://www.instagram.com/ekglobal_official",
       "https://www.facebook.com/profile.php?id=61572447657230",
       "https://www.tiktok.com/@constantin_ekfix",
+      "https://g.page/r/CQzbpOh98VJ2EAE",
     ]);
   });
 
@@ -73,7 +73,6 @@ describe("businessNode()", () => {
   it("never has priceRange, whatever the options", () => {
     const node = businessNode({
       areaServed: business.areaServed,
-      aggregateRating: true,
       knowsAbout: true,
     });
     expect(node).not.toHaveProperty("priceRange");
@@ -123,13 +122,8 @@ describe("businessNode()", () => {
     );
   });
 
-  it("rates from the published reviews only when asked", () => {
-    expect(businessNode({ aggregateRating: true }).aggregateRating).toEqual({
-      "@type": "AggregateRating",
-      ratingValue: aggregate.ratingValue,
-      reviewCount: reviews.length,
-    });
-    expect(businessNode()).not.toHaveProperty("aggregateRating");
+  it("never carries an aggregateRating (the reviews are Google's, ADR 0024)", () => {
+    expect(businessNode({ image: true, knowsAbout: true })).not.toHaveProperty("aggregateRating");
   });
 
   it("advertises the four commercial services only when asked", () => {
@@ -267,7 +261,7 @@ describe("references", () => {
     };
     walk(
       graph(
-        businessNode({ areaServed: business.areaServed, aggregateRating: true, knowsAbout: true }),
+        businessNode({ areaServed: business.areaServed, knowsAbout: true }),
         websiteNode(),
         ownerNode(),
         serviceNode({ url: "/appliance-repair/washer", name: "Washer Repair", areaServed: [] }),

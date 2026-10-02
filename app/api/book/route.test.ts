@@ -20,20 +20,15 @@ const homeLead = {
   branch: "home",
   name: "Jane Doe",
   phone: "980-555-1234",
-  appliance: "Refrigerator",
+  address: "123 Main St, Charlotte, NC",
   message: "Fridge not cooling",
 };
 
 const businessLead = {
   branch: "business",
-  company: "Queen City Grill",
-  contactName: "Jane Manager",
+  name: "Jane Manager",
   phone: "980-555-1234",
-  email: "",
-  businessType: "Restaurant",
-  equipment: "",
-  units: "",
-  urgency: "",
+  address: "500 Trade St, Charlotte, NC",
   message: "",
 };
 
@@ -47,7 +42,7 @@ describe("POST /api/book", () => {
     expect(await post(homeLead)).toEqual({ status: 200, json: { ok: true } });
   });
 
-  it("returns 200 {ok:true} for a valid business lead with blank optional fields", async () => {
+  it("returns 200 {ok:true} for a valid business lead with an empty message", async () => {
     vi.spyOn(console, "info").mockImplementation(() => {});
     expect(await post(businessLead)).toEqual({ status: 200, json: { ok: true } });
   });
@@ -66,26 +61,25 @@ describe("POST /api/book", () => {
     });
   });
 
-  it("returns 400 errors.appliance for a home lead without an appliance", async () => {
-    const { appliance: _omit, ...rest } = homeLead;
+  it("returns 400 errors.address for a home lead without an address", async () => {
+    const { address: _omit, ...rest } = homeLead;
     expect(await post(rest)).toEqual({
       status: 400,
-      json: { ok: false, errors: { appliance: "Please choose the appliance" } },
+      json: { ok: false, errors: { address: "Please enter the address" } },
     });
   });
 
-  it("returns 400 with errors keyed on the business fields", async () => {
+  it("returns 400 with errors keyed on each invalid field", async () => {
     expect(
-      await post({ ...businessLead, company: "", contactName: " ", businessType: "", email: "nope" }),
+      await post({ ...businessLead, name: "", phone: " ", address: "x".repeat(301) }),
     ).toEqual({
       status: 400,
       json: {
         ok: false,
         errors: {
-          company: "Please enter the company name",
-          contactName: "Please enter your name",
-          email: "Please enter a valid email",
-          businessType: "Please choose the type of business",
+          name: "Please enter your name",
+          phone: "Please enter a phone number",
+          address: "Please keep the address under 300 characters",
         },
       },
     });

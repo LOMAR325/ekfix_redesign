@@ -21,35 +21,21 @@ async function deliver(name: string, run: () => Promise<void>): Promise<void> {
 }
 
 // Email copy per branch. A business lead is tagged "[BUSINESS]" so it stands
-// out in the inbox; empty optional fields read as "—".
+// out in the inbox; an empty message reads as "—".
 const orDash = (value: string | undefined) => value || "—";
 
 export function emailSubject(lead: LeadInput): string {
   return lead.branch === "business"
-    ? `[BUSINESS] Commercial service request — ${lead.company} (${lead.businessType})`
-    : `New home repair request — ${lead.appliance}`;
+    ? `[BUSINESS] Commercial service request — ${lead.name}, ${lead.address}`
+    : `New home repair request — ${lead.name}, ${lead.address}`;
 }
 
 export function emailLines(lead: LeadInput): string[] {
-  if (lead.branch === "business") {
-    return [
-      "Branch: business",
-      `Company: ${lead.company}`,
-      `Contact name: ${lead.contactName}`,
-      `Phone: ${lead.phone}`,
-      `Email: ${orDash(lead.email)}`,
-      `Business type: ${lead.businessType}`,
-      `Equipment: ${orDash(lead.equipment)}`,
-      `Units: ${orDash(lead.units)}`,
-      `Urgency: ${orDash(lead.urgency)}`,
-      `Message: ${orDash(lead.message)}`,
-    ];
-  }
   return [
-    "Branch: home",
+    `Branch: ${lead.branch}`,
     `Name: ${lead.name}`,
     `Phone: ${lead.phone}`,
-    `Appliance: ${lead.appliance}`,
+    `Address: ${lead.address}`,
     `Message: ${orDash(lead.message)}`,
   ];
 }
@@ -59,30 +45,14 @@ export class ConsoleLeadSink implements LeadSink {
   readonly enabled = true;
 
   async send(lead: LeadInput): Promise<void> {
-    // Every field of the branch, absent optional ones as "" — the log shape is stable.
-    console.info(
-      "[book] new lead",
-      lead.branch === "business"
-        ? {
-            branch: lead.branch,
-            company: lead.company,
-            contactName: lead.contactName,
-            phone: lead.phone,
-            email: lead.email ?? "",
-            businessType: lead.businessType,
-            equipment: lead.equipment ?? "",
-            units: lead.units ?? "",
-            urgency: lead.urgency ?? "",
-            message: lead.message ?? "",
-          }
-        : {
-            branch: lead.branch,
-            name: lead.name,
-            phone: lead.phone,
-            appliance: lead.appliance,
-            message: lead.message ?? "",
-          },
-    );
+    // Every field, an absent message as "" — the log shape is stable.
+    console.info("[book] new lead", {
+      branch: lead.branch,
+      name: lead.name,
+      phone: lead.phone,
+      address: lead.address,
+      message: lead.message ?? "",
+    });
   }
 }
 

@@ -1,7 +1,6 @@
 // Shared content types for the data/ layer. Pure types — no runtime, no imports.
 // Shapes come from spec.md §"Слой данных" and interfaces.md §"Ключевые типы".
 
-export type BusinessRating = { value: number; count: number };
 
 export type Business = {
   name: string;
@@ -15,13 +14,14 @@ export type Business = {
   openingHours: { days: string[]; opens: string; closes: string };
   address: { locality: string; region: string; country: string };
   siteUrl: string;
-  social: { instagram: string; facebook: string; tiktok: string };
+  social: { instagram: string; facebook: string; tiktok: string; google: string };
+  /** Google Business Profile: the Place ID (Places API) and the write-a-review link */
+  google: { placeId: string; writeReviewUrl: string };
   gaId: string;
   maintenancePlanName: string;
   /** GBP allows <= 20 zones; finalised in ticket 02, synced with sitemap */
   areaServed: string[];
   /** derived from data/reviews.ts; finalised in ticket 02 */
-  rating: BusinessRating | null;
 };
 
 export type Service = {
@@ -105,20 +105,19 @@ export type Review = {
   text: string;
   appliance?: string;
   town?: string;
-  /** set only where the review itself says so (Tony Z. — "Restaurant") */
+  /** set only where the review itself says so (a restaurant review) */
   segment?: "commercial";
   /** slug of an area from data/towns — only when known (none yet) */
   area?: string;
+  /** Google reviews only (lib/google-reviews): stars given, the author's Google profile, "2 months ago" */
+  rating?: number;
+  authorUrl?: string;
+  relativeTime?: string;
 };
 
-/** A /reviews section: label + the reviews its rule selects (see data/reviews). */
-export type ReviewCategory = { id: string; label: string; reviews: Review[] };
 
 /** Anchor ids of the hub segments (data/b2b-segments.forBusinessSegments). */
 export type SegmentId = "property-management" | "horeca" | "hotels" | "hoa";
-
-/** Business form "Type of business" options (data/forms.businessTypeOptions). */
-export type BusinessTypeOption = "Restaurant" | "Property Management" | "Hotel" | "Laundry" | "Other";
 
 // /for-business (→ /commercial-appliance-repair) segment card — anchor id, <h3>, bullets.
 // Publication via `status` — the single draft/published mechanism (spec story 5).
@@ -140,9 +139,7 @@ export type CommercialPage = Publishable & {
   name: string;
   kind: "equipment" | "industry";
   segmentId?: SegmentId; // industry pages only
-  /** industry pages: the business form's "Type of business" preset for the page's CTA */
-  businessType?: BusinessTypeOption;
-  /** equipment pages: the business form's equipment preset (= data/forms.businessEquipmentOptions) */
+  /** equipment pages: = the commercialCategories.formLabel of its card (lib/links.commercialCardHref) */
   applianceFormLabel?: string;
   /** equipment pages: the residential services (data/services slugs) this equipment has at home */
   homeCounterparts?: string[];
@@ -152,7 +149,6 @@ export type CommercialPage = Publishable & {
   hero: { h1: string; lede: string }; // h1 may contain <br><span>
   equipment: {
     types: string[];
-    brandNames: string[];
     moreEquipment?: Publishable & { items: string[] };
   };
   failures: { title: string; body: string; businessImpact: string }[];
@@ -222,35 +218,17 @@ export type Brand = {
   home?: boolean;
 };
 
-/** Home-form lead (branch "home"), as accepted by lib/book/schema.ts. */
-export type HomeLeadInput = {
-  branch: "home";
+/** Which of the two lead forms a submission comes from — the discriminator. */
+export type LeadBranch = "home" | "business";
+
+/** A validated lead from either form: both forms send the same four fields. */
+export type LeadInput = {
+  branch: LeadBranch;
   name: string;
   phone: string;
-  /** one of data/forms homeApplianceOptions */
-  appliance: string;
+  address: string;
   message?: string;
 };
-
-/** Business-form lead (branch "business"); blank optional fields are absent. */
-export type BusinessLeadInput = {
-  branch: "business";
-  company: string;
-  contactName: string;
-  phone: string;
-  email?: string;
-  /** one of data/forms businessTypeOptions */
-  businessType: string;
-  /** one of data/forms businessEquipmentOptions */
-  equipment?: string;
-  units?: string;
-  /** one of data/forms urgencyOptions */
-  urgency?: string;
-  message?: string;
-};
-
-/** A validated lead from either form, discriminated by `branch`. */
-export type LeadInput = HomeLeadInput | BusinessLeadInput;
 
 export type LeadResult =
   | { ok: true }

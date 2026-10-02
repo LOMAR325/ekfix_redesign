@@ -1,5 +1,4 @@
 import type { Business } from "./types";
-import { aggregate } from "./reviews";
 
 // Single source of truth for NAP and business-wide constants.
 // Do NOT hardcode any of these values in app/ or components/.
@@ -34,6 +33,13 @@ export const business: Business = {
     instagram: "https://www.instagram.com/ekglobal_official",
     facebook: "https://www.facebook.com/profile.php?id=61572447657230",
     tiktok: "https://www.tiktok.com/@constantin_ekfix",
+    // the Google Business Profile — the owner's review link (2026-09-30)
+    google: "https://g.page/r/CQzbpOh98VJ2EAE",
+  },
+  // Place ID resolved from the owner's g.page review link (search.google.com/local/writereview?placeid=…)
+  google: {
+    placeId: "ChIJ8zG7gctrMWQRDNuk6H3xUnY",
+    writeReviewUrl: "https://g.page/r/CQzbpOh98VJ2EAE/review",
   },
   gaId: "G-LFM6MSKBQ7",
   // TODO: имя утверждает владелец
@@ -63,6 +69,4 @@ export const business: Business = {
     "Newell, NC",
     "Catawba, SC",
   ],
-  // Derived from data/reviews.ts aggregate (real reviews), not the "5.0 on Google" badge.
-  rating: { value: aggregate.ratingValue, count: aggregate.reviewCount },
 };

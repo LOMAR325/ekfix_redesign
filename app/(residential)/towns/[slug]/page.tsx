@@ -14,6 +14,7 @@ import { services } from "@/data/services";
 import { owner } from "@/data/people";
 import { branchPaths, site } from "@/data/site";
 import { pageMetadata } from "@/lib/seo";
+import { getReviews } from "@/lib/google-reviews";
 import { isPublished, routable } from "@/lib/publish";
 import { businessNode, faqNode, graph } from "@/lib/jsonld";
 import { breadcrumbTrail, type BreadcrumbStep } from "@/lib/breadcrumb";
@@ -215,6 +216,7 @@ export default async function TownPage({
   const cityPhoto = isCharlotte ? copy.charlottePhoto : { src: copy.townPhoto, alt: cityState };
   // Only reviews tied to this city (brief 7.2); a city without one shows no reviews section.
   const cityReviews = reviewsByAuthors(page.reviewAuthors ?? []);
+  const reviewsData = await getReviews();
 
   return (
     <>
@@ -240,7 +242,7 @@ export default async function TownPage({
             tone="light"
             eyebrow={isCharlotte ? copy.charlotteReviewsEyebrow : copy.reviewsEyebrow}
             h2={copy.reviewsH2}
-            ratingBadge
+            ratingBadge={reviewsData}
           />
           <ReviewsGrid reviews={cityReviews} />
         </section>

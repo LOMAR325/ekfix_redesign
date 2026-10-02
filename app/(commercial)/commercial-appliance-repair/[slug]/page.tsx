@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import type { Brand } from "@/data/types";
-import { brands } from "@/data/brands";
 import { reviewsByAuthors } from "@/data/reviews";
 import { site } from "@/data/site";
 import {
@@ -21,7 +19,6 @@ import { PageHero } from "@/components/ui/page-hero";
 import { SectionHead } from "@/components/ui/section-head";
 import { Prose } from "@/components/ui/prose";
 import { ChipRow } from "@/components/ui/chip-row";
-import { BrandGrid } from "@/components/ui/brand-grid";
 import { LocalPhoto } from "@/components/ui/local-photo";
 import { FaqAccordion } from "@/components/ui/faq-accordion";
 import { ReviewsGrid } from "@/components/ui/review-card";
@@ -76,11 +73,6 @@ export default async function CommercialChildPage({
     { name: page.name, path },
   ]);
 
-  // Brands by name: logo cells for data/brands entries, chips for the hub's laundry names.
-  const logoBrands = page.equipment.brandNames
-    .map((name) => brands.find((b) => b.name === name))
-    .filter((b): b is Brand => b !== undefined);
-  const chipBrands = page.equipment.brandNames.filter((name) => !logoBrands.some((b) => b.name === name));
   const moreEquipment =
     page.equipment.moreEquipment && isPublished(page.equipment.moreEquipment)
       ? page.equipment.moreEquipment.items
@@ -98,7 +90,7 @@ export default async function CommercialChildPage({
     ),
   ];
 
-  const ctas = <CommercialCtas businessType={page.businessType} equipment={page.applianceFormLabel} />;
+  const ctas = <CommercialCtas />;
   // The same equipment at home (brief §6) — the one link back to the residential branch.
   const homeLinks = homeLinksForCommercial(slug);
 
@@ -121,7 +113,8 @@ export default async function CommercialChildPage({
         <div className="two-col">
           <Prose paragraphs={[page.equipmentIntro]}>
             <ChipRow items={[...page.equipment.types, ...moreEquipment]} style={{ marginTop: 24 }} />
-            {chipBrands.length > 0 && <ChipRow items={chipBrands} style={{ marginTop: 12 }} />}
+            {/* No per-page brand list — every brand is serviced; one link to the full list. */}
+            <ChipRow items={[copy.equipment.allBrands]} style={{ marginTop: 12 }} />
             {homeLinks.length > 0 && (
               <>
                 <p style={{ marginTop: 28 }}>{site.crossBranch.toHome}</p>
@@ -131,11 +124,6 @@ export default async function CommercialChildPage({
           </Prose>
           {page.photo && <LocalPhoto src={page.photo.src} alt={page.photo.alt} />}
         </div>
-        {logoBrands.length > 0 && (
-          <div style={{ marginTop: 40 }}>
-            <BrandGrid brands={logoBrands} />
-          </div>
-        )}
       </section>
 
       <section className="section section-light-2">

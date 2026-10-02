@@ -77,7 +77,13 @@ export const residentialHome = {
       },
     ],
   },
-  reviews: { eyebrow: "Reviews", h2: "What homeowners<br>say.", allReviews: "All reviews →" },
+  reviews: {
+    eyebrow: "Reviews",
+    h2: "What homeowners<br>say.",
+    allReviews: "All reviews →",
+    /** while no Google reviews are live (lib/google-reviews) */
+    onGoogle: "The reviews are on Google — read them there, or leave one after a repair.",
+  },
   brands: {
     eyebrow: "Brands",
     h2: "Everyday to<br>high-end.",

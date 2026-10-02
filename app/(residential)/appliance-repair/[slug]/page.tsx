@@ -10,7 +10,6 @@ import {
 import { pageMetadata } from "@/lib/seo";
 import { isPublished } from "@/lib/publish";
 import { areaLinksForService, businessLinkForService } from "@/lib/links";
-import { homeBookingHref } from "@/components/booking-link";
 import { BookCallCtas } from "@/components/ui/ctas";
 import { businessNode, faqNode, graph, serviceNode } from "@/lib/jsonld";
 import { breadcrumbTrail } from "@/lib/breadcrumb";
@@ -90,8 +89,7 @@ export default async function ApplianceRepairPage({
 
   // The one link to the commercial counterpart (brief §6), when that page is published.
   const businessLink = businessLinkForService(service.slug);
-  // The CTAs open the residential form with this appliance preselected.
-  const ctas = <BookCallCtas href={homeBookingHref({ appliance: service.formLabel })} />;
+  const ctas = <BookCallCtas />;
 
   return (
     <>

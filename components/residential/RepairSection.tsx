@@ -5,7 +5,7 @@ import { SectionHead } from "@/components/ui/section-head";
 import { RepairGrid } from "@/components/ui/repair-grid";
 
 // `#repair` — the 12 home-appliance cards (data/services), each linking to its service page;
-// a service page's own CTA opens the form below with that appliance preset (components/booking-link).
+// a service page's own CTA leads to the form below (#book).
 export function RepairSection() {
   const copy = residentialHome.repair;
   return (

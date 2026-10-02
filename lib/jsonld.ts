@@ -1,5 +1,4 @@
 import { business } from "@/data/business";
-import { aggregate } from "@/data/reviews";
 import { commercialServices } from "@/data/b2b-segments";
 import { owner } from "@/data/people";
 import type { GuideArticle, Publishable, Town } from "@/data/types";
@@ -13,9 +12,10 @@ import { absoluteUrl } from "@/lib/seo";
 // (via lib/seo.absoluteUrl), so the business is one entity on every page.
 //
 // Rule (R23): markup describes only what the page shows. Base business fields are visible
-// in the header/footer of every page; `image`, `areaServed`, `aggregateRating` and
+// in the header/footer of every page; `image`, `areaServed` and
 // `knowsAbout` are opt-in per page. Drafts (spec §1) never reach the markup: `faqNode` drops
 // draft items, `articleNode` refuses a draft article. `priceRange` is not emitted anywhere (no price range is shown).
+// No `aggregateRating`: the reviews live on Google (ADR 0024) and may not be marked up here.
 
 export type JsonLdNode = { "@type": string; "@id"?: string; [key: string]: unknown };
 export type JsonLdGraph = { "@context": "https://schema.org"; "@graph": JsonLdNode[] };
@@ -60,8 +60,6 @@ export type BusinessNodeOptions = {
   image?: boolean;
   /** the places listed on this page; omitted when absent or empty */
   areaServed?: readonly ServedArea[];
-  /** only on pages that show the reviews (`/`, `/reviews`) */
-  aggregateRating?: boolean;
   /** only on the commercial hub */
   knowsAbout?: boolean;
 };
@@ -86,19 +84,11 @@ export function businessNode(opts: BusinessNodeOptions = {}): JsonLdNode {
       opens: business.openingHours.opens,
       closes: business.openingHours.closes,
     },
-    sameAs: [business.social.instagram, business.social.facebook, business.social.tiktok],
+    sameAs: [business.social.instagram, business.social.facebook, business.social.tiktok, business.social.google],
   };
   if (opts.image) node.image = absoluteUrl(owner.photos.hero.src);
   if (opts.areaServed && opts.areaServed.length > 0) {
     node.areaServed = opts.areaServed.map(placeNode);
-  }
-  if (opts.aggregateRating) {
-    // Built strictly from data/reviews.ts, not the "5.0 on Google" badge.
-    node.aggregateRating = {
-      "@type": "AggregateRating",
-      ratingValue: aggregate.ratingValue,
-      reviewCount: aggregate.reviewCount,
-    };
   }
   if (opts.knowsAbout) node.knowsAbout = commercialServices;
   return node;
