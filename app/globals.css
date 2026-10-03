@@ -669,7 +669,7 @@ a[style*="--accent"]:focus-visible { outline: 2px solid var(--accent); outline-o
 }
 .branch-panel--business { border-color: rgba(198,242,78,0.35); }
 .branch-panel-photo { object-fit: cover; z-index: 0; }
-.branch-panel--business .branch-panel-photo { object-position: 50% 35%; }
+.branch-panel--business .branch-panel-photo { object-position: 72% 40%; }
 .branch-panel--home .branch-panel-photo { object-position: 70% 30%; }
 .branch-panel-scrim {
   position: absolute; inset: 0; z-index: 1; pointer-events: none;
@@ -739,15 +739,14 @@ a[style*="--accent"]:focus-visible { outline: 2px solid var(--accent); outline-o
 }
 
 /* ---------------- Inner page hero with a photo (owner, 2026-10-03) ----------------
-   `.page-hero` + a photo on the right half under the home hero's left-to-right scrim; on mobile the
-   photo fills the hero under a vertical scrim. Text stays above both. */
+   `.page-hero` + a full-bleed scene photo (dark on the left by design) under a left-to-right scrim;
+   on mobile a vertical scrim. Text stays above both. */
 .branch-hero-has-photo > * { position: relative; z-index: 2; }
-.branch-hero-has-photo > .branch-hero-photo { position: absolute; z-index: 0; object-fit: cover; left: 40% !important; width: 60% !important; }
+.branch-hero-has-photo > .branch-hero-photo { position: absolute; z-index: 0; object-fit: cover; object-position: 75% 50%; }
 .branch-hero-has-photo > .branch-hero-scrim {
   position: absolute; inset: 0; z-index: 1; pointer-events: none;
-  background: linear-gradient(90deg, #0b0c0b 0%, #0b0c0b 40%, rgba(11,12,11,0.7) 55%, rgba(11,12,11,0.2) 80%, rgba(11,12,11,0.1) 100%);
+  background: linear-gradient(90deg, #0b0c0b 0%, rgba(11,12,11,0.92) 30%, rgba(11,12,11,0.55) 55%, rgba(11,12,11,0.1) 85%);
 }
 @media (max-width: 760px) {
-  .branch-hero-has-photo > .branch-hero-photo { left: 0 !important; width: 100% !important; }
   .branch-hero-has-photo > .branch-hero-scrim { background: linear-gradient(180deg, rgba(11,12,11,0.6) 0%, rgba(11,12,11,0.82) 50%, rgba(11,12,11,0.95) 100%); }
 }

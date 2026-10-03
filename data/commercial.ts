@@ -236,7 +236,7 @@ export const commercialPages: CommercialPageContent[] = [
       ),
       draftFaq("What does a diagnostic visit cost for a business?", "Awaiting owner fact 7."),
     ],
-    photo: owner.photos.rooftopRefrigeration,
+    photo: { src: "/images/hero-commercial-refrigerator.webp", alt: "Restaurant walk-in cooler with a refrigerant gauge set" },
     reviewAuthors: [],
   },
   {
@@ -301,7 +301,7 @@ export const commercialPages: CommercialPageContent[] = [
       draftFaq("Do you take dish machine calls after 8PM?", "Awaiting owner fact 7."),
     ],
     reviewAuthors: [],
-    photo: owner.photos.restaurantKitchen,
+    photo: { src: "/images/hero-commercial-dishwasher.webp", alt: "Door-type commercial dish machine in a restaurant dish room" },
   },
   {
     status: "published",
@@ -368,7 +368,7 @@ export const commercialPages: CommercialPageContent[] = [
       ),
       draftFaq("Can you come late at night, after a banquet ends?", "Awaiting owner fact 7."),
     ],
-    photo: owner.photos.restaurantKitchen,
+    photo: { src: "/images/hero-commercial-ice-machine.webp", alt: "Commercial ice machine on a storage bin, front panel off" },
     reviewAuthors: [],
   },
   {
@@ -437,7 +437,7 @@ export const commercialPages: CommercialPageContent[] = [
       draftFaq("Which laundry models and parts do you stock?", "Awaiting owner fact 6."),
     ],
     reviewAuthors: [],
-    photo: owner.photos.washerExtractorPortrait,
+    photo: { src: "/images/hero-commercial-laundry.webp", alt: "Row of commercial washer-extractors in a hotel laundry" },
   },
   {
     status: "published",
@@ -504,7 +504,7 @@ export const commercialPages: CommercialPageContent[] = [
       ),
       draftFaq("Which other cooking equipment brands have you serviced?", "Awaiting owner fact 6."),
     ],
-    photo: owner.photos.restaurantKitchen,
+    photo: { src: "/images/hero-commercial-oven-range.webp", alt: "Restaurant cook line with a commercial range and fryer" },
     reviewAuthors: [],
   },
   {
@@ -575,7 +575,7 @@ export const commercialPages: CommercialPageContent[] = [
       draftFaq("Do you answer emergency calls after the kitchen closes?", "Awaiting owner fact 7."),
     ],
     reviewAuthors: [],
-    photo: owner.photos.restaurantKitchen,
+    photo: { src: "/images/hero-restaurant.webp", alt: "Restaurant kitchen after closing" },
   },
   {
     status: "published",
@@ -644,7 +644,7 @@ export const commercialPages: CommercialPageContent[] = [
       ),
       draftFaq("What does a service call cost for a property management account?", "Awaiting owner fact 7."),
     ],
-    photo: owner.photos.homeLaundry,
+    photo: { src: "/images/hero-property-management.webp", alt: "Apartment kitchen with standard appliances and a work order" },
     reviewAuthors: [],
   },
 ];

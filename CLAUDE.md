@@ -104,7 +104,7 @@ scripts/                      check-copy.mjs · similarity.mjs · html-text.mjs 
 - **`data/guides.ts`**, **`data/cases.ts`** — `articles`/`cases`, `publishedArticles()`/`publishedCases()`,
   `articleSlugs()`/`caseSlugs()`, `getArticle`/`getCase`, `guideHubGroups()`, копия шаблонов (ADR 0019).
 - **`data/services.ts`** — 12 `services`, `commercialCategories`, `applianceRepairHub` (`path`, `name`), `servicePage`,
-  `serviceHeroPhoto` (фото hero услуг — пока снимки владельца; промпты на замену — `docs/photos/prompts.md`).
+  `serviceHeroPhoto` (фото hero услуг — `hero-<slug>.webp`, сгенерированы по `docs/photos/prompts.md`).
 - **`data/b2b-segments.ts`** — имя историческое: сегменты (`forBusinessSegments`, `publicForBusinessSegments`),
   `processSteps`, `serviceFormats`, `trustChips`, `businessFaqs`, `whyCallUs`, `commercialServices`, `laundryObjectTypes`.
 - **`data/reviews.ts`** — `reviews`: 4 реальных отзыва Google, дословно (старые 6 цитат удалены — не подтверждены),
@@ -201,7 +201,8 @@ scripts/                      check-copy.mjs · similarity.mjs · html-text.mjs 
   меняются вместе. ≤1024 — бургер, телефон и кнопка ветки внутри меню (`.nav-ctas`), переключатель веток — в верхней
   строке; ≥1025 — `.header-actions`, дропдауны по hover/`focus-within`, клик по группе — no-op. На 1025–1099 у шапок с
   переключателем скрыт подзаголовок логотипа — иначе вторая строка.
-- `PageHero` принимает `photo` — фон справа под затемнением (`.branch-hero-*`); у коммерческих дочерних это `page.photo`.
+- `PageHero` принимает `photo` — сцена на всю ширину под затемнением слева (`.branch-hero-*`); у коммерческих дочерних
+  это `page.photo` (`hero-commercial-*.webp`). Фон бизнес-панели `/` — `entry-business-technician.webp`.
 - `.brand-grid` — flexbox (`.brand-cell { flex: 1 1 156px }`), последняя строка растягивается на всю ширину.
 - Изображения — `next/image` с размерами из `imageDims(src)` (`components/ui/image-dimensions.ts`);
   `hero-technician.webp` — `priority`.
