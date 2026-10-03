@@ -203,8 +203,8 @@ scripts/                      check-copy.mjs · similarity.mjs · html-text.mjs 
   переключателем скрыт подзаголовок логотипа — иначе вторая строка.
 - `PageHero` принимает `photo` — сцена на всю ширину под затемнением слева (`.branch-hero-*`); у коммерческих дочерних
   это `page.photo` (`hero-commercial-*.webp`). Фон бизнес-панели `/` — `entry-business-technician.webp`.
-- Списки фактов и ссылок — только `ChipRow` (`components/ui/chip-row`): ссылки → `.branch-links`, строки → `.branch-list`
-  (факты с индексом 01…). Таблеток (`.chip`) на сайте больше нет.
+- Списки фактов и ссылок — только `ChipRow` (`components/ui/chip-row`), вид «чек-лист» (выбор владельца): факт —
+  галочка в тёмном квадрате, ссылка — лаймовый круг со стрелкой; до 3 ссылок — `.branch-links`. Таблеток нет.
 - `.brand-grid` — flexbox (`.brand-cell { flex: 1 1 156px }`), последняя строка растягивается на всю ширину.
 - Изображения — `next/image` с размерами из `imageDims(src)` (`components/ui/image-dimensions.ts`);
   `hero-technician.webp` — `priority`.

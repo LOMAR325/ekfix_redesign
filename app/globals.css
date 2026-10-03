@@ -748,46 +748,37 @@ a[style*="--accent"]:focus-visible { outline: 2px solid var(--accent); outline-o
   .branch-hero-has-photo > .branch-hero-scrim { background: linear-gradient(180deg, rgba(11,12,11,0.6) 0%, rgba(11,12,11,0.82) 50%, rgba(11,12,11,0.95) 100%); }
 }
 
-/* ---------------- Lists of facts and links (owner, 2026-10-03) ----------------
-   Replace the pill `.chip-row` everywhere (components/ui/chip-row). Hairline rows like a spec sheet,
-   a mono index for facts, an arrow for links; existing tokens only. */
+/* ---------------- Lists of facts and links (owner, 2026-10-03 — the checklist look) ----------------
+   Replace the pill `.chip-row` everywhere (components/ui/chip-row). A fact: lime tick in a dark rounded
+   square (as `.fstat-ic`); a link: lime arrow circle (as `.repair-card .arrow`). Columns auto-fill by the
+   list's own width. Existing tokens only. */
 .branch-list {
   list-style: none; margin: 0; padding: 0;
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); column-gap: 32px;
-  border-top: 1px solid var(--line-light);
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px 24px;
 }
-.branch-list li {
-  display: flex; align-items: baseline; gap: 14px;
-  padding: 15px 0; border-bottom: 1px solid var(--line-light);
-  font-size: 15px; font-weight: 600; line-height: 1.4; color: var(--text-dark);
+.branch-list li { display: flex; align-items: center; gap: 12px; min-height: 30px; font-size: 16px; font-weight: 600; line-height: 1.35; color: var(--text-dark); }
+.branch-list li:not(.is-link)::before {
+  content: "✓"; flex-shrink: 0; width: 30px; height: 30px; border-radius: 9px;
+  display: grid; place-items: center; font-size: 14px; font-weight: 800;
+  background: var(--bg-dark); color: var(--accent);
 }
-.branch-list .idx { font-family: var(--font-mono); font-size: 11px; letter-spacing: 1px; color: var(--text-dark-45); flex-shrink: 0; }
-.branch-list a { flex: 1; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; transition: color .2s; }
-.branch-list a::after { content: "→"; color: var(--text-dark-45); transition: transform .25s ease, color .2s; }
-.branch-list a:hover::after { transform: translateX(4px); color: var(--text-dark); }
-.branch-list li > span:not(.idx) { flex: 1; }
-.branch-list.on-dark { border-top-color: var(--line-dark); }
-.branch-list.on-dark li { border-bottom-color: var(--line-dark); color: var(--text-light); }
-.branch-list.on-dark .idx, .branch-list.on-dark a::after { color: var(--text-light-45); }
-.branch-list.on-dark a:hover, .branch-list.on-dark a:hover::after { color: var(--accent); }
-.branch-list a:focus-visible, .branch-links a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.branch-list.on-dark li { color: var(--text-light); }
+.branch-list.on-dark li:not(.is-link)::before { background: rgba(198,242,78,0.12); }
+.branch-list li.is-link a, .branch-links a { display: inline-flex; align-items: center; gap: 12px; min-height: 30px; transition: color .2s; }
+.branch-list li.is-link a::before, .branch-links a::before {
+  content: "→"; flex-shrink: 0; width: 30px; height: 30px; border-radius: 999px;
+  display: grid; place-items: center; font-size: 14px; font-weight: 800;
+  background: var(--accent); color: var(--bg-dark); transition: transform .25s ease, background .2s;
+}
+.branch-list li.is-link a:hover::before, .branch-links a:hover::before { transform: translateX(3px); background: var(--accent-hover); }
+.branch-list li.is-link a:hover, .branch-links a:hover { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+.branch-list a:focus-visible, .branch-links a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 999px; }
 
-.branch-links { display: flex; flex-wrap: wrap; gap: 10px 28px; }
-.branch-links a {
-  font-size: 15px; font-weight: 600; color: var(--text-dark);
-  padding-bottom: 3px; border-bottom: 1px solid var(--line-light); transition: border-color .2s, color .2s;
-}
-.branch-links a::after { content: " →"; display: inline-block; margin-left: 6px; transition: transform .25s ease; }
-.branch-links a:hover { border-color: var(--text-dark); }
-.branch-links a:hover::after { transform: translateX(4px); }
-.branch-links.on-dark a { color: var(--text-light); border-bottom-color: var(--line-dark); }
-.branch-links.on-dark a:hover { color: var(--accent); border-color: var(--accent); }
-@media (min-width: 1100px) {
-  .branch-list.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .branch-list.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .branch-list.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .branch-list.cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-}
+.branch-links { display: flex; flex-wrap: wrap; gap: 12px 28px; }
+.branch-links a { font-size: 16px; font-weight: 600; color: var(--text-dark); }
+.branch-links.on-dark a { color: var(--text-light); }
 @media (max-width: 640px) {
-  .branch-list { grid-template-columns: 1fr; }
+  .branch-list { gap: 12px; }
+  .branch-list li, .branch-links a { font-size: 15px; }
+  .branch-links { flex-direction: column; gap: 14px; }
 }

@@ -15,12 +15,13 @@ const isLink = (item: ChipItem): item is { label: string; href: string } =>
   typeof item !== "string" && Boolean(item.href);
 const labelOf = (item: ChipItem) => (typeof item === "string" ? item : item.label).replace(/\s*→\s*$/, "");
 
-// Lists of facts and links (owner, 2026-10-03: the pill "chips" read as generated — replaced site-wide).
-// Three looks, chosen by the content, one visual language (hairlines, mono index, arrow):
-//  • 1–3 links only → plain text links with an arrow (`.branch-links`);
-//  • a list with links → an index of rows, each link ending in an arrow (`.branch-list`);
-//  • a list of facts → spec-sheet rows with a mono index 01, 02… (`.branch-list.is-spec`).
-// The trailing "→" of a label is drawn by CSS, so the data may keep or drop it.
+// Lists of facts and links (owner, 2026-10-03: the pill "chips" read as generated; the owner picked the
+// checklist look out of three). One visual language, chosen by the content:
+//  • 1–3 links only → a row of links, each led by a lime arrow circle (`.branch-links`);
+//  • otherwise → a checklist grid (`.branch-list`): a fact gets a lime tick in a dark rounded square
+//    (the `.fstat-ic` look), a link gets the lime arrow circle (the `.repair-card .arrow` look).
+// Columns follow the list's own width (auto-fill), so the same list fits a narrow prose column, a
+// full-width band and a phone. The trailing "→" of a label is drawn by CSS.
 export function ChipRow({ items, tone = "light", style }: ChipRowProps) {
   const dark = tone === "dark" ? " on-dark" : "";
   if (items.length <= 3 && items.every(isLink)) {
@@ -34,23 +35,17 @@ export function ChipRow({ items, tone = "light", style }: ChipRowProps) {
       </div>
     );
   }
-  const spec = !items.some(isLink);
   return (
-    // ≤5 items share one row on wide screens (`cols-N`); longer lists fill 230px columns.
-    <ul
-      className={`branch-list${spec ? " is-spec" : ""}${items.length <= 5 ? ` cols-${items.length}` : ""}${dark}`}
-      style={style}
-    >
-      {items.map((item, i) => (
-        <li key={labelOf(item)}>
-          {spec && <span className="idx">{String(i + 1).padStart(2, "0")}</span>}
-          {isLink(item) ? (
+    <ul className={`branch-list${dark}`} style={style}>
+      {items.map((item) =>
+        isLink(item) ? (
+          <li key={labelOf(item)} className="is-link">
             <Anchor href={item.href}>{labelOf(item)}</Anchor>
-          ) : (
-            <span>{labelOf(item)}</span>
-          )}
-        </li>
-      ))}
+          </li>
+        ) : (
+          <li key={labelOf(item)}>{labelOf(item)}</li>
+        ),
+      )}
     </ul>
   );
 }
