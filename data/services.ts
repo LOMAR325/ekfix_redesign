@@ -1,5 +1,6 @@
 import type { CommercialCategory, Service } from "./types";
 import { business } from "./business";
+import { owner } from "./people";
 
 // 12 appliance-repair services, content carried over verbatim from appliance-repair/*.html.
 // Order matches the "We Repair" menu in index.html.
@@ -516,3 +517,23 @@ export const applianceRepairHub = {
   /** crumb label on every service page, and the JSON-LD crumb name */
   name: "Home Appliance Repair",
 } as const;
+
+/**
+ * Hero photo of each service page — the owner's own on-the-job photos (2026-10-03), the closest real
+ * scene for the appliance until a dedicated photo exists (docs/photos/prompts.md).
+ */
+const p = owner.photos;
+export const serviceHeroPhoto: Record<string, { src: string; alt: string; position?: string }> = {
+  refrigerator: { ...p.portrait, position: "70% 40%" },
+  washer: { ...p.hero, position: "65% 30%" },
+  dryer: p.homeLaundry,
+  dishwasher: p.homeKitchen,
+  stove: p.homeKitchen,
+  range: p.homeKitchen,
+  cooktop: p.homeKitchen,
+  microwave: p.homeKitchen,
+  freezer: { ...p.portrait, position: "70% 40%" },
+  "ice-maker": { ...p.portrait, position: "70% 40%" },
+  "wine-cooler": { ...p.portrait, position: "70% 40%" },
+  "garbage-disposal": p.homeKitchen,
+};

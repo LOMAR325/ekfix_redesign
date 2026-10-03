@@ -737,3 +737,17 @@ a[style*="--accent"]:focus-visible { outline: 2px solid var(--accent); outline-o
 @media (prefers-reduced-motion: reduce) {
   .branch-panel, .branch-panel *, .branch-panel::after, .branch-entry-panels { transition: none !important; }
 }
+
+/* ---------------- Inner page hero with a photo (owner, 2026-10-03) ----------------
+   `.page-hero` + a photo on the right half under the home hero's left-to-right scrim; on mobile the
+   photo fills the hero under a vertical scrim. Text stays above both. */
+.branch-hero-has-photo > * { position: relative; z-index: 2; }
+.branch-hero-has-photo > .branch-hero-photo { position: absolute; z-index: 0; object-fit: cover; left: 40% !important; width: 60% !important; }
+.branch-hero-has-photo > .branch-hero-scrim {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(90deg, #0b0c0b 0%, #0b0c0b 40%, rgba(11,12,11,0.7) 55%, rgba(11,12,11,0.2) 80%, rgba(11,12,11,0.1) 100%);
+}
+@media (max-width: 760px) {
+  .branch-hero-has-photo > .branch-hero-photo { left: 0 !important; width: 100% !important; }
+  .branch-hero-has-photo > .branch-hero-scrim { background: linear-gradient(180deg, rgba(11,12,11,0.6) 0%, rgba(11,12,11,0.82) 50%, rgba(11,12,11,0.95) 100%); }
+}

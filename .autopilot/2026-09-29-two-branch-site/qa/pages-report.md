@@ -1,6 +1,6 @@
 # QA страниц — story 81 (R95)
 
-Прогон: 2026-10-03T13:35 · `node --no-warnings qa/pages.mjs http://localhost:3111` против `npm start` · 32 опубликованных путей (`publishedPaths()`) × 1440×900 и 390×844.
+Прогон: 2026-10-03T13:54 · `node --no-warnings qa/pages.mjs http://localhost:3111` против `npm start` · 32 опубликованных путей (`publishedPaths()`) × 1440×900 и 390×844.
 Контраст — WCAG 2.x по вычисленным цветам (альфа и opacity наложены на фон предков); порог 4.5:1, крупный текст (≥24px или ≥18.66px bold) 3:1. Текст на фоне-картинке/градиенте не считается автоматически (колонка «на картинке»).
 
 | Путь | Ширина | HTTP | Текстов | <4.5 | на картинке | Гориз. скролл | Ошибки консоли | Картинки ок/всего | 4xx/5xx |
@@ -12,23 +12,23 @@
 | /reviews | 1440 | 200 | 63 | 0 | 0 | нет | 0 | 0/0 | 0 |
 | /appliance-repair | 1440 | 200 | 193 | 0 | 2 | нет | 0 | 37/37 | 0 |
 | /commercial-appliance-repair | 1440 | 200 | 222 | 0 | 0 | нет | 0 | 18/18 | 0 |
-| /appliance-repair/refrigerator | 1440 | 200 | 115 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /appliance-repair/washer | 1440 | 200 | 119 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /appliance-repair/dryer | 1440 | 200 | 118 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /appliance-repair/dishwasher | 1440 | 200 | 120 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /appliance-repair/stove | 1440 | 200 | 118 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /appliance-repair/range | 1440 | 200 | 118 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /appliance-repair/cooktop | 1440 | 200 | 118 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /appliance-repair/microwave | 1440 | 200 | 115 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /appliance-repair/freezer | 1440 | 200 | 117 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /appliance-repair/ice-maker | 1440 | 200 | 118 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /appliance-repair/wine-cooler | 1440 | 200 | 116 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /appliance-repair/garbage-disposal | 1440 | 200 | 112 | 0 | 0 | нет | 0 | 0/0 | 0 |
+| /appliance-repair/refrigerator | 1440 | 200 | 115 | 0 | 0 | нет | 0 | 1/1 | 0 |
+| /appliance-repair/washer | 1440 | 200 | 119 | 0 | 0 | нет | 0 | 1/1 | 0 |
+| /appliance-repair/dryer | 1440 | 200 | 118 | 0 | 0 | нет | 0 | 1/1 | 0 |
+| /appliance-repair/dishwasher | 1440 | 200 | 120 | 0 | 0 | нет | 0 | 1/1 | 0 |
+| /appliance-repair/stove | 1440 | 200 | 118 | 0 | 0 | нет | 0 | 1/1 | 0 |
+| /appliance-repair/range | 1440 | 200 | 118 | 0 | 0 | нет | 0 | 1/1 | 0 |
+| /appliance-repair/cooktop | 1440 | 200 | 118 | 0 | 0 | нет | 0 | 1/1 | 0 |
+| /appliance-repair/microwave | 1440 | 200 | 115 | 0 | 0 | нет | 0 | 1/1 | 0 |
+| /appliance-repair/freezer | 1440 | 200 | 117 | 0 | 0 | нет | 0 | 1/1 | 0 |
+| /appliance-repair/ice-maker | 1440 | 200 | 118 | 0 | 0 | нет | 0 | 1/1 | 0 |
+| /appliance-repair/wine-cooler | 1440 | 200 | 116 | 0 | 0 | нет | 0 | 1/1 | 0 |
+| /appliance-repair/garbage-disposal | 1440 | 200 | 112 | 0 | 0 | нет | 0 | 1/1 | 0 |
 | /commercial-appliance-repair/commercial-refrigerator-repair | 1440 | 200 | 103 | 0 | 0 | нет | 0 | 1/1 | 0 |
 | /commercial-appliance-repair/commercial-dishwasher-repair | 1440 | 200 | 99 | 0 | 0 | нет | 0 | 1/1 | 0 |
-| /commercial-appliance-repair/commercial-ice-machine-repair | 1440 | 200 | 101 | 0 | 0 | нет | 0 | 0/0 | 0 |
+| /commercial-appliance-repair/commercial-ice-machine-repair | 1440 | 200 | 101 | 0 | 0 | нет | 0 | 1/1 | 0 |
 | /commercial-appliance-repair/commercial-laundry-equipment-repair | 1440 | 200 | 104 | 0 | 0 | нет | 0 | 1/1 | 0 |
-| /commercial-appliance-repair/commercial-oven-range-repair | 1440 | 200 | 105 | 0 | 0 | нет | 0 | 0/0 | 0 |
+| /commercial-appliance-repair/commercial-oven-range-repair | 1440 | 200 | 105 | 0 | 0 | нет | 0 | 1/1 | 0 |
 | /commercial-appliance-repair/restaurant-appliance-repair | 1440 | 200 | 101 | 0 | 0 | нет | 0 | 1/1 | 0 |
 | /commercial-appliance-repair/property-management-appliance-repair | 1440 | 200 | 103 | 0 | 0 | нет | 0 | 1/1 | 0 |
 | /towns/charlotte | 1440 | 200 | 82 | 0 | 0 | нет | 0 | 1/1 | 0 |
@@ -44,23 +44,23 @@
 | /reviews | 390 | 200 | 58 | 0 | 0 | нет | 0 | 0/0 | 0 |
 | /appliance-repair | 390 | 200 | 171 | 0 | 2 | нет | 0 | 37/37 | 0 |
 | /commercial-appliance-repair | 390 | 200 | 207 | 0 | 0 | нет | 0 | 18/18 | 0 |
-| /appliance-repair/refrigerator | 390 | 200 | 107 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /appliance-repair/washer | 390 | 200 | 111 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /appliance-repair/dryer | 390 | 200 | 110 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /appliance-repair/dishwasher | 390 | 200 | 112 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /appliance-repair/stove | 390 | 200 | 110 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /appliance-repair/range | 390 | 200 | 110 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /appliance-repair/cooktop | 390 | 200 | 110 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /appliance-repair/microwave | 390 | 200 | 107 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /appliance-repair/freezer | 390 | 200 | 109 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /appliance-repair/ice-maker | 390 | 200 | 110 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /appliance-repair/wine-cooler | 390 | 200 | 108 | 0 | 0 | нет | 0 | 0/0 | 0 |
-| /appliance-repair/garbage-disposal | 390 | 200 | 104 | 0 | 0 | нет | 0 | 0/0 | 0 |
+| /appliance-repair/refrigerator | 390 | 200 | 107 | 0 | 0 | нет | 0 | 1/1 | 0 |
+| /appliance-repair/washer | 390 | 200 | 111 | 0 | 0 | нет | 0 | 1/1 | 0 |
+| /appliance-repair/dryer | 390 | 200 | 110 | 0 | 0 | нет | 0 | 1/1 | 0 |
+| /appliance-repair/dishwasher | 390 | 200 | 112 | 0 | 0 | нет | 0 | 1/1 | 0 |
+| /appliance-repair/stove | 390 | 200 | 110 | 0 | 0 | нет | 0 | 1/1 | 0 |
+| /appliance-repair/range | 390 | 200 | 110 | 0 | 0 | нет | 0 | 1/1 | 0 |
+| /appliance-repair/cooktop | 390 | 200 | 110 | 0 | 0 | нет | 0 | 1/1 | 0 |
+| /appliance-repair/microwave | 390 | 200 | 107 | 0 | 0 | нет | 0 | 1/1 | 0 |
+| /appliance-repair/freezer | 390 | 200 | 109 | 0 | 0 | нет | 0 | 1/1 | 0 |
+| /appliance-repair/ice-maker | 390 | 200 | 110 | 0 | 0 | нет | 0 | 1/1 | 0 |
+| /appliance-repair/wine-cooler | 390 | 200 | 108 | 0 | 0 | нет | 0 | 1/1 | 0 |
+| /appliance-repair/garbage-disposal | 390 | 200 | 104 | 0 | 0 | нет | 0 | 1/1 | 0 |
 | /commercial-appliance-repair/commercial-refrigerator-repair | 390 | 200 | 95 | 0 | 0 | нет | 0 | 1/1 | 0 |
 | /commercial-appliance-repair/commercial-dishwasher-repair | 390 | 200 | 91 | 0 | 0 | нет | 0 | 1/1 | 0 |
-| /commercial-appliance-repair/commercial-ice-machine-repair | 390 | 200 | 93 | 0 | 0 | нет | 0 | 0/0 | 0 |
+| /commercial-appliance-repair/commercial-ice-machine-repair | 390 | 200 | 93 | 0 | 0 | нет | 0 | 1/1 | 0 |
 | /commercial-appliance-repair/commercial-laundry-equipment-repair | 390 | 200 | 96 | 0 | 0 | нет | 0 | 1/1 | 0 |
-| /commercial-appliance-repair/commercial-oven-range-repair | 390 | 200 | 97 | 0 | 0 | нет | 0 | 0/0 | 0 |
+| /commercial-appliance-repair/commercial-oven-range-repair | 390 | 200 | 97 | 0 | 0 | нет | 0 | 1/1 | 0 |
 | /commercial-appliance-repair/restaurant-appliance-repair | 390 | 200 | 93 | 0 | 0 | нет | 0 | 1/1 | 0 |
 | /commercial-appliance-repair/property-management-appliance-repair | 390 | 200 | 95 | 0 | 0 | нет | 0 | 1/1 | 0 |
 | /towns/charlotte | 390 | 200 | 74 | 0 | 0 | нет | 0 | 1/1 | 0 |

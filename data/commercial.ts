@@ -368,6 +368,7 @@ export const commercialPages: CommercialPageContent[] = [
       ),
       draftFaq("Can you come late at night, after a banquet ends?", "Awaiting owner fact 7."),
     ],
+    photo: owner.photos.restaurantKitchen,
     reviewAuthors: [],
   },
   {
@@ -503,6 +504,7 @@ export const commercialPages: CommercialPageContent[] = [
       ),
       draftFaq("Which other cooking equipment brands have you serviced?", "Awaiting owner fact 6."),
     ],
+    photo: owner.photos.restaurantKitchen,
     reviewAuthors: [],
   },
   {
