@@ -516,3 +516,23 @@ export const applianceRepairHub = {
   /** crumb label on every service page, and the JSON-LD crumb name */
   name: "Home Appliance Repair",
 } as const;
+
+/**
+ * Hero photo of each service page — a dark scene of the appliance with the left side empty for the
+ * text (generated from docs/photos/prompts.md, 2026-10-03).
+ */
+const hero = (slug: string, alt: string) => ({ src: `/images/hero-${slug}.webp`, alt });
+export const serviceHeroPhoto: Record<string, { src: string; alt: string; position?: string }> = {
+  refrigerator: hero("refrigerator", "French-door refrigerator in a home kitchen, opened for repair"),
+  washer: hero("washer", "Front-load washer in a laundry room, drain filter open"),
+  dryer: hero("dryer", "Clothes dryer pulled from the wall, vent hose detached"),
+  dishwasher: hero("dishwasher", "Built-in dishwasher, door open, kick panel removed"),
+  stove: hero("stove", "Gas stove in a home kitchen, oven door open"),
+  range: hero("range", "Professional-style range in a home kitchen"),
+  cooktop: hero("cooktop", "Gas cooktop with the grates lifted off"),
+  microwave: hero("microwave", "Over-the-range microwave with the door open"),
+  freezer: hero("freezer", "Upright freezer in a garage, door open"),
+  "ice-maker": hero("ice-maker", "Undercounter ice maker with the front grille removed"),
+  "wine-cooler": hero("wine-cooler", "Dual-zone wine cooler in a home bar"),
+  "garbage-disposal": hero("garbage-disposal", "Garbage disposal under a kitchen sink"),
+};

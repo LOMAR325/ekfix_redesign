@@ -87,7 +87,7 @@ export default async function CommercialHomePage() {
 
       <Hero
         photo={hub.hero.photo}
-        objectPosition="60% 40%"
+        objectPosition="70% 35%"
         eyebrow={hub.hero.eyebrow}
         h1={hub.hero.h1}
         lede={hub.hero.lede}
@@ -154,8 +154,7 @@ export default async function CommercialHomePage() {
         <section id="business-reviews" className="section section-light">
           <SectionHead tone="light" eyebrow={reviewsData.source === "google" ? hub.reviews.googleEyebrow : hub.reviews.eyebrow} h2={hub.reviews.h2} ratingBadge={reviewsData} />
           <ReviewsGrid reviews={businessReviews} />
-          <ChipRow items={[{ label: hub.reviews.allReviews, href: "/reviews" }]} style={{ marginTop: 24 }} />
-          <GoogleReviewLinks data={reviewsData} style={{ marginTop: 12 }} />
+          <GoogleReviewLinks data={reviewsData} lead={{ label: hub.reviews.allReviews, href: "/reviews" }} />
         </section>
       )}
 

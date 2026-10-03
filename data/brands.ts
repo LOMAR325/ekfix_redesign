@@ -3,23 +3,21 @@ import { owner } from "./people";
 
 // All brands from brands.html, in the ON-PAGE ORDER of that page:
 // first the "Residential & premium kitchen" grid, then "Commercial & specialty refrigeration".
-// /brands renders these two groups by filtering on `tier`; the home page renders `homeBrands`.
+// /brands and the two branch homes render them by filtering on `tier`.
 // `logo` = file in public/images/ (names unchanged from assets/images/). `alt` = brands.html alt text.
-// `home: true` marks the subset that appears in the reordered home #brands grid (keeps the
-// home grid the same size it is today — 16 cells — just commercial-first).
 export const brands: Brand[] = [
   // --- Residential & premium kitchen (brands.html section 1) ---
-  { name: "Sub-Zero", logo: "/images/sub_zero_logo.webp", alt: "Sub-Zero repair", tier: "premium", home: true },
-  { name: "Thermador", logo: "/images/thermador.webp", alt: "Thermador repair", tier: "premium", home: true },
-  { name: "Bosch", logo: "/images/bosch.webp", alt: "Bosch repair", tier: "premium", home: true },
-  { name: "Samsung", logo: "/images/samsung.webp", alt: "Samsung repair", tier: "mass", home: true },
-  { name: "Whirlpool", logo: "/images/whirlpool.webp", alt: "Whirlpool repair", tier: "mass", home: true },
-  { name: "KitchenAid", logo: "/images/kitchen_aid.webp", alt: "KitchenAid repair", tier: "mass", home: true },
-  { name: "Electrolux", logo: "/images/electrolux.webp", alt: "Electrolux repair", tier: "mass", home: true },
-  { name: "Maytag", logo: "/images/maytag.webp", alt: "Maytag repair", tier: "mass", home: true },
-  { name: "Frigidaire", logo: "/images/frigidare.webp", alt: "Frigidaire repair", tier: "mass", home: true },
-  { name: "Amana", logo: "/images/Amana.webp", alt: "Amana repair", tier: "mass", home: true },
-  { name: "Kenmore", logo: "/images/Kenmore_Logo.webp", alt: "Kenmore repair", tier: "mass", home: true },
+  { name: "Sub-Zero", logo: "/images/sub_zero_logo.webp", alt: "Sub-Zero repair", tier: "premium" },
+  { name: "Thermador", logo: "/images/thermador.webp", alt: "Thermador repair", tier: "premium" },
+  { name: "Bosch", logo: "/images/bosch.webp", alt: "Bosch repair", tier: "premium" },
+  { name: "Samsung", logo: "/images/samsung.webp", alt: "Samsung repair", tier: "mass" },
+  { name: "Whirlpool", logo: "/images/whirlpool.webp", alt: "Whirlpool repair", tier: "mass" },
+  { name: "KitchenAid", logo: "/images/kitchen_aid.webp", alt: "KitchenAid repair", tier: "mass" },
+  { name: "Electrolux", logo: "/images/electrolux.webp", alt: "Electrolux repair", tier: "mass" },
+  { name: "Maytag", logo: "/images/maytag.webp", alt: "Maytag repair", tier: "mass" },
+  { name: "Frigidaire", logo: "/images/frigidare.webp", alt: "Frigidaire repair", tier: "mass" },
+  { name: "Amana", logo: "/images/Amana.webp", alt: "Amana repair", tier: "mass" },
+  { name: "Kenmore", logo: "/images/Kenmore_Logo.webp", alt: "Kenmore repair", tier: "mass" },
   { name: "GE", logo: "/images/GE.webp", alt: "GE repair", tier: "mass" },
   { name: "LG", logo: "/images/LG.webp", alt: "LG repair", tier: "mass" },
   { name: "Haier", logo: "/images/Haier.webp", alt: "Haier repair", tier: "mass" },
@@ -33,11 +31,11 @@ export const brands: Brand[] = [
   { name: "Thor", logo: "/images/Thor.webp", alt: "Thor Kitchen repair", tier: "premium" },
 
   // --- Commercial & specialty refrigeration (brands.html section 2) ---
-  { name: "Hobart", logo: "/images/hobart.webp", alt: "Hobart repair", tier: "commercial", home: true },
-  { name: "Blodgett", logo: "/images/blodget.webp", alt: "Blodgett repair", tier: "commercial", home: true },
-  { name: "Middleby", logo: "/images/Middleby_Corporation.webp", alt: "Middleby Corporation repair", tier: "commercial", home: true },
-  { name: "Girbau", logo: "/images/girbau.webp", alt: "Girbau repair", tier: "commercial", home: true },
-  { name: "Copeland", logo: "/images/copeland.webp", alt: "Copeland repair", tier: "commercial", home: true },
+  { name: "Hobart", logo: "/images/hobart.webp", alt: "Hobart repair", tier: "commercial" },
+  { name: "Blodgett", logo: "/images/blodget.webp", alt: "Blodgett repair", tier: "commercial" },
+  { name: "Middleby", logo: "/images/Middleby_Corporation.webp", alt: "Middleby Corporation repair", tier: "commercial" },
+  { name: "Girbau", logo: "/images/girbau.webp", alt: "Girbau repair", tier: "commercial" },
+  { name: "Copeland", logo: "/images/copeland.webp", alt: "Copeland repair", tier: "commercial" },
   { name: "Beverage-Air", logo: "/images/Beverage_Air.webp", alt: "Beverage-Air repair", tier: "commercial" },
   { name: "Perlick", logo: "/images/Perlick.webp", alt: "Perlick repair", tier: "commercial" },
   { name: "Scotsman", logo: "/images/Scotsman.webp", alt: "Scotsman repair", tier: "commercial" },
@@ -46,26 +44,11 @@ export const brands: Brand[] = [
   { name: "U-Line", logo: "/images/U_line.webp", alt: "U-Line repair", tier: "commercial" },
 ];
 
-const TIER_ORDER: Record<Brand["tier"], number> = { commercial: 0, premium: 1, mass: 2 };
-
-// Home #brands grid: the current 16 cells, reordered commercial -> premium -> mass
-// (b2b-priority-brief §7 block 7). Order within a tier follows the brands.html order above.
-export const homeBrands: Brand[] = brands
-  .filter((b) => b.home)
-  .slice()
-  .sort((a, b) => TIER_ORDER[a.tier] - TIER_ORDER[b.tier]);
-
 export const residentialBrands: Brand[] = brands.filter((b) => b.tier !== "commercial");
 export const commercialBrands: Brand[] = brands.filter((b) => b.tier === "commercial");
 
 // The `.brand-note` line under each grid (dotted "also serviced" list + a "call us" CTA).
 export const brandNote = {
-  // index.html #brands
-  home: {
-    tag: "Commercial",
-    text: "Unimac · Miele · Fisher & Paykel · and more",
-    cta: "ask us about your model",
-  },
   // brands.html commercial section
   brandsPage: {
     tag: "Also serviced",
@@ -73,10 +56,6 @@ export const brandNote = {
     cta: "ask us about your model",
   },
 } as const;
-
-// Home #brands lede — commercial-first wording (b2b §7 block 7 / spec story 24).
-export const homeBrandsLede =
-  "Commercial and residential — from Hobart and Girbau to Sub-Zero and Thermador.";
 
 // /brands page copy — carried over 1:1 from brands.html so task 07 renders it from data,
 // not hardcode (parallels data/towns.ts `townsIndex`). "Residential & premium kitchen" +

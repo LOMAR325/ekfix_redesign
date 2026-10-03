@@ -506,9 +506,6 @@ a[style*="--accent"]:focus-visible { outline: 2px solid var(--accent); outline-o
 .faq-item[open] summary::after { transform: rotate(45deg); }
 .faq-item p { margin: 14px 0 0; font-size: 15px; line-height: 1.7; color: var(--text-dark-60); max-width: 680px; }
 
-.chip-row { display: flex; flex-wrap: wrap; gap: 10px; }
-.chip { padding: 10px 18px; border-radius: 999px; background: var(--bg-light-2); border: 1px solid var(--line-light); font-size: 14px; font-weight: 600; }
-.chip.on-dark { background: var(--bg-dark-3); border-color: rgba(255,255,255,0.09); color: var(--text-light); }
 
 /* Rounded chips, no 1px-grid box — same softening as .family-stats (2026-09-03). */
 .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-top: 24px; }
@@ -669,7 +666,7 @@ a[style*="--accent"]:focus-visible { outline: 2px solid var(--accent); outline-o
 }
 .branch-panel--business { border-color: rgba(198,242,78,0.35); }
 .branch-panel-photo { object-fit: cover; z-index: 0; }
-.branch-panel--business .branch-panel-photo { object-position: 50% 35%; }
+.branch-panel--business .branch-panel-photo { object-position: 72% 40%; }
 .branch-panel--home .branch-panel-photo { object-position: 70% 30%; }
 .branch-panel-scrim {
   position: absolute; inset: 0; z-index: 1; pointer-events: none;
@@ -736,4 +733,52 @@ a[style*="--accent"]:focus-visible { outline: 2px solid var(--accent); outline-o
 }
 @media (prefers-reduced-motion: reduce) {
   .branch-panel, .branch-panel *, .branch-panel::after, .branch-entry-panels { transition: none !important; }
+}
+
+/* ---------------- Inner page hero with a photo (owner, 2026-10-03) ----------------
+   `.page-hero` + a full-bleed scene photo (dark on the left by design) under a left-to-right scrim;
+   on mobile a vertical scrim. Text stays above both. */
+.branch-hero-has-photo > * { position: relative; z-index: 2; }
+.branch-hero-has-photo > .branch-hero-photo { position: absolute; z-index: 0; object-fit: cover; object-position: 75% 50%; }
+.branch-hero-has-photo > .branch-hero-scrim {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(90deg, #0b0c0b 0%, rgba(11,12,11,0.92) 30%, rgba(11,12,11,0.55) 55%, rgba(11,12,11,0.1) 85%);
+}
+@media (max-width: 760px) {
+  .branch-hero-has-photo > .branch-hero-scrim { background: linear-gradient(180deg, rgba(11,12,11,0.6) 0%, rgba(11,12,11,0.82) 50%, rgba(11,12,11,0.95) 100%); }
+}
+
+/* ---------------- Lists of facts and links (owner, 2026-10-03 — the checklist look) ----------------
+   Replace the pill `.chip-row` everywhere (components/ui/chip-row). A fact: lime tick in a dark rounded
+   square (as `.fstat-ic`); a link: lime arrow circle (as `.repair-card .arrow`). Columns auto-fill by the
+   list's own width. Existing tokens only. */
+.branch-list {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px 24px;
+}
+.branch-list li { display: flex; align-items: center; gap: 12px; min-height: 30px; font-size: 16px; font-weight: 600; line-height: 1.35; color: var(--text-dark); }
+.branch-list li:not(.is-link)::before {
+  content: "✓"; flex-shrink: 0; width: 30px; height: 30px; border-radius: 9px;
+  display: grid; place-items: center; font-size: 14px; font-weight: 800;
+  background: var(--bg-dark); color: var(--accent);
+}
+.branch-list.on-dark li { color: var(--text-light); }
+.branch-list.on-dark li:not(.is-link)::before { background: rgba(198,242,78,0.12); }
+.branch-list li.is-link a, .branch-links a { display: inline-flex; align-items: center; gap: 12px; min-height: 30px; transition: color .2s; }
+.branch-list li.is-link a::before, .branch-links a::before {
+  content: "→"; flex-shrink: 0; width: 30px; height: 30px; border-radius: 999px;
+  display: grid; place-items: center; font-size: 14px; font-weight: 800;
+  background: var(--accent); color: var(--bg-dark); transition: transform .25s ease, background .2s;
+}
+.branch-list li.is-link a:hover::before, .branch-links a:hover::before { transform: translateX(3px); background: var(--accent-hover); }
+.branch-list li.is-link a:hover, .branch-links a:hover { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+.branch-list a:focus-visible, .branch-links a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 999px; }
+
+.branch-links { display: flex; flex-wrap: wrap; gap: 12px 28px; }
+.branch-links a { font-size: 16px; font-weight: 600; color: var(--text-dark); }
+.branch-links.on-dark a { color: var(--text-light); }
+@media (max-width: 640px) {
+  .branch-list { gap: 12px; }
+  .branch-list li, .branch-links a { font-size: 15px; }
+  .branch-links { flex-direction: column; gap: 14px; }
 }

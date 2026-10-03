@@ -5,31 +5,47 @@ export type ChipItem = string | { label: string; href?: string };
 
 type ChipRowProps = {
   items: ChipItem[];
-  /** `dark` adds `.on-dark` to every chip (dark sections of the service/town pages). */
+  /** `dark` for dark sections (light text, light hairlines). */
   tone?: "light" | "dark";
   /** Existing per-page inline override, e.g. `{ marginTop: 24 }`. */
   style?: CSSProperties;
 };
 
-// `.chip-row` + `.chip` / `.chip.on-dark`. A chip is a `<span>` unless it carries an
-// `href`, in which case it is a link (see the "where we work" rows on the service pages).
+const isLink = (item: ChipItem): item is { label: string; href: string } =>
+  typeof item !== "string" && Boolean(item.href);
+const labelOf = (item: ChipItem) => (typeof item === "string" ? item : item.label).replace(/\s*→\s*$/, "");
+
+// Lists of facts and links (owner, 2026-10-03: the pill "chips" read as generated; the owner picked the
+// checklist look out of three). One visual language, chosen by the content:
+//  • 1–3 links only → a row of links, each led by a lime arrow circle (`.branch-links`);
+//  • otherwise → a checklist grid (`.branch-list`): a fact gets a lime tick in a dark rounded square
+//    (the `.fstat-ic` look), a link gets the lime arrow circle (the `.repair-card .arrow` look).
+// Columns follow the list's own width (auto-fill), so the same list fits a narrow prose column, a
+// full-width band and a phone. The trailing "→" of a label is drawn by CSS.
 export function ChipRow({ items, tone = "light", style }: ChipRowProps) {
-  const cls = tone === "dark" ? "chip on-dark" : "chip";
-  return (
-    <div className="chip-row" style={style}>
-      {items.map((item) => {
-        const label = typeof item === "string" ? item : item.label;
-        const href = typeof item === "string" ? undefined : item.href;
-        return href ? (
-          <Anchor key={label} href={href} className={cls}>
-            {label}
+  const dark = tone === "dark" ? " on-dark" : "";
+  if (items.length <= 3 && items.every(isLink)) {
+    return (
+      <div className={`branch-links${dark}`} style={style}>
+        {items.map((item) => (
+          <Anchor key={item.href} href={item.href}>
+            {labelOf(item)}
           </Anchor>
+        ))}
+      </div>
+    );
+  }
+  return (
+    <ul className={`branch-list${dark}`} style={style}>
+      {items.map((item) =>
+        isLink(item) ? (
+          <li key={labelOf(item)} className="is-link">
+            <Anchor href={item.href}>{labelOf(item)}</Anchor>
+          </li>
         ) : (
-          <span key={label} className={cls}>
-            {label}
-          </span>
-        );
-      })}
-    </div>
+          <li key={labelOf(item)}>{labelOf(item)}</li>
+        ),
+      )}
+    </ul>
   );
 }

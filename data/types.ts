@@ -18,7 +18,6 @@ export type Business = {
   /** Google Business Profile: the Place ID (Places API) and the write-a-review link */
   google: { placeId: string; writeReviewUrl: string };
   gaId: string;
-  maintenancePlanName: string;
   /** GBP allows <= 20 zones; finalised in ticket 02, synced with sitemap */
   areaServed: string[];
   /** derived from data/reviews.ts; finalised in ticket 02 */
@@ -30,7 +29,7 @@ export type Service = {
   formLabel: string;
   title: string;
   metaDescription: string;
-  /** thumbnail used in the home #repair grid, e.g. "/images/refrigerator-repair.webp" */
+  /** thumbnail of the residential home #repair grid, e.g. "/images/refrigerator-repair.webp" */
   image: string;
   hero: { h1: string; lede: string }; // h1 may contain <br><span>
   /** The places the H1 names, in H1 order — the page's JSON-LD `Service.areaServed` (story 19). */
@@ -104,7 +103,6 @@ export type Review = {
   detail: string;
   text: string;
   appliance?: string;
-  town?: string;
   /** set only where the review itself says so (a restaurant review) */
   segment?: "commercial";
   /** slug of an area from data/towns — only when known (none yet) */
@@ -214,8 +212,6 @@ export type Brand = {
   logo: string;
   alt: string;
   tier: "commercial" | "premium" | "mass";
-  /** appears in the reordered home #brands grid (subset of the full /brands list) */
-  home?: boolean;
 };
 
 /** Which of the two lead forms a submission comes from — the discriminator. */

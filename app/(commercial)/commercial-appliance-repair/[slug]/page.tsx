@@ -19,7 +19,6 @@ import { PageHero } from "@/components/ui/page-hero";
 import { SectionHead } from "@/components/ui/section-head";
 import { Prose } from "@/components/ui/prose";
 import { ChipRow } from "@/components/ui/chip-row";
-import { LocalPhoto } from "@/components/ui/local-photo";
 import { FaqAccordion } from "@/components/ui/faq-accordion";
 import { ReviewsGrid } from "@/components/ui/review-card";
 import { CtaBand } from "@/components/ui/cta-band";
@@ -106,11 +105,11 @@ export default async function CommercialChildPage({
         )}
       />
 
-      <PageHero breadcrumb={crumbs} h1={page.hero.h1} lede={page.hero.lede} ctas={ctas} />
+      <PageHero breadcrumb={crumbs} h1={page.hero.h1} lede={page.hero.lede} ctas={ctas} photo={page.photo} />
 
       <section className="section section-light">
         <SectionHead tone="light" eyebrow={copy.equipment.eyebrow} h2={copy.equipment.h2} />
-        <div className="two-col">
+        <div style={{ maxWidth: 760 }}>
           <Prose paragraphs={[page.equipmentIntro]}>
             <ChipRow items={[...page.equipment.types, ...moreEquipment]} style={{ marginTop: 24 }} />
             {/* No per-page brand list — every brand is serviced; one link to the full list. */}
@@ -122,7 +121,6 @@ export default async function CommercialChildPage({
               </>
             )}
           </Prose>
-          {page.photo && <LocalPhoto src={page.photo.src} alt={page.photo.alt} />}
         </div>
       </section>
 

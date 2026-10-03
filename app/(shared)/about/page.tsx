@@ -65,8 +65,8 @@ export default function AboutPage() {
               <StatRow stats={meet.stats} />
             </Prose>
             <LocalPhoto
-              src={owner.photos.portrait.src}
-              alt={owner.photos.portrait.alt}
+              src={owner.photos.washerExtractor.src}
+              alt={owner.photos.washerExtractor.alt}
               imgStyle={{ background: "var(--bg-light-2)" }}
             />
           </div>
@@ -108,7 +108,7 @@ export default function AboutPage() {
             style={{ marginBottom: 30 }}
           />
           <PhotoPair
-            style={{ marginTop: 0 }}
+            style={{ marginTop: 0, gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))" }}
             photos={onTheJob.photos.map((photo) => ({ ...photo, figureStyle: { height: 280 } }))}
           />
         </section>

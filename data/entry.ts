@@ -52,7 +52,11 @@ export function entryPanels(): EntryPanel[] {
       links: BUSINESS_LINKS.flatMap(([slug, label]) =>
         live.some((p) => p.slug === slug) ? [{ label, href: `${commercialHubPath}/${slug}` }] : [],
       ),
-      photo: owner.photos.restaurantKitchen,
+      // generated after the owner, from docs/photos/prompts.md (2026-10-03)
+      photo: {
+        src: "/images/entry-business-technician.webp",
+        alt: "Technician checking a commercial refrigerator with refrigerant gauges in a restaurant kitchen",
+      },
     },
     {
       branch: "home",

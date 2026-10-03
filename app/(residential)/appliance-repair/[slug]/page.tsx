@@ -6,6 +6,7 @@ import {
   servicePage as copy,
   serviceRepairName,
   serviceSlugs,
+  serviceHeroPhoto,
 } from "@/data/services";
 import { pageMetadata } from "@/lib/seo";
 import { isPublished } from "@/lib/publish";
@@ -108,6 +109,7 @@ export default async function ApplianceRepairPage({
         h1={service.hero.h1}
         lede={service.hero.lede}
         ctas={ctas}
+        photo={serviceHeroPhoto[service.slug]}
       />
 
       <section className="section section-light">

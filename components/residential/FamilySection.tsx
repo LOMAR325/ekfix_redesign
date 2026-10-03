@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { business } from "@/data/business";
 import { owner } from "@/data/people";
 import { residentialHome, type FamilyStatIcon } from "@/data/residential";
-import { LocalPhoto } from "@/components/ui/local-photo";
+import { PhotoPair } from "@/components/ui/photo-pair";
 import { richProps } from "@/components/ui/rich-text";
 
 // Small line icons for the four trust facts below. Decorative — the label carries
@@ -48,8 +48,8 @@ const ICONS: Record<FamilyStatIcon, ReactNode> = {
 };
 
 // `#family` — ported from index.html (copy in data/residential) for the residential home: the
-// family paragraph, the four facts, the owner's quote and his portrait at a Thermador
-// refrigerator. The commercial photos and the "restaurant walk-in" sentence stay on the
+// family paragraph, the four facts, the owner's quote and two photos from real home calls. The
+// commercial photos and the "restaurant walk-in" sentence stay on the
 // commercial side; "Where we work" became its own #areas section.
 export function FamilySection() {
   const copy = residentialHome.family;
@@ -113,10 +113,11 @@ export function FamilySection() {
               </div>
             </div>
           </div>
-          <LocalPhoto
-            src={owner.photos.portrait.src}
-            alt={owner.photos.portrait.alt}
-            style={{ marginTop: 24 }}
+          <PhotoPair
+            photos={[
+              { ...owner.photos.homeKitchen, caption: copy.photoCaptions.homeKitchen },
+              { ...owner.photos.homeLaundry, caption: copy.photoCaptions.homeLaundry },
+            ]}
           />
         </div>
       </div>

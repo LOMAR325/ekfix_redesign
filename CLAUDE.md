@@ -103,7 +103,8 @@ scripts/                      check-copy.mjs · similarity.mjs · html-text.mjs 
   `commercialHub` (копия коммерческой главной), `commercialPageCopy`, `commercialCta`.
 - **`data/guides.ts`**, **`data/cases.ts`** — `articles`/`cases`, `publishedArticles()`/`publishedCases()`,
   `articleSlugs()`/`caseSlugs()`, `getArticle`/`getCase`, `guideHubGroups()`, копия шаблонов (ADR 0019).
-- **`data/services.ts`** — 12 `services`, `commercialCategories`, `applianceRepairHub` (`path`, `name`), `servicePage`.
+- **`data/services.ts`** — 12 `services`, `commercialCategories`, `applianceRepairHub` (`path`, `name`), `servicePage`,
+  `serviceHeroPhoto` (фото hero услуг — `hero-<slug>.webp`, сгенерированы по `docs/photos/prompts.md`).
 - **`data/b2b-segments.ts`** — имя историческое: сегменты (`forBusinessSegments`, `publicForBusinessSegments`),
   `processSteps`, `serviceFormats`, `trustChips`, `businessFaqs`, `whyCallUs`, `commercialServices`, `laundryObjectTypes`.
 - **`data/reviews.ts`** — `reviews`: 4 реальных отзыва Google, дословно (старые 6 цитат удалены — не подтверждены),
@@ -200,6 +201,10 @@ scripts/                      check-copy.mjs · similarity.mjs · html-text.mjs 
   меняются вместе. ≤1024 — бургер, телефон и кнопка ветки внутри меню (`.nav-ctas`), переключатель веток — в верхней
   строке; ≥1025 — `.header-actions`, дропдауны по hover/`focus-within`, клик по группе — no-op. На 1025–1099 у шапок с
   переключателем скрыт подзаголовок логотипа — иначе вторая строка.
+- `PageHero` принимает `photo` — сцена на всю ширину под затемнением слева (`.branch-hero-*`); у коммерческих дочерних
+  это `page.photo` (`hero-commercial-*.webp`). Фон бизнес-панели `/` — `entry-business-technician.webp`.
+- Списки фактов и ссылок — только `ChipRow` (`components/ui/chip-row`), вид «чек-лист» (выбор владельца): факт —
+  галочка в тёмном квадрате, ссылка — лаймовый круг со стрелкой; до 3 ссылок — `.branch-links`. Таблеток нет.
 - `.brand-grid` — flexbox (`.brand-cell { flex: 1 1 156px }`), последняя строка растягивается на всю ширину.
 - Изображения — `next/image` с размерами из `imageDims(src)` (`components/ui/image-dimensions.ts`);
   `hero-technician.webp` — `priority`.
@@ -263,8 +268,8 @@ vitest (`environment: node`, алиас `@`). Только публичные ф
 - `/for-business` удалён (308 на коммерческую главную, ADR 0016); его контент — в `data/b2b-segments.ts` под старым именем.
 - Два dev/prod-сервера из прошлых сессий могут держать порты 3111/3112 и отдавать устаревший код — перед проверкой
   убедиться, что сервер запущен из текущего кода (`lsof -iTCP:<port> -sTCP:LISTEN`).
-- `business.maintenancePlanName` — плейсхолдер, нигде не рендерится. Фото коммерческих категорий — бытовые webp-заглушки,
-  у стиральной машины — `dryer.webp` (TODO в `data/services.ts`).
+- Фото карточек коммерческого оборудования — бытовые webp-заглушки (TODO в `data/services.ts`); фото владельца с
+  объектов — `owner.photos` в `data/people.ts` (снимки владельца 2026-10-03, как есть).
 - `#who-we-serve` — светлая секция с тёмными `.audience-card` (так задумано, `h3` перекрашен). `.brand-cell` (фон
   `--bg-light`) на `section-light` сливается с фоном — на `/brands` так и задумано.
 - Визуальная проверка: Playwright есть в системном npx-кэше, не в зависимостях —
