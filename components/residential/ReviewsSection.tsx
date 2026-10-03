@@ -1,6 +1,5 @@
 import { SectionHead } from "@/components/ui/section-head";
 import { ReviewsGrid } from "@/components/ui/review-card";
-import { ChipRow } from "@/components/ui/chip-row";
 import { GoogleReviewLinks } from "@/components/ui/google-review-links";
 import { residentialHome } from "@/data/residential";
 import type { ReviewsData } from "@/lib/google-reviews";
@@ -15,16 +14,13 @@ export function ReviewsSection({ data }: { data: ReviewsData }) {
     <section id="reviews" className="section section-light">
       <SectionHead tone="light" eyebrow={copy.eyebrow} h2={copy.h2} ratingBadge={data} />
       {reviews.length > 0 ? (
-        <>
-          <ReviewsGrid reviews={reviews} />
-          <ChipRow items={[{ label: copy.allReviews, href: "/reviews" }]} style={{ marginTop: 24 }} />
-        </>
+        <ReviewsGrid reviews={reviews} />
       ) : (
         <p style={{ margin: 0, maxWidth: 620, fontSize: 17, lineHeight: 1.6, color: "var(--text-dark-60)" }}>
           {copy.onGoogle}
         </p>
       )}
-      <GoogleReviewLinks data={data} style={{ marginTop: 12 }} />
+      <GoogleReviewLinks data={data} lead={reviews.length > 0 ? { label: copy.allReviews, href: "/reviews" } : undefined} />
     </section>
   );
 }

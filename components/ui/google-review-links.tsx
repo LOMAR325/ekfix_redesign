@@ -5,12 +5,22 @@ import { ChipRow } from "./chip-row";
 
 // Under a reviews section: "All reviews on Google →" (the Business Profile) and "Leave a review →",
 // plus the Google Maps attribution under the reviews (all of them are Google's — live or copied).
-export function GoogleReviewLinks({ data, style }: { data: ReviewsData; style?: React.CSSProperties }) {
+export function GoogleReviewLinks({
+  data,
+  style,
+  lead,
+}: {
+  data: ReviewsData;
+  style?: React.CSSProperties;
+  /** a link shown first in the same row (e.g. "All reviews →" to /reviews) */
+  lead?: { label: string; href: string };
+}) {
   const copy = site.googleReviews;
   return (
     <div style={{ marginTop: 24, ...style }}>
       <ChipRow
         items={[
+          ...(lead ? [lead] : []),
           { label: copy.all, href: business.social.google },
           { label: copy.leave, href: business.google.writeReviewUrl },
         ]}
