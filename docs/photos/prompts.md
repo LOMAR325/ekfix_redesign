@@ -89,19 +89,37 @@ on an ice bin` · `a stainless commercial washer-extractor` · `a commercial six
 
 **Вариант A (рекомендую): реальный Константин, генерация по референсу.** В генератор с загрузкой
 референсов (например, Nano Banana / Gemini, ChatGPT images, Midjourney --cref) загрузить два фото:
-`public/images/ek-global-technician-washer-repair-charlotte.webp` (стиль и свет) и
-`public/images/ek-global-technician-commercial-washer-extractor.webp` (лицо). Промпт:
+`public/images/ek-global-technician-washer-repair-charlotte.webp` (цветокор и настроение) и
+`public/images/ek-global-technician-commercial-washer-extractor.webp` (лицо, налобный фонарик).
+
+Как различить панели с первого взгляда (на «домашнем» фото он стоит, смотрит в камеру, тёплый жилой
+интерьер, дрель в руке):
+
+- **поза и действие** — не позирует, а работает: присел на одно колено у открытого шкафа, смотрит в
+  манометр, не в камеру;
+- **ракурс** — три четверти сбоку и чуть снизу, а не фронтально;
+- **среда и цвет** — холодная нержавейка и белый свет кухни ресторана против тёплого дома;
+- **детали** — налобный фонарик (есть на его реальных фото с объектов), манометры хладагента вместо дрели.
+
+Свет, цветокор и одежда остаются общими — панели выглядят как одна серия, но читаются как разные миры.
 
 ```
-Use the first reference image for lighting, color grade, framing and wardrobe, and the second for the
-man's face and build — keep his face exactly as in the reference, no beautification. Same man, same
-dark green polo with a small logo on the chest, same black work gloves, holding a cordless drill,
-smiling at the camera, standing in a restaurant back-of-house kitchen next to a stainless commercial
-reach-in refrigerator and a dish machine, stainless shelving behind. Same dark moody low-key light as
-reference one: near-black background, soft warm key from the right, slight green tint. Waist-up, he is
-on the right half of the frame, the left half is dark and calm. Photorealistic, not CGI. No text, no logos
-other than the one on the polo. 3:2, 2400x1600.
+Use the first reference image ONLY for the overall color grade and mood, and the second for the man's
+face, build and headlamp — keep his face exactly as in the reference, no beautification, natural skin.
+Same man in the same dark green polo with a small chest logo, black work gloves, a headlamp on his forehead.
+He is NOT posing and NOT looking at the camera: he kneels on one knee in front of an open stainless
+two-door commercial reach-in refrigerator in a restaurant back-of-house kitchen, focused, reading a
+refrigerant manifold gauge set in his hands, hoses running into the unit's lower compartment. Camera at
+a low three-quarter angle from his left side, 35mm, he fills the right half of the frame, the left half
+is calm and dark. Environment: brushed stainless walls and shelving, cool white overhead kitchen light
+falling off into shadow, a dish machine softly out of focus behind him, a toolbag on the tiled floor.
+Grade: dark, low-key, near-black shadows (#0b0c0b), a slight green tint like reference one — but the
+light here is cool and clinical, not warm. Photorealistic documentary photo, not CGI, not staged-looking.
+No text, no logos other than the one on the polo. 3:2, 2400x1600.
 ```
+
+Если генератор плохо держит лицо при таком ракурсе — запасной вариант позы: он стоит спиной к камере
+вполоборота у открытой двери walk-in камеры, лицо в профиль, в руке фонарик, освещающий испаритель.
 
 **Вариант B: без генерации.** Взять настоящее фото у промышленной стиральной машины
 (`ek-global-technician-commercial-washer-extractor.webp`) и обработать в цвет «домашнего» фото:
