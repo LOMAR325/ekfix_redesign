@@ -60,7 +60,11 @@ export const commercialHub = {
       "Photo Report After Every Visit",
       "Same-Day Priority When a Slot Is Open",
     ],
-    photo: owner.photos.restaurantKitchen,
+    // the same photo as the entry page's For Business panel (owner, 2026-10-03)
+    photo: {
+      src: "/images/entry-business-technician.webp",
+      alt: "Technician checking a commercial refrigerator with refrigerant gauges in a restaurant kitchen",
+    },
   },
   industries: {
     eyebrow: "Industries",

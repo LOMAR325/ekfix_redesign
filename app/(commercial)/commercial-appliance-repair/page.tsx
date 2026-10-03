@@ -87,7 +87,7 @@ export default async function CommercialHomePage() {
 
       <Hero
         photo={hub.hero.photo}
-        objectPosition="60% 40%"
+        objectPosition="70% 35%"
         eyebrow={hub.hero.eyebrow}
         h1={hub.hero.h1}
         lede={hub.hero.lede}
