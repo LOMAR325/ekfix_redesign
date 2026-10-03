@@ -134,9 +134,9 @@ export default async function TownPage({
   if (isArea) {
     const headings = areaCopy[town.slug];
     const coverage = page.coverage && isPublished(page.coverage) ? [page.coverage.body] : [];
-    // The owner's portrait where he is based (owner.basedIn), the generic town photo elsewhere.
+    // The owner on a home call where he is based (owner.basedIn), the generic town photo elsewhere.
     const photo =
-      owner.basedIn === town.name ? owner.photos.portrait : { src: copy.townPhoto, alt: cityState };
+      owner.basedIn === town.name ? owner.photos.homeKitchen : { src: copy.townPhoto, alt: cityState };
     const areaReviews = reviews.filter((r) => r.area === town.slug);
     const related = [...publishedAncestors(town).reverse(), ...areasBelow].map(townLink);
 

@@ -24,8 +24,8 @@
 а остальные карточки переснять в одном стиле — тогда сетка выглядит как одна серия.
 
 **Hero внутренних страниц** сейчас временно стоят на настоящих фото Константина с вызовов: кухня — для
-плит, посудомойки, микроволновки и измельчителя; прачечная — для стиральной и сушильной машин; холодильник
-Thermador — для холодильника, морозилки, льдогенератора и винного шкафа. Это честно (на фото именно он), но
+плит, посудомойки, микроволновки и измельчителя; прачечная — для стиральной и сушильной машин; кухня — и для холодильника, морозилки, льдогенератора
+и винного шкафа (фото у Thermador убрано по просьбе владельца). Это честно (на фото именно он), но
 не всегда та техника. Ниже — промпты для сцен каждой страницы.
 
 ## Общий стиль (вставлять в начало каждого промпта)
@@ -90,7 +90,7 @@ on an ice bin` · `a stainless commercial washer-extractor` · `a commercial six
 **Вариант A (рекомендую): реальный Константин, генерация по референсу.** В генератор с загрузкой
 референсов (например, Nano Banana / Gemini, ChatGPT images, Midjourney --cref) загрузить два фото:
 `public/images/ek-global-technician-washer-repair-charlotte.webp` (стиль и свет) и
-`public/images/ek-global-owner-thermador-refrigerator-charlotte.webp` (лицо). Промпт:
+`public/images/ek-global-technician-commercial-washer-extractor.webp` (лицо). Промпт:
 
 ```
 Use the first reference image for lighting, color grade, framing and wardrobe, and the second for the

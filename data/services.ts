@@ -524,7 +524,7 @@ export const applianceRepairHub = {
  */
 const p = owner.photos;
 export const serviceHeroPhoto: Record<string, { src: string; alt: string; position?: string }> = {
-  refrigerator: { ...p.portrait, position: "70% 40%" },
+  refrigerator: p.homeKitchen,
   washer: { ...p.hero, position: "65% 30%" },
   dryer: p.homeLaundry,
   dishwasher: p.homeKitchen,
@@ -532,8 +532,8 @@ export const serviceHeroPhoto: Record<string, { src: string; alt: string; positi
   range: p.homeKitchen,
   cooktop: p.homeKitchen,
   microwave: p.homeKitchen,
-  freezer: { ...p.portrait, position: "70% 40%" },
-  "ice-maker": { ...p.portrait, position: "70% 40%" },
-  "wine-cooler": { ...p.portrait, position: "70% 40%" },
+  freezer: p.homeKitchen,
+  "ice-maker": p.homeKitchen,
+  "wine-cooler": p.homeKitchen,
   "garbage-disposal": p.homeKitchen,
 };

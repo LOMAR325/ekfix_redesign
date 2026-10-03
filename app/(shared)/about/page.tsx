@@ -65,8 +65,8 @@ export default function AboutPage() {
               <StatRow stats={meet.stats} />
             </Prose>
             <LocalPhoto
-              src={owner.photos.portrait.src}
-              alt={owner.photos.portrait.alt}
+              src={owner.photos.washerExtractor.src}
+              alt={owner.photos.washerExtractor.alt}
               imgStyle={{ background: "var(--bg-light-2)" }}
             />
           </div>

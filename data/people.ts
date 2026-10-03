@@ -31,9 +31,8 @@ export type Owner = {
    * the residential service names, then the commercial categories (R23, story 18).
    */
   knowsAbout: readonly string[];
-  /** portrait/hero/… — the owner's own photos; every one shows him at work */
+  /** the owner's own photos; every one shows him at work. The Thermador portrait was removed (owner, 2026-10-03). */
   photos: Record<
-    | "portrait"
     | "hero"
     | "restaurantKitchen"
     | "rooftopLaundry"
@@ -88,10 +87,6 @@ export const owner: Owner = {
   basedIn: "Ballantyne",
   knowsAbout: [...residentialAppliances, ...commercialEquipment],
   photos: {
-    portrait: {
-      src: "/images/ek-global-owner-thermador-refrigerator-charlotte.webp",
-      alt: `${name}, ${business.name} owner and lead technician`,
-    },
     hero: {
       src: "/images/ek-global-technician-washer-repair-charlotte.webp",
       alt: `${name}, ${business.name} owner and lead technician, next to a washer he's repairing`,

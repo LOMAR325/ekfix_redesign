@@ -56,7 +56,6 @@ export const imageDimensions: Record<string, Dimensions> = {
   "/images/hobart.webp": { width: 800, height: 200 },
   "/images/ice-maker-repair.webp": { width: 1000, height: 1000 },
   "/images/kitchen_aid.webp": { width: 920, height: 100 },
-  "/images/ek-global-owner-thermador-refrigerator-charlotte.webp": { width: 1900, height: 1250 },
   "/images/ek-global-technician-commercial-laundry-charlotte.webp": { width: 1398, height: 1036 },
   "/images/ek-global-technician-restaurant-kitchen-charlotte.webp": { width: 1280, height: 960 },
   "/images/maytag.webp": { width: 1920, height: 400 },

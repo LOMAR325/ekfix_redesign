@@ -113,7 +113,7 @@ export function ownerNode(): JsonLdNode {
     name: owner.name,
     jobTitle: owner.role,
     url: absoluteUrl("/about"),
-    image: absoluteUrl(owner.photos.portrait.src),
+    image: absoluteUrl(owner.photos.washerExtractor.src),
     worksFor: ref(ids.business),
     knowsAbout: owner.knowsAbout,
     hasCredential: owner.credentials.map((c) => ({
