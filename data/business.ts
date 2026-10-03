@@ -42,8 +42,6 @@ export const business: Business = {
     writeReviewUrl: "https://g.page/r/CQzbpOh98VJ2EAE/review",
   },
   gaId: "G-LFM6MSKBQ7",
-  // TODO: имя утверждает владелец
-  maintenancePlanName: "EK Maintenance Plan",
   // GBP allows <= 20 service zones. Trimmed from the 26 cities in the old index.html JSON-LD,
   // ordered by priority (5 full-page towns first, then proximity to Ballantyne / call volume).
   // The full list — including the 6 dropped here — stays on /towns as alsoServedNC/alsoServedSC.

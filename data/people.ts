@@ -31,14 +31,22 @@ export type Owner = {
    * the residential service names, then the commercial categories (R23, story 18).
    */
   knowsAbout: readonly string[];
-  photos: {
-    /** /about portrait — also the Person `image` */
-    portrait: OwnerPhoto;
-    /** home hero background */
-    hero: OwnerPhoto;
-    restaurantKitchen: OwnerPhoto;
-    rooftopLaundry: OwnerPhoto;
-  };
+  /** portrait/hero/… — the owner's own photos; every one shows him at work */
+  photos: Record<
+    | "portrait"
+    | "hero"
+    | "restaurantKitchen"
+    | "rooftopLaundry"
+    | "rooftopRefrigeration"
+    | "washerExtractor"
+    | "washerExtractorPortrait"
+    | "dryCleaner"
+    | "commercialRooftop"
+    | "homeKitchen"
+    | "homeLaundry"
+    | "controlBoards",
+    OwnerPhoto
+  >;
 };
 
 const name = "Constantin";
@@ -91,6 +99,39 @@ export const owner: Owner = {
     restaurantKitchen: {
       src: "/images/ek-global-technician-restaurant-kitchen-charlotte.webp",
       alt: `${name} repairing commercial kitchen equipment`,
+    },
+    // On-the-job photos from the owner (2026-10-03), as shot — natural, not staged.
+    rooftopRefrigeration: {
+      src: "/images/ek-global-technician-rooftop-refrigeration-charlotte.webp",
+      alt: `${name} servicing a rooftop refrigeration unit, refrigerant tank beside him`,
+    },
+    washerExtractor: {
+      src: "/images/ek-global-technician-commercial-washer-extractor.webp",
+      alt: `${name} at a commercial washer-extractor`,
+    },
+    washerExtractorPortrait: {
+      src: "/images/ek-global-technician-commercial-washer-portrait.webp",
+      alt: `${name} with a pipe wrench in front of a commercial washer`,
+    },
+    dryCleaner: {
+      src: "/images/ek-global-technician-dry-cleaner-laundry.webp",
+      alt: `${name} on a service call in a dry cleaner's pressing room`,
+    },
+    commercialRooftop: {
+      src: "/images/ek-global-technician-commercial-rooftop.webp",
+      alt: `${name} on a commercial roof among rooftop units`,
+    },
+    homeKitchen: {
+      src: "/images/ek-global-technician-home-kitchen-call.webp",
+      alt: `${name} on a home service call, pipe wrench in hand, on the kitchen floor`,
+    },
+    homeLaundry: {
+      src: "/images/ek-global-technician-home-laundry-hookup.webp",
+      alt: `${name} hooking up a washer in a home laundry room`,
+    },
+    controlBoards: {
+      src: "/images/ek-global-technician-control-boards-home.webp",
+      alt: `${name} holding two appliance control boards`,
     },
     rooftopLaundry: {
       src: "/images/ek-global-technician-commercial-laundry-charlotte.webp",
@@ -190,11 +231,10 @@ export const aboutPage: AboutPage = {
     photos: [
       { ...owner.photos.hero, caption: "Residential — washer repair", objectPosition: "72% 30%" },
       { ...owner.photos.restaurantKitchen, caption: "Restaurant kitchen — commercial dishwasher" },
-      {
-        ...owner.photos.rooftopLaundry,
-        caption: "Commercial laundry — rooftop equipment",
-        objectPosition: "30% 75%",
-      },
+      { ...owner.photos.dryCleaner, caption: "Dry cleaner — pressing room" },
+      { ...owner.photos.commercialRooftop, caption: "Commercial roof — rooftop units" },
+      { ...owner.photos.homeLaundry, caption: "Home laundry room — washer hookup" },
+      { ...owner.photos.controlBoards, caption: "Appliance control boards", objectPosition: "50% 35%" },
     ],
   },
   /** Blocks waiting for owner facts — `status: "draft"`, shown only in `next dev`. */

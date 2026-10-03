@@ -55,6 +55,7 @@ export const residentialHome = {
     quote:
       "I answer the phone, I do the diagnostic, and I'm the one who comes back if something isn't right. That's the whole promise.",
     quoteCredit: "Owner · EPA 608 & OSHA certified",
+    photoCaptions: { homeKitchen: "On a home service call", homeLaundry: "Washer hookup — home laundry room" },
   },
   pricing: {
     eyebrow: "Pricing",

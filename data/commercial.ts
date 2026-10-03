@@ -77,10 +77,7 @@ export const commercialHub = {
     paragraph:
       "For hotels, laundromats, healthcare facilities, and multi-housing properties, we repair and maintain washers, dryers, ironers, and folding machines — not just the individual unit in a resident's apartment, but full on-premise laundry systems.",
     brandsCaption: "These are the commercial laundry brands we service:",
-    photo: {
-      src: owner.photos.rooftopLaundry.src,
-      alt: "Commercial laundry equipment repair on a rooftop unit",
-    },
+    photo: owner.photos.washerExtractor,
   },
   process: { eyebrow: "How we work", h2: "From the first call<br>to a photo report." },
   why: { eyebrow: "Why property & kitchen managers call us", h2: "Fewer callbacks, less downtime." },
@@ -239,6 +236,7 @@ export const commercialPages: CommercialPageContent[] = [
       ),
       draftFaq("What does a diagnostic visit cost for a business?", "Awaiting owner fact 7."),
     ],
+    photo: owner.photos.rooftopRefrigeration,
     reviewAuthors: [],
   },
   {
@@ -438,7 +436,7 @@ export const commercialPages: CommercialPageContent[] = [
       draftFaq("Which laundry models and parts do you stock?", "Awaiting owner fact 6."),
     ],
     reviewAuthors: [],
-    photo: owner.photos.rooftopLaundry,
+    photo: owner.photos.washerExtractorPortrait,
   },
   {
     status: "published",
@@ -644,6 +642,7 @@ export const commercialPages: CommercialPageContent[] = [
       ),
       draftFaq("What does a service call cost for a property management account?", "Awaiting owner fact 7."),
     ],
+    photo: owner.photos.homeLaundry,
     reviewAuthors: [],
   },
 ];

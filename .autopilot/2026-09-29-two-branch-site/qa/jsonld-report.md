@@ -1,6 +1,6 @@
 # JSON-LD — story 82 (R96, R23)
 
-Прогон: 2026-09-30T19:10 · `node --no-warnings qa/jsonld.mjs http://localhost:3111` по prod-HTML (`npm start`), 32 опубликованных путей.
+Прогон: 2026-10-03T13:35 · `node --no-warnings qa/jsonld.mjs http://localhost:3111` по prod-HTML (`npm start`), 32 опубликованных путей.
 Проверки: JSON парсится; ровно один `<script type=application/ld+json>` с `@graph`; каждая ссылка `{"@id"}` разрешается внутри графа; один узел `https://ekfix.us/#business`; `Person.name === "Constantin"`; каждое строковое значение (name, alternateName, telephone, jobTitle, serviceType, headline, text, description, knowsAbout, addressLocality, addressRegion, ratingValue, reviewCount, areaServed, email) есть в видимом тексте страницы (регистр/пробелы/тире нормализованы, телефон — по цифрам, reviewCount — рядом со словом review); URL-поля (url, logo, image, sameAs, item) — ресурс есть на странице (ссылка, картинка или сама страница).
 
 | Путь | Узлов | Типы | @id-ссылок | строк сверено | URL сверено |

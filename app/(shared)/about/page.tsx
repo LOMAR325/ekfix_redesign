@@ -108,7 +108,7 @@ export default function AboutPage() {
             style={{ marginBottom: 30 }}
           />
           <PhotoPair
-            style={{ marginTop: 0 }}
+            style={{ marginTop: 0, gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))" }}
             photos={onTheJob.photos.map((photo) => ({ ...photo, figureStyle: { height: 280 } }))}
           />
         </section>

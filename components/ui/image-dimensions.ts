@@ -8,6 +8,14 @@
 export type Dimensions = { width: number; height: number };
 
 export const imageDimensions: Record<string, Dimensions> = {
+  "/images/ek-global-technician-rooftop-refrigeration-charlotte.webp": { width: 1280, height: 960 },
+  "/images/ek-global-technician-commercial-washer-extractor.webp": { width: 1280, height: 960 },
+  "/images/ek-global-technician-dry-cleaner-laundry.webp": { width: 1280, height: 960 },
+  "/images/ek-global-technician-commercial-washer-portrait.webp": { width: 959, height: 1280 },
+  "/images/ek-global-technician-commercial-rooftop.webp": { width: 1280, height: 960 },
+  "/images/ek-global-technician-home-kitchen-call.webp": { width: 1280, height: 960 },
+  "/images/ek-global-technician-home-laundry-hookup.webp": { width: 1280, height: 960 },
+  "/images/ek-global-technician-control-boards-home.webp": { width: 960, height: 1280 },
   "/images/Amana.webp": { width: 800, height: 200 },
   "/images/Beverage_Air.webp": { width: 600, height: 170 },
   "/images/DCS.webp": { width: 750, height: 356 },
