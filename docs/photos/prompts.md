@@ -28,59 +28,232 @@
 и винного шкафа (фото у Thermador убрано по просьбе владельца). Это честно (на фото именно он), но
 не всегда та техника. Ниже — промпты для сцен каждой страницы.
 
-## Общий стиль (вставлять в начало каждого промпта)
-
-```
-Photorealistic editorial photo, shot on a full-frame camera, 35mm lens, f/2.8. Dark, moody, low-key
-lighting: near-black background (#0b0c0b), one soft warm key light from the right, subtle rim light.
-Muted colors with a slight green tint, natural skin and metal textures, no HDR, no glossy CGI look.
-The subject sits in the RIGHT 55% of the frame; the left 45% is dark and empty (text goes there).
-No text, no logos, no brand names, no watermarks. 16:9, 2400x1350.
-```
-
 ## Hero: бытовые услуги (12)
 
-Без людей или только руки техника (перчатки, инструмент), чтобы не выдавать сгенерированного человека за
-Константина. Каждому — «Общий стиль» + строка:
+Каждый промпт — целиком, просто скопировать. В кадре только техника: люди и руки запрещены явно.
+Если генератор всё равно рисует человека — добавить в поле negative prompt: `person, people, man, woman, hands, arms, fingers, body`.
 
-- **refrigerator** — `A modern stainless French-door refrigerator in a real home kitchen at night, lower door open, a technician's gloved hand holding a multimeter probe near the control board.`
-- **washer** — `A front-load washing machine in a home laundry room, door open, a technician's gloved hands removing the drain pump filter, towel on the floor.`
-- **dryer** — `A front-load clothes dryer pulled away from the wall in a laundry room, rear panel off, vent hose and heating element visible, a work light on the floor.`
-- **dishwasher** — `A built-in dishwasher in a home kitchen with the lower kick panel removed, a technician's gloved hand with a flashlight checking the pump underneath.`
-- **stove** — `A freestanding stainless gas stove in a home kitchen, oven door open, a technician's hand testing the bake igniter with a meter, faint glow inside the oven.`
-- **range** — `A professional-style 36-inch range with six burners and a large oven in an upscale home kitchen, one burner cap removed, tools laid on a towel on the counter.`
-- **cooktop** — `A built-in gas cooktop on a stone countertop, grates and burner caps lifted off and placed aside, a technician's hand cleaning an igniter with a small brush.`
-- **microwave** — `An over-the-range microwave above a stove in a home kitchen, door open, the control panel slightly pulled out, a small screwdriver set on the counter below.`
-- **freezer** — `A standalone upright freezer in a garage, door open with frost on the shelves, a technician's gloved hand checking the evaporator cover.`
-- **ice-maker** — `An undercounter ice maker built into kitchen cabinetry, front grille removed, ice bin half full, a technician's hand pointing a flashlight inside.`
-- **wine-cooler** — `A dual-zone built-in wine cooler in a home bar, wine bottles inside, the glass door open, soft blue interior LED, a technician's gloved hand at the thermostat.`
-- **garbage-disposal** — `The cabinet under a kitchen sink, a garbage disposal unit mounted below the drain, a technician's hand with an Allen key in the bottom socket, flashlight on.`
+### refrigerator
+
+```
+A modern stainless French-door refrigerator in a real home kitchen at night, the lower freezer drawer slightly open, a multimeter and a small toolbag resting on the counter beside it. Photorealistic editorial interior photo, full-frame camera, 35mm lens, f/2.8. Dark, moody, low-key lighting: near-black shadows, one soft warm key light from the right, subtle rim light on metal edges. Muted colors with a slight green tint, real textures, no HDR, no glossy CGI look. Composition: the appliance sits in the RIGHT 55% of the frame, the LEFT 45% is dark, calm and empty (space for text). NO PEOPLE: no person, no hands, no arms, no body parts, no reflections of people — an empty room with the appliance only. No text, no logos, no brand names, no watermarks. Aspect ratio 16:9, 2400x1350.
+```
+
+### washer
+
+```
+A front-load washing machine in a home laundry room, its door open, the small drain-pump filter cover at the bottom open, a folded towel on the floor in front of it. Photorealistic editorial interior photo, full-frame camera, 35mm lens, f/2.8. Dark, moody, low-key lighting: near-black shadows, one soft warm key light from the right, subtle rim light on metal edges. Muted colors with a slight green tint, real textures, no HDR, no glossy CGI look. Composition: the appliance sits in the RIGHT 55% of the frame, the LEFT 45% is dark, calm and empty (space for text). NO PEOPLE: no person, no hands, no arms, no body parts, no reflections of people — an empty room with the appliance only. No text, no logos, no brand names, no watermarks. Aspect ratio 16:9, 2400x1350.
+```
+
+### dryer
+
+```
+A front-load clothes dryer pulled out from the wall in a home laundry room, the flexible vent hose detached behind it, a work light standing on the floor. Photorealistic editorial interior photo, full-frame camera, 35mm lens, f/2.8. Dark, moody, low-key lighting: near-black shadows, one soft warm key light from the right, subtle rim light on metal edges. Muted colors with a slight green tint, real textures, no HDR, no glossy CGI look. Composition: the appliance sits in the RIGHT 55% of the frame, the LEFT 45% is dark, calm and empty (space for text). NO PEOPLE: no person, no hands, no arms, no body parts, no reflections of people — an empty room with the appliance only. No text, no logos, no brand names, no watermarks. Aspect ratio 16:9, 2400x1350.
+```
+
+### dishwasher
+
+```
+A built-in stainless dishwasher in a home kitchen, door half open with the lower rack pulled out, the bottom kick panel removed and leaning against the cabinet, a flashlight on the floor. Photorealistic editorial interior photo, full-frame camera, 35mm lens, f/2.8. Dark, moody, low-key lighting: near-black shadows, one soft warm key light from the right, subtle rim light on metal edges. Muted colors with a slight green tint, real textures, no HDR, no glossy CGI look. Composition: the appliance sits in the RIGHT 55% of the frame, the LEFT 45% is dark, calm and empty (space for text). NO PEOPLE: no person, no hands, no arms, no body parts, no reflections of people — an empty room with the appliance only. No text, no logos, no brand names, no watermarks. Aspect ratio 16:9, 2400x1350.
+```
+
+### stove
+
+```
+A freestanding stainless gas stove in a home kitchen, oven door open with a faint orange glow inside, one burner grate set aside on the counter. Photorealistic editorial interior photo, full-frame camera, 35mm lens, f/2.8. Dark, moody, low-key lighting: near-black shadows, one soft warm key light from the right, subtle rim light on metal edges. Muted colors with a slight green tint, real textures, no HDR, no glossy CGI look. Composition: the appliance sits in the RIGHT 55% of the frame, the LEFT 45% is dark, calm and empty (space for text). NO PEOPLE: no person, no hands, no arms, no body parts, no reflections of people — an empty room with the appliance only. No text, no logos, no brand names, no watermarks. Aspect ratio 16:9, 2400x1350.
+```
+
+### range
+
+```
+A professional-style 36-inch stainless range with six burners and a large oven in an upscale home kitchen, one burner cap removed and lying on a towel on the counter. Photorealistic editorial interior photo, full-frame camera, 35mm lens, f/2.8. Dark, moody, low-key lighting: near-black shadows, one soft warm key light from the right, subtle rim light on metal edges. Muted colors with a slight green tint, real textures, no HDR, no glossy CGI look. Composition: the appliance sits in the RIGHT 55% of the frame, the LEFT 45% is dark, calm and empty (space for text). NO PEOPLE: no person, no hands, no arms, no body parts, no reflections of people — an empty room with the appliance only. No text, no logos, no brand names, no watermarks. Aspect ratio 16:9, 2400x1350.
+```
+
+### cooktop
+
+```
+A built-in gas cooktop set into a dark stone countertop, two grates and a burner cap lifted off and placed neatly beside it, a small brush next to them. Photorealistic editorial interior photo, full-frame camera, 35mm lens, f/2.8. Dark, moody, low-key lighting: near-black shadows, one soft warm key light from the right, subtle rim light on metal edges. Muted colors with a slight green tint, real textures, no HDR, no glossy CGI look. Composition: the appliance sits in the RIGHT 55% of the frame, the LEFT 45% is dark, calm and empty (space for text). NO PEOPLE: no person, no hands, no arms, no body parts, no reflections of people — an empty room with the appliance only. No text, no logos, no brand names, no watermarks. Aspect ratio 16:9, 2400x1350.
+```
+
+### microwave
+
+```
+An over-the-range stainless microwave above a stove in a home kitchen, its door open, a small screwdriver set lying on the stove top below. Photorealistic editorial interior photo, full-frame camera, 35mm lens, f/2.8. Dark, moody, low-key lighting: near-black shadows, one soft warm key light from the right, subtle rim light on metal edges. Muted colors with a slight green tint, real textures, no HDR, no glossy CGI look. Composition: the appliance sits in the RIGHT 55% of the frame, the LEFT 45% is dark, calm and empty (space for text). NO PEOPLE: no person, no hands, no arms, no body parts, no reflections of people — an empty room with the appliance only. No text, no logos, no brand names, no watermarks. Aspect ratio 16:9, 2400x1350.
+```
+
+### freezer
+
+```
+A standalone stainless upright freezer in a clean garage, door open, light frost on the shelves, cool light from inside the freezer. Photorealistic editorial interior photo, full-frame camera, 35mm lens, f/2.8. Dark, moody, low-key lighting: near-black shadows, one soft warm key light from the right, subtle rim light on metal edges. Muted colors with a slight green tint, real textures, no HDR, no glossy CGI look. Composition: the appliance sits in the RIGHT 55% of the frame, the LEFT 45% is dark, calm and empty (space for text). NO PEOPLE: no person, no hands, no arms, no body parts, no reflections of people — an empty room with the appliance only. No text, no logos, no brand names, no watermarks. Aspect ratio 16:9, 2400x1350.
+```
+
+### ice-maker
+
+```
+An undercounter stainless ice maker built into kitchen cabinetry, its front grille removed and leaning on the cabinet, the ice bin half full of clear cubes. Photorealistic editorial interior photo, full-frame camera, 35mm lens, f/2.8. Dark, moody, low-key lighting: near-black shadows, one soft warm key light from the right, subtle rim light on metal edges. Muted colors with a slight green tint, real textures, no HDR, no glossy CGI look. Composition: the appliance sits in the RIGHT 55% of the frame, the LEFT 45% is dark, calm and empty (space for text). NO PEOPLE: no person, no hands, no arms, no body parts, no reflections of people — an empty room with the appliance only. No text, no logos, no brand names, no watermarks. Aspect ratio 16:9, 2400x1350.
+```
+
+### wine-cooler
+
+```
+A dual-zone built-in wine cooler in a home bar, wine bottles on wooden racks inside, the glass door slightly open, soft blue interior LED light. Photorealistic editorial interior photo, full-frame camera, 35mm lens, f/2.8. Dark, moody, low-key lighting: near-black shadows, one soft warm key light from the right, subtle rim light on metal edges. Muted colors with a slight green tint, real textures, no HDR, no glossy CGI look. Composition: the appliance sits in the RIGHT 55% of the frame, the LEFT 45% is dark, calm and empty (space for text). NO PEOPLE: no person, no hands, no arms, no body parts, no reflections of people — an empty room with the appliance only. No text, no logos, no brand names, no watermarks. Aspect ratio 16:9, 2400x1350.
+```
+
+### garbage-disposal
+
+```
+The open cabinet under a kitchen sink, a garbage disposal unit mounted below the drain, a flashlight lying on the cabinet floor lighting it from below. Photorealistic editorial interior photo, full-frame camera, 35mm lens, f/2.8. Dark, moody, low-key lighting: near-black shadows, one soft warm key light from the right, subtle rim light on metal edges. Muted colors with a slight green tint, real textures, no HDR, no glossy CGI look. Composition: the appliance sits in the RIGHT 55% of the frame, the LEFT 45% is dark, calm and empty (space for text). NO PEOPLE: no person, no hands, no arms, no body parts, no reflections of people — an empty room with the appliance only. No text, no logos, no brand names, no watermarks. Aspect ratio 16:9, 2400x1350.
+```
 
 ## Hero: коммерческие страницы (7)
 
-- **commercial-refrigerator** — `Inside a restaurant walk-in cooler, stainless shelving with produce crates, the evaporator fan coil visible at the top, a technician's gloved hand with a refrigerant gauge set.`
-- **commercial-dishwasher** — `A stainless door-type commercial dish machine in a restaurant dish room, steam rising, racks of plates beside it, a technician's hand on the control panel.`
-- **commercial-ice-machine** — `A commercial modular ice machine on a storage bin in a restaurant back-of-house, front panel off, clear ice cubes in the bin, a technician's flashlight beam inside.`
-- **commercial-laundry** — `A row of large stainless commercial washer-extractors in a hotel on-premise laundry, one door open, carts with white towels, a technician's toolbag on the floor.`
-- **commercial-oven-range** — `A restaurant cook line: a six-burner commercial range with a convection oven below and a fryer beside it, stainless backsplash, the oven door open, after-hours lighting.`
-- **restaurant** — `An empty restaurant kitchen after closing: stainless prep tables, a reach-in cooler, a range and a dish station in depth, one work light on, a toolbag on the prep table.`
-- **property-management** — `A tidy apartment unit kitchen with standard appliances (fridge, range, dishwasher), a clipboard with a work order on the counter, a technician's toolbag at the door.`
-
-## Карточки техники (сетка «We repair» и коммерческие карточки) — одна серия
+### commercial-refrigerator
 
 ```
-Studio product photo of [APPLIANCE], three-quarter view from the left, isolated on a fully transparent
-background, soft even studio light, realistic stainless steel and black glass, no logos or brand
-names on the appliance, no text. Square 1000x1000 PNG, the appliance fills 85% of the height, centered.
+Inside a restaurant walk-in cooler, stainless wire shelving with produce crates, the evaporator coil with its fan at the top of the back wall, a refrigerant gauge set hanging from a shelf. Photorealistic editorial interior photo, full-frame camera, 35mm lens, f/2.8. Dark, moody, low-key lighting: near-black shadows, one soft warm key light from the right, subtle rim light on metal edges. Muted colors with a slight green tint, real textures, no HDR, no glossy CGI look. Composition: the appliance sits in the RIGHT 55% of the frame, the LEFT 45% is dark, calm and empty (space for text). NO PEOPLE: no person, no hands, no arms, no body parts, no reflections of people — an empty room with the appliance only. No text, no logos, no brand names, no watermarks. Aspect ratio 16:9, 2400x1350.
 ```
 
-Подставить в `[APPLIANCE]`: `a stainless French-door refrigerator` · `a front-load washing machine` ·
-`a front-load clothes dryer` · `a stainless built-in dishwasher, door closed` · `a freestanding gas stove`
-· `a 36-inch professional-style dual-fuel range` · `a 30-inch gas cooktop with cast-iron grates` ·
-`an over-the-range microwave` · `a stainless upright freezer` · `an undercounter ice maker` ·
-`a dual-zone wine cooler` · `a garbage disposal unit` · коммерческие: `a two-door stainless commercial
-reach-in refrigerator` · `a stainless door-type commercial dishwasher` · `a commercial modular ice machine
-on an ice bin` · `a stainless commercial washer-extractor` · `a commercial six-burner range with an oven`.
+### commercial-dishwasher
+
+```
+A stainless door-type commercial dish machine in a restaurant dish room, a little steam rising, racks of clean plates stacked beside it, wet tiled floor. Photorealistic editorial interior photo, full-frame camera, 35mm lens, f/2.8. Dark, moody, low-key lighting: near-black shadows, one soft warm key light from the right, subtle rim light on metal edges. Muted colors with a slight green tint, real textures, no HDR, no glossy CGI look. Composition: the appliance sits in the RIGHT 55% of the frame, the LEFT 45% is dark, calm and empty (space for text). NO PEOPLE: no person, no hands, no arms, no body parts, no reflections of people — an empty room with the appliance only. No text, no logos, no brand names, no watermarks. Aspect ratio 16:9, 2400x1350.
+```
+
+### commercial-ice-machine
+
+```
+A commercial modular ice machine sitting on a stainless storage bin in a restaurant back-of-house, its front panel removed, clear ice cubes visible in the bin. Photorealistic editorial interior photo, full-frame camera, 35mm lens, f/2.8. Dark, moody, low-key lighting: near-black shadows, one soft warm key light from the right, subtle rim light on metal edges. Muted colors with a slight green tint, real textures, no HDR, no glossy CGI look. Composition: the appliance sits in the RIGHT 55% of the frame, the LEFT 45% is dark, calm and empty (space for text). NO PEOPLE: no person, no hands, no arms, no body parts, no reflections of people — an empty room with the appliance only. No text, no logos, no brand names, no watermarks. Aspect ratio 16:9, 2400x1350.
+```
+
+### commercial-laundry
+
+```
+A row of large stainless commercial washer-extractors in a hotel on-premise laundry, one door open, carts of folded white towels, a toolbag on the concrete floor. Photorealistic editorial interior photo, full-frame camera, 35mm lens, f/2.8. Dark, moody, low-key lighting: near-black shadows, one soft warm key light from the right, subtle rim light on metal edges. Muted colors with a slight green tint, real textures, no HDR, no glossy CGI look. Composition: the appliance sits in the RIGHT 55% of the frame, the LEFT 45% is dark, calm and empty (space for text). NO PEOPLE: no person, no hands, no arms, no body parts, no reflections of people — an empty room with the appliance only. No text, no logos, no brand names, no watermarks. Aspect ratio 16:9, 2400x1350.
+```
+
+### commercial-oven-range
+
+```
+A restaurant cook line after hours: a six-burner commercial range with a convection oven below, a fryer beside it, stainless backsplash, the oven door open. Photorealistic editorial interior photo, full-frame camera, 35mm lens, f/2.8. Dark, moody, low-key lighting: near-black shadows, one soft warm key light from the right, subtle rim light on metal edges. Muted colors with a slight green tint, real textures, no HDR, no glossy CGI look. Composition: the appliance sits in the RIGHT 55% of the frame, the LEFT 45% is dark, calm and empty (space for text). NO PEOPLE: no person, no hands, no arms, no body parts, no reflections of people — an empty room with the appliance only. No text, no logos, no brand names, no watermarks. Aspect ratio 16:9, 2400x1350.
+```
+
+### restaurant
+
+```
+An empty restaurant kitchen after closing: stainless prep tables, a two-door reach-in cooler, a range and a dish station receding into depth, a single work light on. Photorealistic editorial interior photo, full-frame camera, 35mm lens, f/2.8. Dark, moody, low-key lighting: near-black shadows, one soft warm key light from the right, subtle rim light on metal edges. Muted colors with a slight green tint, real textures, no HDR, no glossy CGI look. Composition: the appliance sits in the RIGHT 55% of the frame, the LEFT 45% is dark, calm and empty (space for text). NO PEOPLE: no person, no hands, no arms, no body parts, no reflections of people — an empty room with the appliance only. No text, no logos, no brand names, no watermarks. Aspect ratio 16:9, 2400x1350.
+```
+
+### property-management
+
+```
+A tidy apartment kitchen with standard appliances — refrigerator, range and dishwasher — a clipboard with a work order lying on the counter, a toolbag by the door. Photorealistic editorial interior photo, full-frame camera, 35mm lens, f/2.8. Dark, moody, low-key lighting: near-black shadows, one soft warm key light from the right, subtle rim light on metal edges. Muted colors with a slight green tint, real textures, no HDR, no glossy CGI look. Composition: the appliance sits in the RIGHT 55% of the frame, the LEFT 45% is dark, calm and empty (space for text). NO PEOPLE: no person, no hands, no arms, no body parts, no reflections of people — an empty room with the appliance only. No text, no logos, no brand names, no watermarks. Aspect ratio 16:9, 2400x1350.
+```
+
+## Карточки техники — одна серия (17)
+
+Затем для сетки «We repair» и коммерческих карточек — на прозрачном фоне.
+
+### card: refrigerator
+
+```
+Studio product photo of a stainless French-door refrigerator, three-quarter view from the left, isolated on a fully transparent background, soft even studio lighting, realistic stainless steel and black glass, no logos or brand names on the appliance, no people, no hands, no text. Square 1000x1000 PNG, the appliance fills 85% of the height, centered.
+```
+
+### card: washer
+
+```
+Studio product photo of a front-load washing machine, three-quarter view from the left, isolated on a fully transparent background, soft even studio lighting, realistic stainless steel and black glass, no logos or brand names on the appliance, no people, no hands, no text. Square 1000x1000 PNG, the appliance fills 85% of the height, centered.
+```
+
+### card: dryer
+
+```
+Studio product photo of a front-load clothes dryer, three-quarter view from the left, isolated on a fully transparent background, soft even studio lighting, realistic stainless steel and black glass, no logos or brand names on the appliance, no people, no hands, no text. Square 1000x1000 PNG, the appliance fills 85% of the height, centered.
+```
+
+### card: dishwasher
+
+```
+Studio product photo of a stainless built-in dishwasher with the door closed, three-quarter view from the left, isolated on a fully transparent background, soft even studio lighting, realistic stainless steel and black glass, no logos or brand names on the appliance, no people, no hands, no text. Square 1000x1000 PNG, the appliance fills 85% of the height, centered.
+```
+
+### card: stove
+
+```
+Studio product photo of a freestanding stainless gas stove, three-quarter view from the left, isolated on a fully transparent background, soft even studio lighting, realistic stainless steel and black glass, no logos or brand names on the appliance, no people, no hands, no text. Square 1000x1000 PNG, the appliance fills 85% of the height, centered.
+```
+
+### card: range
+
+```
+Studio product photo of a 36-inch professional-style stainless dual-fuel range, three-quarter view from the left, isolated on a fully transparent background, soft even studio lighting, realistic stainless steel and black glass, no logos or brand names on the appliance, no people, no hands, no text. Square 1000x1000 PNG, the appliance fills 85% of the height, centered.
+```
+
+### card: cooktop
+
+```
+Studio product photo of a 30-inch gas cooktop with cast-iron grates, three-quarter view from the left, isolated on a fully transparent background, soft even studio lighting, realistic stainless steel and black glass, no logos or brand names on the appliance, no people, no hands, no text. Square 1000x1000 PNG, the appliance fills 85% of the height, centered.
+```
+
+### card: microwave
+
+```
+Studio product photo of an over-the-range stainless microwave, three-quarter view from the left, isolated on a fully transparent background, soft even studio lighting, realistic stainless steel and black glass, no logos or brand names on the appliance, no people, no hands, no text. Square 1000x1000 PNG, the appliance fills 85% of the height, centered.
+```
+
+### card: freezer
+
+```
+Studio product photo of a stainless upright freezer, three-quarter view from the left, isolated on a fully transparent background, soft even studio lighting, realistic stainless steel and black glass, no logos or brand names on the appliance, no people, no hands, no text. Square 1000x1000 PNG, the appliance fills 85% of the height, centered.
+```
+
+### card: ice-maker
+
+```
+Studio product photo of a stainless undercounter ice maker, three-quarter view from the left, isolated on a fully transparent background, soft even studio lighting, realistic stainless steel and black glass, no logos or brand names on the appliance, no people, no hands, no text. Square 1000x1000 PNG, the appliance fills 85% of the height, centered.
+```
+
+### card: wine-cooler
+
+```
+Studio product photo of a dual-zone wine cooler with a glass door, three-quarter view from the left, isolated on a fully transparent background, soft even studio lighting, realistic stainless steel and black glass, no logos or brand names on the appliance, no people, no hands, no text. Square 1000x1000 PNG, the appliance fills 85% of the height, centered.
+```
+
+### card: garbage-disposal
+
+```
+Studio product photo of a garbage disposal unit, three-quarter view from the left, isolated on a fully transparent background, soft even studio lighting, realistic stainless steel and black glass, no logos or brand names on the appliance, no people, no hands, no text. Square 1000x1000 PNG, the appliance fills 85% of the height, centered.
+```
+
+### card: commercial-refrigeration
+
+```
+Studio product photo of a two-door stainless commercial reach-in refrigerator, three-quarter view from the left, isolated on a fully transparent background, soft even studio lighting, realistic stainless steel and black glass, no logos or brand names on the appliance, no people, no hands, no text. Square 1000x1000 PNG, the appliance fills 85% of the height, centered.
+```
+
+### card: commercial-dishwasher
+
+```
+Studio product photo of a stainless door-type commercial dishwasher, three-quarter view from the left, isolated on a fully transparent background, soft even studio lighting, realistic stainless steel and black glass, no logos or brand names on the appliance, no people, no hands, no text. Square 1000x1000 PNG, the appliance fills 85% of the height, centered.
+```
+
+### card: commercial-ice-machine
+
+```
+Studio product photo of a commercial modular ice machine on an ice storage bin, three-quarter view from the left, isolated on a fully transparent background, soft even studio lighting, realistic stainless steel and black glass, no logos or brand names on the appliance, no people, no hands, no text. Square 1000x1000 PNG, the appliance fills 85% of the height, centered.
+```
+
+### card: commercial-laundry
+
+```
+Studio product photo of a stainless commercial washer-extractor, three-quarter view from the left, isolated on a fully transparent background, soft even studio lighting, realistic stainless steel and black glass, no logos or brand names on the appliance, no people, no hands, no text. Square 1000x1000 PNG, the appliance fills 85% of the height, centered.
+```
+
+### card: commercial-oven-range
+
+```
+Studio product photo of a commercial six-burner range with an oven below, three-quarter view from the left, isolated on a fully transparent background, soft even studio lighting, realistic stainless steel and black glass, no logos or brand names on the appliance, no people, no hands, no text. Square 1000x1000 PNG, the appliance fills 85% of the height, centered.
+```
 
 ## Страница выбора: фон панели «For Business»
 
