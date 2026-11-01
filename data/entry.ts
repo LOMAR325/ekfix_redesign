@@ -17,6 +17,8 @@ export type EntryPanel = {
   cta: EntryLink;
   links: EntryLink[];
   photo: { src: string; alt: string };
+  /** The business panel only: a checklist of facts before its button — each already published on the commercial home. */
+  proof?: string[];
 };
 
 /** Short panel labels of the commercial pages the business panel links to, in this order. */
@@ -38,6 +40,8 @@ export const entryPage = {
   },
   h1: "Appliance repair in <span>Charlotte, NC</span>",
   linksLabel: "Go straight to",
+  /** After the Google review count next to the H1 — facts already published on the site. */
+  trustNote: "Family-owned · EPA 608 & OSHA certified",
 };
 
 export function entryPanels(): EntryPanel[] {
@@ -48,6 +52,8 @@ export function entryPanels(): EntryPanel[] {
       eyebrow: "For business",
       h2: "Restaurants, properties,<br>hotels, laundry.",
       text: "Commercial refrigeration, dish machines, ice machines, laundry and cooking equipment — written estimates, photo reports and invoicing for the business.",
+      // the business form's fine print and the commercial home's COI fact (data/booking, data/commercial)
+      proof: ["Written estimate first", "Photo report", "Invoice / ACH", "COI on request"],
       cta: { label: "Commercial Service", href: branchPaths.business.root },
       links: BUSINESS_LINKS.flatMap(([slug, label]) =>
         live.some((p) => p.slug === slug) ? [{ label, href: `${commercialHubPath}/${slug}` }] : [],
@@ -61,7 +67,7 @@ export function entryPanels(): EntryPanel[] {
     {
       branch: "home",
       eyebrow: "For homes",
-      h2: "Your kitchen<br>and laundry room.",
+      h2: "Your kitchen<br>and <span>laundry room.</span>",
       text: "Refrigerators, washers, dryers, dishwashers, stoves and more — same-day slots and a warranty on every repair.",
       cta: { label: "Home Appliance Repair", href: branchPaths.home.root },
       links: HOME_LINKS.flatMap((slug) => {
