@@ -735,6 +735,45 @@ a[style*="--accent"]:focus-visible { outline: 2px solid var(--accent); outline-o
   .branch-panel, .branch-panel *, .branch-panel::after, .branch-entry-panels { transition: none !important; }
 }
 
+/* ---------------- Entry page: night / day (2026-11-01, ADR 0002) ---------------- */
+.branch-entry-top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 32px; padding: clamp(22px, 2.8vw, 44px) clamp(8px, 1.4vw, 20px); }
+.branch-entry-top .branch-entry-h1 { padding: 0; font-size: clamp(30px, 3.8vw, 64px); line-height: 1; letter-spacing: -2px; }
+.branch-entry-rating { display: flex; align-items: center; gap: 14px; }
+.branch-entry-rating .num { font-size: clamp(34px, 3.2vw, 52px); font-weight: 800; letter-spacing: -2px; line-height: 1; }
+.branch-entry-rating .stars { display: block; color: var(--accent); font-size: 13px; letter-spacing: 2.5px; }
+.branch-entry-rating small { display: block; margin-top: 6px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 1.4px; text-transform: uppercase; color: var(--text-light-45); }
+.branch-panel--business .branch-panel-content h2 { font-size: clamp(34px, 4.2vw, 68px); letter-spacing: -2.4px; }
+.branch-panel--business .branch-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 20px; margin: 0 0 26px; max-width: 520px; }
+.branch-panel--business .branch-list li { font-size: 14px; min-height: 26px; }
+.branch-panel--business .branch-list li:not(.is-link)::before { width: 26px; height: 26px; border-radius: 8px; font-size: 12px; }
+@media (min-width: 901px) {
+  .branch-panel--business .branch-panel-scrim { background: linear-gradient(90deg, rgba(11,12,11,0.95) 0%, rgba(11,12,11,0.78) 42%, rgba(11,12,11,0.2) 100%); }
+}
+.branch-panel--home { flex-direction: column; align-items: stretch; justify-content: space-between; padding: clamp(12px, 1.2vw, 18px); background: var(--bg-light); border-color: transparent; color: var(--text-dark); }
+.branch-panel-frame { position: relative; flex: 1; min-height: 220px; border-radius: 18px; overflow: hidden; background: var(--bg-dark); }
+.branch-panel--home .branch-panel-content { max-width: none; padding: clamp(20px, 2.2vw, 32px) clamp(10px, 1.4vw, 22px) clamp(8px, 1vw, 14px); }
+.branch-panel--home .eyebrow { color: var(--text-dark-60); }
+.branch-panel--home .branch-panel-content h2 { color: var(--text-dark); }
+.branch-panel--home .branch-panel-content h2 span { background: linear-gradient(transparent 60%, var(--accent) 60%, var(--accent) 92%, transparent 92%); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.branch-panel--home .branch-panel-text { color: var(--text-dark-60); }
+.branch-panel--home .branch-panel-links-label { color: var(--text-dark-60); }
+.branch-panel--home .branch-panel-links a { color: var(--text-dark); box-shadow: inset 0 -1px 0 var(--line-light); background-image: linear-gradient(var(--text-dark), var(--text-dark)); }
+.branch-panel--home .branch-panel-links a:hover { color: var(--text-dark); border-color: transparent; }
+.branch-panel--home .branch-panel-links a:focus-visible { outline-color: var(--text-dark); }
+.branch-btn-dark { background: var(--bg-dark); color: var(--text-light); }
+.branch-btn-dark:hover { color: var(--accent); }
+.branch-btn-dark:focus-visible { outline: 2px solid var(--text-dark); outline-offset: 3px; }
+@media (hover: hover) and (min-width: 901px) and (prefers-reduced-motion: no-preference) {
+  .branch-panel--home:hover { border-color: var(--accent); }
+  /* the narrowed home column wraps taller: its frame gives way, so the row does not grow on hover */
+  .branch-entry--split .branch-entry-panels:has(.branch-panel--business:hover) .branch-panel-frame { min-height: 160px; }
+}
+@media (max-width: 900px) {
+  .branch-panel--business .branch-panel-content h2 { font-size: clamp(34px, 8.4vw, 48px); } /* stays above the home H2 */
+  .branch-panel--home .branch-panel-content { padding: 20px 8px 8px; }
+  .branch-panel-frame { flex: none; min-height: 0; aspect-ratio: 16 / 10; }
+}
+
 /* ---------------- Inner page hero with a photo (owner, 2026-10-03) ----------------
    `.page-hero` + a full-bleed scene photo (dark on the left by design) under a left-to-right scrim;
    on mobile a vertical scrim. Text stays above both. */
